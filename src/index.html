@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>EverydayTask</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+  <script src="./func.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but aaa doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+  </noscript>
+
+  <!-- <div id="g_id_onload" data-client_id="335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com"
+    data-context="signin" data-ux_mode="popup" data-callback="handleToken">
+  </div>
+
+  <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with"
+    data-size="large" data-logo_alignment="left">
+  </div> -->
+
+  <div id="myid"></div>
+
+  <script>
+    const clientid = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
+
+    function handleToken(e) {
+      console.log(e);
+      if (!e.credential) {
+        return;
+      }
+      let cred = parseJwt(e.credential);
+      console.log(cred)
+
+      const expiresDate = new Date(cred.exp * 1000); // Unix時間をミリ秒に変換する
+      Cookies.set("gid", cred.sub, { expires: expiresDate });
+
+      // Login succeeded, remove button
+      removeGoogleButton();
+    }
+
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: clientid,
+        callback: handleToken
+      });
+      // google.accounts.id.prompt();
+      console.log("gid is", Cookies.get("gid"));
+      if (!Cookies.get("gid")) {
+        renderGoogleButton();
+      }
+      console.log("onloaded")
+    };
+
+    function onLoginClick() {
+      console.log("onLoginClick")
+      renderGoogleButton();
+    }
+
+    function onLogoutClick() {
+      console.log("onLogoutClick")
+      google.accounts.id.disableAutoSelect();
+      Cookies.remove("gid");
+      renderGoogleButton();
+    }
+  </script>
+  <p>EverydayTask</p>
+
+  <button class="button" onclick="onLoginClick()">LOGIN</button>
+  <button class="button" onclick="onLogoutClick()">LOGOUT</button>
+</body>
+
+</html>
