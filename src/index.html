@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="google-signin-client_id" content="335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com">
   <title>EverydayTask</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
@@ -25,7 +26,7 @@
     data-size="large" data-logo_alignment="left">
   </div> -->
 
-  <div id="myid"></div>
+  <div id="googlelogin"></div>
 
   <script>
     const clientid = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
@@ -74,6 +75,8 @@
 
   <button class="button" onclick="onLoginClick()">LOGIN</button>
   <button class="button" onclick="onLogoutClick()">LOGOUT</button>
+
+  <button onclick="testGet()">TestGet</button>
 </body>
 
 </html>

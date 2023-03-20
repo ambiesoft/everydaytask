@@ -13,3 +13,11 @@
 .button+.button {
     margin-left: 10px;
 }
+
+#googlelogin {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 100px;
+}

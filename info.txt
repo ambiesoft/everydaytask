@@ -1,0 +1,5 @@
+EverydayTask Progress
+https://docs.google.com/spreadsheets/d/1AzDUwwfEMyypBr7X8u2FKGx_H9Y6WG8izIUVEziSwj4/edit#gid=0
+
+Google Console
+https://console.cloud.google.com/apis/credentials?project=everydaytask&hl=ja
