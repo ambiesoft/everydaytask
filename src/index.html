@@ -120,11 +120,17 @@
     }
     function gisLoaded() {
       console.log("gisLoaded is called")
+
+      // initialize a new token client with your web app's client ID
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: clientid,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: (tokenResponce) => {
+          console.log("tokenResponce called")
+          console.log(tokenResponce)
+        }
       });
+      console.log("tokenClient", tokenClient)
       gisInited = true;
     }
     function renderGoogleButton() {
@@ -229,7 +235,10 @@
   <button onclick="testGet_app()">testGet_app</button>
   <button onclick="testGet_api()">testGet_api</button>
 
+  <!-- GIS Google Identity Service -->
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+  <!-- Google API Client Library for JavaScript -->
   <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
 </body>
 
