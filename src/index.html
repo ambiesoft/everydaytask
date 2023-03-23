@@ -47,19 +47,20 @@
 
       // Login succeeded, remove button
       removeGoogleButton();
+    }
 
-      tokenClient.requestAccessToken({ prompt: '' });
-
+    function ensureToken() {
       if (gapi.client.getToken() === null) {
         // Prompt the user to select a Google Account and ask for consent to share their data
         // when establishing a new session.
-        tokenClient.requestAccessToken({ prompt: 'consent' });
+        tokenClient.requestAccessToken({});
+        return false;
       } else {
         // Skip display of account chooser and consent dialog for an existing session.
-        tokenClient.requestAccessToken({ prompt: '' });
+        // tokenClient.requestAccessToken({ prompt: '' });
+        return true;
       }
     }
-
     window.onload = function () {
       console.log("window.onload is called")
       google.accounts.id.initialize({
@@ -71,6 +72,7 @@
       if (!Cookies.get("gid")) {
         renderGoogleButton();
       }
+
       console.log("onloaded")
     };
 
@@ -146,7 +148,7 @@
     // google.accounts.id.renderButton(document.getElementById("googlelogin"));
 
     var depid_head = "AKfycbznJza6mTsxZhaa-uUnN9PIzo5eTNIRhsFZWPmo5f2L";
-    var depid_anygoogleaccount = "AKfycbxAU6LlCs8_H9R3d2stU0uUScj7N4N5-NToNWGSgeciYukkETdKlTsOBCDBYoJu3yo6Pg";
+    var depid_anygoogleaccount = "AKfycbyT-Hf9cu92lOoR6MaJ1mScTewD-SAayC8pDTPTngZoAYwTJaGx0MD0EcXGuqIYwvW8Rg";
     var depid_anyone = "AKfycbxyG52BkbMZd-EneXxwaLpC-8KUj2QQsi0B1kW3zpLYKlQTciFGiFeCK_vTeUR4Q0j5aA";
     var depid_tanin = "AKfycbw1uH-oQ8FO4RmdXzRdykkFUdcBPMce4EJ1xcRTd1qG8T-S5kE";
 
@@ -187,7 +189,10 @@
       // })
     }
     function testGet_api() {
-      let url = 'https://script.googleapis.com/v1/scripts/AKfycbxAU6LlCs8_H9R3d2stU0uUScj7N4N5-NToNWGSgeciYukkETdKlTsOBCDBYoJu3yo6Pg:run';
+      if (!ensureToken()) {
+        return;
+      }
+      let url = `https://script.googleapis.com/v1/scripts/${depid_head}:run`;
       // let data = "key=AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8";
       let postdata = {
         "function": "doGet",
@@ -195,7 +200,7 @@
           123
         ],
         // "sessionState": string,
-        "devMode": true,
+        // "devMode": true,
       };
       token = gapi.client.getToken();
       console.log(token)
