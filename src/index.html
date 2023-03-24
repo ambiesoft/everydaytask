@@ -51,7 +51,7 @@
       if (gapi.client.getToken() === null) {
         // Prompt the user to select a Google Account and ask for consent to share their data
         // when establishing a new session.
-        tokenClient.requestAccessToken({});
+        tokenClient.requestAccessToken({ prompt: 'consent' });
         return false;
       } else {
         // Skip display of account chooser and consent dialog for an existing session.
@@ -88,8 +88,10 @@
 
 
     const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';
-    const DISCOVERY_DOC = 'https://script.googleapis.com/$discovery/rest?version=v1';
-    const SCOPES = 'https://www.googleapis.com/auth/script.projects';
+    const DISCOVERY_DOC_SCRIPT = 'https://script.googleapis.com/$discovery/rest?version=v1';
+    const DISCOVERY_DOC_SHEETS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+
+    const SCOPES = 'https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets';
 
     function gapiLoaded() {
       console.log("gapiLoaded is called")
@@ -103,7 +105,7 @@
       console.log("initializeGapiClient is called")
       await gapi.client.init({
         apiKey: API_KEY,
-        discoveryDocs: [DISCOVERY_DOC],
+        discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_SHEETS],
       });
       gapiInited = true;
     }
@@ -169,12 +171,15 @@
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.error(error));
-    }        
+    }
     function getABC() {
       runRemoteScript("getABC");
     }
     function createSpread() {
       runRemoteScript("createSpread");
+    }
+    function getTasks() {
+      runRemoteScript("getTasks");
     }
   </script>
   <p>EverydayTask</p>
@@ -184,6 +189,7 @@
 
   <button class="button" onclick="getABC()">getABC</button>
   <button class="button" onclick="createSpread()">createSpread</button>
+  <button class="button" onclick="getTasks()">getTasks</button>
 
   <!-- GIS Google Identity Service -->
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
