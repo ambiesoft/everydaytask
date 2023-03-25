@@ -18,178 +18,35 @@
     <strong>We're sorry but aaa doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
   </noscript>
 
-  <!-- <div id="g_id_onload" data-client_id="335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com"
-    data-context="signin" data-ux_mode="popup" data-callback="handleToken">
+  <h1>EverydayTask</h1>
+  <p>毎日やることをチェック</p>
+  <div class="wrapper">
+    <button class="button" onclick="getABC()">getABC</button>
+    <button class="button" onclick="createSpread()">createSpread</button>
+    <button class="button" onclick="getTasks()">getTasks</button>
+    <div id="beforelogin">
+      <button class="button" onclick="ensureToken()">Googleでログイン</button>
+    </div>
   </div>
 
-  <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with"
-    data-size="large" data-logo_alignment="left">
-  </div> -->
-
-  <div id="googlelogin"></div>
-
-  <script>
-    const clientid = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
-
-    // function handleToken(e) {
-    //   console.log("handleToken is called")
-    //   console.log(e);
-    //   if (!e.credential) {
-    //     return;
-    //   }
-    //   let cred = parseJwt(e.credential);
-    //   console.log(cred)
-
-    //   const expiresDate = new Date(cred.exp * 1000); // Unix時間をミリ秒に変換する
-    //   Cookies.set("gid", cred.sub, { expires: expiresDate });
-
-    //   // Login succeeded, remove button
-    //   removeGoogleButton();
-    // }
-
-    function ensureToken() {
-      if (gapi.client.getToken() === null) {
-        // Prompt the user to select a Google Account and ask for consent to share their data
-        // when establishing a new session.
-        tokenClient.requestAccessToken({ prompt: 'consent' });
-        return false;
-      } else {
-        // Skip display of account chooser and consent dialog for an existing session.
-        // tokenClient.requestAccessToken({ prompt: '' });
-        return true;
-      }
-    }
-    // window.onload = function () {
-    //   console.log("window.onload is called")
-    //   google.accounts.id.initialize({
-    //     client_id: clientid,
-    //     callback: handleToken
-    //   });
-    //   // google.accounts.id.prompt();
-    //   console.log("gid is", Cookies.get("gid"));
-    //   if (!Cookies.get("gid")) {
-    //     renderGoogleButton();
-    //   }
-
-    //   console.log("onloaded")
-    // };
-
-    // function onLoginClick() {
-    //   console.log("onLoginClick")
-    //   renderGoogleButton();
-    // }
-
-    // function onLogoutClick() {
-    //   console.log("onLogoutClick")
-    //   google.accounts.id.disableAutoSelect();
-    //   Cookies.remove("gid");
-    //   renderGoogleButton();
-    // }
-
-
-    const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';
-    const DISCOVERY_DOC_SCRIPT = 'https://script.googleapis.com/$discovery/rest?version=v1';
-    const DISCOVERY_DOC_SHEETS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-
-    const SCOPES = 'https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets';
-
-    function gapiLoaded() {
-      console.log("gapiLoaded is called")
-      gapi.load('client', initializeGapiClient);
-    }
-    /**
-    * Callback after the API client is loaded. Loads the
-    * discovery doc to initialize the API.
-    */
-    async function initializeGapiClient() {
-      console.log("initializeGapiClient is called")
-      await gapi.client.init({
-        apiKey: API_KEY,
-        discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_SHEETS],
-      });
-      gapiInited = true;
-    }
-    function gisLoaded() {
-      console.log("gisLoaded is called")
-
-      // initialize a new token client with your web app's client ID
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: clientid,
-        scope: SCOPES,
-        callback: (tokenResponce) => {
-          console.log("tokenResponce called")
-          console.log(tokenResponce)
-        }
-      });
-      console.log("tokenClient", tokenClient)
-      gisInited = true;
-    }
-    // google.accounts.id.prompt((notification) => {
-    //   console.log(notification);
-    //   if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-    //     // continue with another identity provider.
-    //     console.log(notification.getNotDisplayedReason())
-    //   }
-    // });
-    // google.accounts.id.renderButton(document.getElementById("googlelogin"));
-
-    var depid_head = "AKfycbznJza6mTsxZhaa-uUnN9PIzo5eTNIRhsFZWPmo5f2L";
-    var depid_anygoogleaccount = "AKfycbyT-Hf9cu92lOoR6MaJ1mScTewD-SAayC8pDTPTngZoAYwTJaGx0MD0EcXGuqIYwvW8Rg";
-    var depid_anyone = "AKfycbxyG52BkbMZd-EneXxwaLpC-8KUj2QQsi0B1kW3zpLYKlQTciFGiFeCK_vTeUR4Q0j5aA";
-    var depid_tanin = "AKfycbw1uH-oQ8FO4RmdXzRdykkFUdcBPMce4EJ1xcRTd1qG8T-S5kE";
-
-    // var apikey = "AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8"
-
-    function runRemoteScript(func) {
-      if (!ensureToken()) {
-        return;
-      }
-      let url = `https://script.googleapis.com/v1/scripts/${depid_head}:run`;
-      // let data = "key=AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8";
-      let postdata = {
-        "function": func,
-        "parameters": [
-          123
-        ],
-        // "sessionState": string,
-        // "devMode": true,
-      };
-      token = gapi.client.getToken();
-      console.log(token)
-
-      fetch(url, {
-        method: 'POST',
-        redirect: "follow",
-        headers: {
-          // 'Accept': 'application/json',
-          // 'Content-Type': 'application/x-www-form-urlencoded'
-          'Content-Type': 'application/json',
-          'Authorization': token.token_type + ' ' + token.access_token,
-        },
-        body: JSON.stringify(postdata),
-      })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
-    }
-    function getABC() {
-      runRemoteScript("getABC");
-    }
-    function createSpread() {
-      runRemoteScript("createSpread");
-    }
-    function getTasks() {
-      runRemoteScript("getTasks");
-    }
-  </script>
-  <p>EverydayTask</p>
-
-  <!-- <button class="button" onclick="onLoginClick()">LOGIN</button>
-  <button class="button" onclick="onLogoutClick()">LOGOUT</button> -->
-
-  <button class="button" onclick="getABC()">getABC</button>
-  <button class="button" onclick="createSpread()">createSpread</button>
-  <button class="button" onclick="getTasks()">getTasks</button>
+  <div id="wrapper" class="wrapper">
+    <div id="container" class="container">
+      <div class="item">
+        <p class="text">テキスト1aaaaaaaaaa</p>
+        <button class="taskbutton" data-value="100" onclick="onTaskAction(this)">☐</button>
+      </div>
+      <div class="item">
+        <p class="text">テキスト2</p>
+        <button class="taskbutton" data-value="http://example.com/" onclick="onTaskAction(this)">☐</button>
+      </div>
+    </div>
+  </div>
+  <template id="myTemplate">
+    <div class="item">
+      <p class="text"></p>
+      <button class="taskbutton" onclick="onTaskAction(this)"></button>
+    </div>
+  </template>
 
   <!-- GIS Google Identity Service -->
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
