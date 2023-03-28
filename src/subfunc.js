@@ -14,7 +14,7 @@ function parseJwt(token) {
 }
 
 var depid_head = "AKfycbznJza6mTsxZhaa-uUnN9PIzo5eTNIRhsFZWPmo5f2L";
-var depid_anygoogleaccount = "AKfycbyT-Hf9cu92lOoR6MaJ1mScTewD-SAayC8pDTPTngZoAYwTJaGx0MD0EcXGuqIYwvW8Rg";
+var depid_anygoogleaccount = "AKfycbxsom08ZDe1KuNH0yZNyGsTpySYQPLl_9AgeTZ-Ee-mT7pXNeorGL8LbYPXY8RnuV8KDQ";
 var depid_anyone = "AKfycbxyG52BkbMZd-EneXxwaLpC-8KUj2QQsi0B1kW3zpLYKlQTciFGiFeCK_vTeUR4Q0j5aA";
 var depid_tanin = "AKfycbw1uH-oQ8FO4RmdXzRdykkFUdcBPMce4EJ1xcRTd1qG8T-S5kE";
 
@@ -22,7 +22,7 @@ function runRemoteScript(callback, func, parameters) {
     if (!ensureToken()) {
         return;
     }
-    let url = `https://script.googleapis.com/v1/scripts/${depid_head}:run`;
+    let url = `https://script.googleapis.com/v1/scripts/${depid_anygoogleaccount}:run`;
     // let data = "key=AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8";
     let postdata = {
         "function": func,
