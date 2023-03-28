@@ -1,3 +1,19 @@
+.flex-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+h4 {
+    margin-top: 0;
+}
+
+.box {}
+
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -10,7 +26,8 @@
     text-align: center;
 }
 
-.taskbutton {
+.taskbutton,
+.taskeditbutton {
     display: inline-block;
     padding: 10px 20px;
     background-color: #007bff;
@@ -33,6 +50,11 @@
 }
 
 .item {
+    display: flex;
+    align-items: center;
+}
+
+.itemedit {
     display: flex;
     align-items: center;
 }

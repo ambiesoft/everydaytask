@@ -15,3 +15,6 @@ function toggleLoginButton(loggedin) {
         document.getElementById('afterlogin').style.display = 'none';
     }
 }
+function showError(res) {
+    window.alert(res.detail);
+}

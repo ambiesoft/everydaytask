@@ -7,7 +7,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>EverydayTask</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"
+    integrity="sha512-wT7uPE7tOP6w4o28u1DN775jYjHQApdBnib5Pho4RB0Pgd9y7eSkAV1BTqQydupYDB9GBhTcQQzyNMPMV3cAew=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="./subfunc.js"></script>
   <script src="./uifunc.js"></script>
   <script src="./func.js"></script>
@@ -20,12 +22,20 @@
     <strong>We're sorry but aaa doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
   </noscript>
 
-  <h1>EverydayTask</h1>
-  <p>毎日やることをチェック</p>
-  <div class="wrapper">
-    <button id="beforelogin" class="button" onclick="ensureToken()">Googleでログイン</button>
-    <button id="afterlogin" class="button" onclick="revokeToken()">ログオフ</button>
+  <div class="flex-container">
+    <div class="box">
+      <h1>EverydayTask</h1>
+      <h4>毎日のタスクをチェック</h2>
+    </div class="box">
+    <div>
+      <button id="beforelogin" class="button" onclick="ensureToken()">Googleでログイン</button>
+      <button id="afterlogin" class="button" onclick="revokeToken()" style="display: none;">ログオフ</button>
+    </div>
+  </div>
 
+  <div class="wrapper">
+    <button class="button" onclick="showGoogleTaskSheet()">タスクを編集</button>
+    <button class="button" onclick="addNewTask()">タスクを追加</button>
     <button class="button" onclick="getABC()">getABC</button>
     <button class="button" onclick="getTasks()">getTasks</button>
   </div>
@@ -35,7 +45,20 @@
       <div class="item">
         <p class="text">テキスト1aaaaaaaaaa</p>
         <button class="taskbutton" data-taskid=100 data-taskaction="100" onclick="onTaskAction(this)">☐</button>
+        <button class="taskeditbutton" data-id=100 onclick="onShowEdit(this)">✎</button>
       </div>
+      <div id="itemedit100" class="itemedit" style="display: none;">
+        <div>
+          <input type="text" />
+        </div>
+        <div>
+          <input type="text" />
+        </div>
+        <div>
+          <button class="editbutton" data-id=100 onclick="onEditItem(this)">変更</button>
+        </div>
+      </div>
+
       <div class="item">
         <p class="text">テキスト2</p>
         <button class="taskbutton" data-taskid=123 data-taskaction="http://example.com/"
@@ -44,9 +67,23 @@
     </div>
   </div>
   <template id="taskTemplate">
-    <div class="item">
-      <p class="text"></p>
-      <button class="taskbutton" onclick="onTaskAction(this)"></button>
+    <div class="itemwrapper">
+      <div class="item">
+        <p class="text"></p>
+        <button class="taskbutton" onclick="onTaskAction(this)"></button>
+        <button class="taskeditbutton" onclick="onShowEdit(this)">✎</button>
+      </div>
+      <div class="itemedit" style="display: none;">
+        <div>
+          <input class="itemeditinputname" type="text" />
+        </div>
+        <div>
+          <input class="itemeditinputaction" type="text" />
+        </div>
+        <div>
+          <button class="editbutton" onclick="onEditItem(this)">変更</button>
+        </div>
+      </div>
     </div>
   </template>
 
