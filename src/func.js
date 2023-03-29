@@ -1,10 +1,11 @@
 const CLIENT_ID = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';
+// const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';
 const DISCOVERY_DOC_SCRIPT = 'https://script.googleapis.com/$discovery/rest?version=v1';
 const DISCOVERY_DOC_SHEETS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+const DISCOVERY_DOC_DRIVE = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 
 // const SCOPES = 'https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.currentonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/drive.appdata';
 
 const today = new Date();
 const year = today.getFullYear(); // 年を取得
@@ -45,6 +46,7 @@ function gisLoaded() {
 function gapiLoaded() {
   console.log("gapiLoaded is called")
   gapi.load('client', initializeGapiClient);
+  //  gapi.load('drive','v3',initializeGapiClient);
 }
 
 /**
@@ -54,8 +56,8 @@ function gapiLoaded() {
 async function initializeGapiClient() {
   console.log("initializeGapiClient is called")
   await gapi.client.init({
-    apiKey: API_KEY,
-    discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_SHEETS],
+    // apiKey: API_KEY,
+    discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_DRIVE, DISCOVERY_DOC_SHEETS],
   });
   gapiInited = true;
 }
@@ -69,6 +71,7 @@ window.onload = () => {
   //   gapi.client.setToken(token);
   //   console.log("setToken called");
   // }
+  console.log(gapi);
   toggleLoginButton(gapi.client.getToken() != null);
 }
 
@@ -207,4 +210,108 @@ function onTaskAction(el) {
     window.open(url, "_blank");
   }
   el.textContent = CHECKMARK;
+}
+
+// https://developers.google.com/drive/api/guides/about-files
+// https://developers.google.com/drive/api/v3/reference/files/get
+const FILEID = "1opOkG7rQjtkNUzZf3S9EaECcTXu8e93n";
+const SHEETID = "1cdqSOdEx_JOIsgvi9XBB-pYZAiNwQfwC";
+
+function ttt() {
+  var fileMetadata = {
+    'name': 'config.json',
+    'parents': ['appDataFolder']
+  };
+  var media = {
+    mimeType: 'application/json',
+    body: '"sample text"'
+  };
+  const request = gapi.client.drive.files.create({
+    resource: fileMetadata,
+    media,
+    fields: 'id'
+  })
+  request.execute(function (data) {
+    console.log(data);
+  })
+}
+function getFile() {
+  const request = gapi.client.drive.files.get({
+    fileId: FILEID
+  });
+  request.execute((data) => {
+    console.log(data);
+  })
+}
+function createNewGoogleSheet() {
+  var fileMetadata = {
+    'name': 'newSheet',
+    'parents': ['appDataFolder']
+  };
+  var media = {
+    mimeType: 'application/vnd.google-apps.spreadsheet',
+    body: ''
+  };
+  const request = gapi.client.drive.files.create({
+    resource: fileMetadata,
+    media,
+    fields: 'id'
+  })
+  request.execute((data) => {
+    console.log(data);
+  })
+}
+function updateValues(spreadsheetId, range, valueInputOption, _values, callback) {
+  let values = [
+    [
+      1 // Cell values ...
+    ],
+    // Additional rows ...
+  ];
+  values = _values;
+  const body = {
+    values: values,
+  };
+  try {
+    gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: spreadsheetId,
+      range: range,
+      valueInputOption: valueInputOption,
+      resource: body,
+    }).then((response) => {
+      const result = response.result;
+      console.log(`${result.updatedCells} cells updated.`);
+      if (callback) callback(response);
+    });
+  } catch (err) {
+    document.getElementById('content').innerText = err.message;
+    return;
+  }
+}
+function appendData() {
+
+  values = [["Void", "Canvas", "Website"], ["Paul", "Shan", "Human"]];
+
+  var body = {
+    values: values
+  };
+  try {
+    gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SHEETID,
+      range: 'Sheet1!A2:B', //Change Sheet1 if your worksheet's name is 
+      //something else
+      valueInputOption: "USER_ENTERED",
+      insertDataOption: 'INSERT_ROWS',
+      resource: body
+
+    }).then((data) => {
+      console.log(data);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+function setCellValue() {
+  appendData();
+  // updateValues(SHEETID, "A1", "USER_ENTERED", null);
 }

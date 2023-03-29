@@ -22,7 +22,7 @@ function runRemoteScript(callback, func, parameters) {
     if (!ensureToken()) {
         return;
     }
-    let url = `https://script.googleapis.com/v1/scripts/${depid_anygoogleaccount}:run`;
+    let url = `https://script.googleapis.com/v1/scripts/${depid_head}:run`;
     // let data = "key=AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8";
     let postdata = {
         "function": func,
