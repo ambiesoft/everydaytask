@@ -1,25 +1,4 @@
-const CLIENT_ID = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
-// const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';
-const DISCOVERY_DOC_SCRIPT = 'https://script.googleapis.com/$discovery/rest?version=v1';
-const DISCOVERY_DOC_SHEETS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-const DISCOVERY_DOC_DRIVE = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 
-// const SCOPES = 'https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.currentonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/drive.appdata';
-
-const today = new Date();
-const year = today.getFullYear(); // 年を取得
-const month = today.getMonth() + 1; // 月を取得（0-11の範囲で返されるため、1を加算）
-const date = today.getDate(); // 日を取得
-const hours = today.getHours().toString().padStart(2, '0');
-const minutes = today.getMinutes().toString().padStart(2, '0');
-const seconds = today.getSeconds().toString().padStart(2, '0');
-
-const SPREAD_NAME = "EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586";
-const UNCHECKMARK = "☐";
-const CHECKMARK = "☑️";
-
-const COOKIE_SHEETID = "SheetID";
 
 function gisLoaded() {
   console.log("gisLoaded is called")
@@ -32,7 +11,12 @@ function gisLoaded() {
       // This will be called after 'requestToken'
       console.log("tokenResponce called")
       console.log(tokenResponce)
-      toggleLoginButton(tokenResponce);
+      toggleLoginButton(tokenResponce.access_token != null);
+      if (tokenResponce.access_token != null) {
+        if (!userData.spreadID) {
+          OnGetSpread();
+        }
+      }
 
       // const seconds = tokenResponce.expires_in;
       // const expires = new Date();
@@ -76,7 +60,6 @@ window.onload = () => {
   // }
   console.log(gapi);
   toggleLoginButton(gapi.client.getToken() != null);
-  console.log("sheet id", Cookies.get(COOKIE_SHEETID));
 }
 
 function ensureToken() {
@@ -107,30 +90,36 @@ function getABC() {
     console.log(data);
   }, "getABC");
 }
-function getTasks() {
-  runRemoteScript((data) => {
-    const res = JSON.parse(data.response.result);
-    console.log(res);
-    clearTasks();
-    for (const task of res.Tasks) {
-      console.log(task);
-      createTask(task);
+
+function onGetTasks() {
+  if (!userData.spreadID) {
+    OnGetSpread();
+    return;
+  }
+  var params = {
+    spreadsheetId: userData.spreadID,
+    ranges: ['Tasks!A2:C4'],
+  };
+  var request = gapi.client.sheets.spreadsheets.values.batchGet(params);
+  request.then(function (response) {
+    console.log(response);
+    for (taskdata of response.result.valueRanges[0].values) {
+      createTask({
+        id: taskdata[0],
+        name: taskdata[1],
+        action: taskdata[2],
+      });
     }
-  },
-    "getTasks",
-    {
-      year,
-      month,
-      date,
-    });
+  }, function (response) {
+    console.log('error: ' + response.result.error.message);
+  });
 }
-function showGoogleTaskSheet() {
-  runRemoteScript((data) => {
-    const res = JSON.parse(data.response.result);
-    console.log(res);
-    window.open(res.url, "_blank");
-  },
-    "doGetTaskSheetURL");
+function onShowSpread() {
+  if (!userData.spreadID) {
+    OnGetSpread();
+    return;
+  }
+  window.open(getTaskSheetUrl());
 }
 function addNewTask() {
   runRemoteScript((data) => {
@@ -200,12 +189,12 @@ function onTaskAction(el) {
     },
     "checkTask",
     {
-      year,
-      month,
-      date,
-      hours,
-      minutes,
-      seconds,
+      year: STARTYEAR,
+      month: STARTMONTH,
+      date: STARTDATE,
+      hours: STARTHOURS,
+      minutes: STARTMINUTES,
+      seconds: STARTSECONDS,
       id: el.dataset.taskid
     }
   );
@@ -216,29 +205,6 @@ function onTaskAction(el) {
   el.textContent = CHECKMARK;
 }
 
-// https://developers.google.com/drive/api/guides/about-files
-// https://developers.google.com/drive/api/v3/reference/files/get
-const FILEID = "1opOkG7rQjtkNUzZf3S9EaECcTXu8e93n";
-const SHEETID = "1cdqSOdEx_JOIsgvi9XBB-pYZAiNwQfwC";
-
-function ttt() {
-  var fileMetadata = {
-    'name': 'config.json',
-    'parents': ['appDataFolder']
-  };
-  var media = {
-    mimeType: 'application/json',
-    body: '"sample text"'
-  };
-  const request = gapi.client.drive.files.create({
-    resource: fileMetadata,
-    media,
-    fields: 'id'
-  })
-  request.execute(function (data) {
-    console.log(data);
-  })
-}
 function getFile() {
   const request = gapi.client.drive.files.get({
     fileId: FILEID
@@ -249,7 +215,7 @@ function getFile() {
 }
 
 // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/create
-async function doCreateNewGoogleSheet() {
+async function doCreateSpread() {
   var spreadsheetBody = {
     properties: {
       "title": `${SPREAD_NAME}`,
@@ -473,76 +439,42 @@ async function doCreateNewGoogleSheet() {
   }
   */
   console.log(res);
-  return res.result.spreadsheetId;
-}
-async function doCreateNewGoogleSheet_error() {
-  let res = await gapi.client.drive.files.create({
-    resource: {
-      name: 'aaaaa',
-      parents: ['appDataFolder'],
-      mimeType: 'application/vnd.google-apps.spreadsheet'
-    },
-    fields: 'id'
-  });
-  /*
-  {
-      "result": {
-          "error": {
-              "code": 403,
-              "message": "Method not supported for files within the Application Data folder.",
-              "errors": [
-                  {
-                      "message": "Method not supported for files within the Application Data folder.",
-                      "domain": "global",
-                      "reason": "notSupportedForAppDataFolderFiles"
-                  }
-              ]
-          }
-      },
-      "body": "{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Method not supported for files within the Application Data folder.\",\n    \"errors\": [\n      {\n        \"message\": \"Method not supported for files within the Application Data folder.\",\n        \"domain\": \"global\",\n        \"reason\": \"notSupportedForAppDataFolderFiles\"\n      }\n    ]\n  }\n}\n",
-      "headers": {
-          "cache-control": "private, max-age=0",
-          "content-encoding": "gzip",
-          "content-length": "180",
-          "content-type": "application/json; charset=UTF-8",
-          "date": "Sat, 01 Apr 2023 07:43:23 GMT",
-          "expires": "Sat, 01 Apr 2023 07:43:23 GMT",
-          "server": "ESF",
-          "vary": "Origin, X-Origin"
-      },
-      "status": 403,
-      "statusText": null
-  }
-  */
-  console.log(res);
   return res;
 }
-
-function OnGetTasksGoogleSheet() {
-  getTasksGoogleSheet();
-}
-async function getTasksGoogleSheet() {
-  let sheetid = Cookies.get(COOKIE_SHEETID);
-  if (sheetid) {
-    console.log("sheet id is in cookie", sheetid);
+function OnGetSpread() {
+  if (!gapi.client.getToken()) {
+    ensureToken();
     return;
   }
+
+  document.getElementById("guruguru").innerText = "Guru";
+  getSpread().then((spread) => {
+  }).catch(e => {
+    console.error(e);
+  }).finally(() => {
+    document.getElementById("guruguru").innerText = "";
+  });
+}
+
+async function getSpread() {
   try {
-    sheetid = await doGetTasksGoogleSheet();
-    if (!sheetid) {
-      sheetid = await doCreateNewGoogleSheet();
+    let spread = await doGetSpread();
+    if (!spread) {
+      spread = await doCreateSpread();
     }
-    if (!sheetid) {
+    if (!spread) {
       throw new Error("Failed to get Google Sheet");
     }
-    Cookies.set(COOKIE_SHEETID, sheetid); // { expires: 30 });
-    console.log("sheet id", Cookies.get(COOKIE_SHEETID));
+    userData.spreadID = spread.result.spreadsheetId; // { expires: 30 });
+    userData.spreadURL = spread.result.spreadsheetUrl;
+    userData.taskSheetID = spread.result.sheets[1].properties.sheetId;
+    console.log("spread id is set", userData.spreadID);
   } catch (e) {
     console.error(e);
   }
 }
 // https://developers.google.com/drive/api/v3/reference/files/list
-async function doGetTasksGoogleSheet() {
+async function doGetSpread() {
   let res = await gapi.client.drive.files.list({
     q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}'`,
     // fields: 'nextPageToken, files(id, name)',
@@ -579,80 +511,24 @@ async function doGetTasksGoogleSheet() {
 }  
   */
   console.log(res);
-  if (res.result.files.length != 0) {
-    return res.result.files[0].id;
+  if (res.result.files.length == 0) {
+    return null;
   }
-  return null;
-}
 
+  res.result.files[0].id;
 
+  var params = {
+    // The spreadsheet to request.
+    spreadsheetId: res.result.files[0].id,  // TODO: Update placeholder value.
 
-// gapi.client.sheets.spreadsheets.create({
-//   "properties": {
-//     "title": "mysheet",
-//   },
-//   "sheets": [
-//     "sheet1",
-//     "sheet2",
-//     "sheet3",
-//   ]
-// }).then(function (response) {
-//   console.log(response);
-// });
+    // The ranges to retrieve from the spreadsheet.
+    ranges: [],  // TODO: Update placeholder value.
 
-// }
-
-function updateValues(spreadsheetId, range, valueInputOption, _values, callback) {
-  let values = [
-    [
-      1 // Cell values ...
-    ],
-    // Additional rows ...
-  ];
-  values = _values;
-  const body = {
-    values: values,
+    // True if grid data should be returned.
+    // This parameter is ignored if a field mask was set in the request.
+    includeGridData: false,  // TODO: Update placeholder value.
   };
-  try {
-    gapi.client.sheets.spreadsheets.values.update({
-      spreadsheetId: spreadsheetId,
-      range: range,
-      valueInputOption: valueInputOption,
-      resource: body,
-    }).then((response) => {
-      const result = response.result;
-      console.log(`${result.updatedCells} cells updated.`);
-      if (callback) callback(response);
-    });
-  } catch (err) {
-    document.getElementById('content').innerText = err.message;
-    return;
-  }
-}
-function appendData() {
 
-  values = [["Void", "Canvas", "Website"], ["Paul", "Shan", "Human"]];
-
-  var body = {
-    values: values
-  };
-  try {
-    gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId: SHEETID,
-      range: 'Sheet1!A2:B', //Change Sheet1 if your worksheet's name is 
-      //something else
-      valueInputOption: "USER_ENTERED",
-      insertDataOption: 'INSERT_ROWS',
-      resource: body
-
-    }).then((data) => {
-      console.log(data);
-    });
-  } catch (err) {
-    console.error(err);
-  }
+  return await gapi.client.sheets.spreadsheets.get(params);
 }
-function setCellValue() {
-  appendData();
-  // updateValues(SHEETID, "A1", "USER_ENTERED", null);
-}
+

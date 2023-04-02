@@ -10,6 +10,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"
     integrity="sha512-wT7uPE7tOP6w4o28u1DN775jYjHQApdBnib5Pho4RB0Pgd9y7eSkAV1BTqQydupYDB9GBhTcQQzyNMPMV3cAew=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./consts.js"></script>
+  <script src="./userdata.js"></script>
   <script src="./subfunc.js"></script>
   <script src="./uifunc.js"></script>
   <script src="./func.js"></script>
@@ -34,11 +36,13 @@
   </div>
 
   <div class="wrapper">
-    <button class="button" onclick="showGoogleTaskSheet()">タスクを編集</button>
+    <button class="button" onclick="onShowSpread()">タスクを編集</button>
     <button class="button" onclick="addNewTask()">タスクを追加</button>
     <button class="button" onclick="getABC()">getABC</button>
-    <button class="button" onclick="getTasks()">getTasks</button>
+    <button class="button" onclick="onGetTasks()">getTasks</button>
   </div>
+
+  <div id="guruguru"></div>
 
   <div id="wrapper" class="wrapper">
     <div id="container" class="container">
@@ -89,7 +93,7 @@
 
   <button onclick="ttt()">ttt</button>
   <button onclick="createNewGoogleSheet()">createNewGoogleSheet</button>
-  <button onclick="OnGetTasksGoogleSheet()">getTasksGoogleSheet</button>
+  <button onclick="OnGetSpread()">getSpread</button>
   <button onclick="setCellValue()">setCellValue</button>
 
   <!-- GIS Google Identity Service -->
