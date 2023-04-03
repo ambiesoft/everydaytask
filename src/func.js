@@ -11,19 +11,12 @@ function gisLoaded() {
       // This will be called after 'requestToken'
       console.log("tokenResponce called")
       console.log(tokenResponce)
-      toggleLoginButton(tokenResponce.access_token != null);
+      toggleLoginButton();
       if (tokenResponce.access_token != null) {
         if (!userData.spreadID) {
           OnGetSpread();
         }
       }
-
-      // const seconds = tokenResponce.expires_in;
-      // const expires = new Date();
-      // expires.setTime(expires.getTime() + (seconds * 1000));
-      // Cookies.set('token', tokenResponce.access_token, {
-      //   expires
-      // });
     }
   });
   console.log("tokenClient", tokenClient)
@@ -33,7 +26,6 @@ function gisLoaded() {
 function gapiLoaded() {
   console.log("gapiLoaded is called")
   gapi.load('client', initializeGapiClient);
-  //  gapi.load('drive','v3',initializeGapiClient);
 }
 
 /**
@@ -47,6 +39,7 @@ async function initializeGapiClient() {
     discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_DRIVE, DISCOVERY_DOC_SHEETS],
   });
   gapiInited = true;
+  toggleLoginButton();
 }
 
 window.onload = () => {
@@ -59,7 +52,7 @@ window.onload = () => {
   //   console.log("setToken called");
   // }
   console.log(gapi);
-  toggleLoginButton(gapi.client.getToken() != null);
+  toggleLoginButton();
 }
 
 function ensureToken() {
@@ -88,6 +81,10 @@ function revokeToken() {
 async function onGetTasks() {
   if (!userData.spreadID) {
     OnGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
     return;
   }
 
@@ -170,6 +167,17 @@ function createTask(task) {
   taskbutton.textContent = task.checked ? CHECKMARK : UNCHECKMARK;
   document.getElementById('container').appendChild(itemwrapper.cloneNode(true));
 }
+
+
+
+
+
+
+
+
+
+
+
 
 function onShowEdit(el) {
   console.log(el.dataset);

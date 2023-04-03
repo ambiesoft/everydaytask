@@ -303,8 +303,6 @@ async function doGetSpread() {
         return null;
     }
 
-    res.result.files[0].id;
-
     var params = {
         // The spreadsheet to request.
         spreadsheetId: res.result.files[0].id,  // TODO: Update placeholder value.

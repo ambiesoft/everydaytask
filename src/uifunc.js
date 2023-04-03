@@ -1,4 +1,7 @@
-function toggleLoginButton(loggedin) {
+function toggleLoginButton() {
+    let loggedin = gapi.client.getToken() != null;
+    loggedin &= gisInited;
+    loggedin &= gapiInited;
     if (loggedin) {
         document.getElementById('beforelogin').style.display = 'none';
         document.getElementById('afterlogin').style.display = 'block';
