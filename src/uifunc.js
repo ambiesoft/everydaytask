@@ -1,12 +1,4 @@
 function toggleLoginButton(loggedin) {
-    // if (loggedin) {
-    //     document.getElementById('beforelogin').style.visibility = 'hidden';
-    //     document.getElementById('afterlogin').style.visibility = 'visible';
-    // } else {
-    //     document.getElementById('beforelogin').style.visibility = 'visible';
-    //     document.getElementById('afterlogin').style.visibility = 'hidden';
-    // }
-
     if (loggedin) {
         document.getElementById('beforelogin').style.display = 'none';
         document.getElementById('afterlogin').style.display = 'block';
@@ -17,4 +9,11 @@ function toggleLoginButton(loggedin) {
 }
 function showError(res) {
     window.alert(res.detail);
+}
+
+function startWaitUI() {
+    document.getElementById("guruguru").innerText = "Guru";
+}
+function finishWaitUI() {
+    document.getElementById("guruguru").innerText = "";
 }

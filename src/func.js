@@ -85,36 +85,47 @@ function revokeToken() {
   }
 }
 
-function onGetTasks() {
+async function onGetTasks() {
   if (!userData.spreadID) {
     OnGetSpread();
     return;
   }
+
+  try {
+    startWaitUI();
+    await onGetTasks2();
+  } finally {
+    finishWaitUI();
+  }
+}
+async function onGetTasks2() {
   var params = {
     spreadsheetId: userData.spreadID,
     ranges: ['Tasks!A:C'],
   };
 
-  var request = gapi.client.sheets.spreadsheets.values.batchGet(params);
-
-  request.then(function (response) {
+  try {
+    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
     console.log(response);
     // valueRange is a set of "ID", "Task" and "Action"
-    // valueRanges[0] is a row of column names
-    if (response.result.valueRanges.length <= 1) {
+    // valueRanges[0][0] is a row of column names
+    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
       console.log("No tasks found");
       return;
     }
-    for (taskdata of response.result.valueRanges[1].values) {
+
+    clearTasks();
+    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
+      taskdata = response.result.valueRanges[0].values[i];
       createTask({
         id: taskdata[0],
         name: taskdata[1],
         action: taskdata[2],
       });
     }
-  }, function (response) {
-    console.log('error: ' + response.result.error.message);
-  });
+  } catch (error) {
+    console.log('error: ' + error.result.error.message);
+  }
 }
 
 function onShowSpread() {
@@ -126,7 +137,7 @@ function onShowSpread() {
 }
 
 function onAddNewTask() {
-  
+
 }
 function clearTasks() {
   document.getElementById('container').innerHTML = '';
@@ -206,19 +217,26 @@ function getFile() {
   })
 }
 
-function OnGetSpread() {
+async function OnGetSpread() {
+  try {
+    startWaitUI();
+    await OnGetSpread2();
+  } finally {
+    finishWaitUI();
+  }
+}
+async function OnGetSpread2() {
   if (!gapi.client.getToken()) {
     ensureToken();
     return;
   }
 
-  document.getElementById("guruguru").innerText = "Guru";
-  getSpread().then((spread) => {
-  }).catch(e => {
+  try {
+    startWaitUI();
+    await getSpread();
+  } catch (e) {
     console.error(e);
-  }).finally(() => {
-    document.getElementById("guruguru").innerText = "";
-  });
+  }
 }
 
 async function getSpread() {
