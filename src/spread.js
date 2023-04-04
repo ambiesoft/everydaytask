@@ -321,49 +321,93 @@ async function doGetSpread(spreadid) {
     return await gapi.client.sheets.spreadsheets.get(params);
 }
 
-async function doGetTasks() {
-    var params = {
+async function doGetMonthSheet(year, month) {
+    // If not the sheet, create it
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddSheetRequest
+    let param = {
         spreadsheetId: userData.spreadID,
-        ranges: ['Tasks!A:C'],
+        resource: {
+            requests: [
+                {
+                    'addSheet': {
+                        'properties': {
+                            'title': `${year}/${month}`,
+                        }
+                    }
+                }
+            ],
+        }
+    };
+    console.log("param", param);
+    let res = await gapi.client.sheets.spreadsheets.batchUpdate(param);
+    console.log(res);
+    return res;
+}
+async function doGetTasks() {
+    let params = {
+        spreadsheetId: userData.spreadID,
+        ranges: ['Tasks!A:C', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:B`],
     };
 
-    try {
-        response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-        console.log(response);
-        // valueRange[0] is a set of "ID", "Task" and "Action"
-        // valueRanges[0][0] is a row of column names
-        if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
-            console.log("No tasks found");
-            return;
-        }
-
-        let tasks = [];
-        for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-            let taskdata = response.result.valueRanges[0].values[i];
-            if (!taskdata[0] || taskdata[0] <= 0)
-                continue;
-            tasks.push({
-                row: i + 1, // first row is header
-                id: taskdata[0],
-                name: taskdata[1],
-                action: taskdata[2],
-            });
-        }
-        return tasks;
-    } catch (error) {
-        console.log('error: ' + error.result.error.message);
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+    console.log(response);
+    // valueRange[0] is a set of "ID", "Task" and "Action"
+    // valueRanges[0][0] is a row of column names
+    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
+        console.log("No tasks found");
+        return;
     }
+
+    let tasks = [];
+    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
+        let taskdata = response.result.valueRanges[0].values[i];
+        if (!taskdata[0] || taskdata[0] <= 0)
+            continue;
+        tasks.push({
+            row: i + 1, // first row is header
+            id: taskdata[0],
+            name: taskdata[1],
+            action: taskdata[2],
+        });
+    }
+
+    // valueRange[1] is a set of "Date" and "Check"
+    if (!response.result.valueRanges[1].values || response.result.valueRanges[1].values.length <= 0) {
+        // No tasks checked
+    } else {
+        for (task of tasks) {
+            for (i = 0; i < response.result.valueRanges[1].values.length; ++i) {
+                if (response.result.valueRanges[1].values[i][1] == task.id) {
+                    task.checked = true;
+                }
+            }
+        }
+    }
+
+    return tasks;
 }
-async function doTaskAction(row) {
 
+async function doTaskAction(taskid) {
+    if (!userData.spreadID) {
+        showError("No spread id");
+        return;
+    }
     // Get the sheet of current month
+    if (!userData.todaySheetID) {
+        showError("No todaySheetID");
+        return;
+    }
 
-    // If not the sheet, create it
+    if (!isCorrectDate()) {
+        showError("Current date has been changed. Please refresh the page.");
+        return;
+    }
 
-    // Update the sheet
+    // Append Check to log sheet
     let values = [
         [
-            1 // Cell values ...
+            `${STARTDATE}`, taskid, // Cell values ...
         ],
         // Additional rows ...
     ];
@@ -371,18 +415,15 @@ async function doTaskAction(row) {
     const body = {
         values: values,
     };
-    try {
-        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update
-        let res = await gapi.client.sheets.spreadsheets.values.update({
-            spreadsheetId: userData.spreadID,
-            range: [`Tasks!R${row}C4`],
-            valueInputOption: 'USER_ENTERED',
-            resource: body,
-        });
 
-        const result = res.result;
-        console.log(`${result.updatedCells} cells updated.`);
-    } catch (err) {
-        console.log(err);
-    }
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update
+    let res = await gapi.client.sheets.spreadsheets.values.append({
+        spreadsheetId: userData.spreadID,
+        range: [`${userData.todaySheetYear}/${userData.todaySheetMonth}!A:B`],
+        valueInputOption: 'USER_ENTERED',
+        resource: body,
+    });
+
+    const result = res.result;
+    console.log(`${result.updatedCells} cells updated.`);
 }

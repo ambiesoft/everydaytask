@@ -181,22 +181,23 @@ async function onTaskAction(el) {
   }
 
   try {
-    // Find the row of taskid
-    let tasks = await doGetTasks();
-    let row = -1;
-    for (task of tasks) {
-      if (task.id == el.dataset.taskid) {
-        row = task.row;
-        break;
-      }
-    }
-    if (row < 0) {
-      showError(`No rows found from taskid(${el.dataset.taskid})`);
-      return;
-    }
+    startWaitUI();
+    // // Find the row of taskid
+    // let tasks = await doGetTasks();
+    // let row = -1;
+    // for (task of tasks) {
+    //   if (task.id == el.dataset.taskid) {
+    //     row = task.row;
+    //     break;
+    //   }
+    // }
+    // if (row < 0) {
+    //   showError(`No rows found from taskid(${el.dataset.taskid})`);
+    //   return;
+    // }
 
     // Add check on remote cell
-    await doTaskAction(row);
+    await doTaskAction(el.dataset.taskid);
 
     // open URL action if any
     const url = el.dataset.taskaction;
@@ -206,6 +207,8 @@ async function onTaskAction(el) {
     el.textContent = CHECKMARK;
   } catch (err) {
     console.log(err);
+  } finally {
+    finishWaitUI();
   }
 }
 
@@ -249,6 +252,7 @@ async function getSpread() {
     if (!spread) {
       throw new Error("Failed to get Google Sheet");
     }
+
     console.log("spread", spread);
     userData.spreadID = spread.result.spreadsheetId;
     userData.spreadURL = spread.result.spreadsheetUrl;
@@ -257,11 +261,11 @@ async function getSpread() {
 
     // find log sheet
     userData.todaySheetID = null;
-    userData.todaySheetYear =null;
+    userData.todaySheetYear = null;
     userData.todaySheetMonth = null;
     for (i = 2; i < spread.result.sheets.length; ++i) {
-      let title = spread.result.sheets[i].title;
-      const matchResult = title.match(/^(\d{4})\/\(d{1,2})$/);  // 2023/4
+      let title = spread.result.sheets[i].properties.title;
+      const matchResult = title.match(/^(\d{4})\/(\d{1,2})$/);  // 2023/4
       if (matchResult) {
         const year = matchResult[1];
         const month = matchResult[2];
@@ -273,9 +277,13 @@ async function getSpread() {
         }
       }
     }
-    if(!userData.taskSheetID) {
+    if (!userData.todaySheetID) {
       // create new log sheet
-      
+      let res = await doGetMonthSheet(STARTYEAR, STARTMONTH);
+      userData.todaySheetID = res.result.replies[0].addSheet.properties.sheetId;
+      userData.todaySheetYear = STARTYEAR;
+      userData.todaySheetMonth = STARTMONTH;
+      console.log("logsheetid", userData.todaySheetID);
     }
 
 
