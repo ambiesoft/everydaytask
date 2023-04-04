@@ -1,0 +1,4 @@
+#/bin/sh
+
+cp -v src/*.js src/*.html src/*.css ~/html/virtual/everydaytask/
+
