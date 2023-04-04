@@ -41,7 +41,7 @@ async function doCreateSpread_error() {
     return res;
 }
 
-function updateValues(spreadsheetId, range, valueInputOption, _values, callback) {
+function updateValues_obsolete(spreadsheetId, range, valueInputOption, _values, callback) {
     let values = [
         [
             1 // Cell values ...
@@ -68,7 +68,7 @@ function updateValues(spreadsheetId, range, valueInputOption, _values, callback)
         return;
     }
 }
-function appendData() {
+function appendData_obsolete() {
 
     values = [["Void", "Canvas", "Website"], ["Paul", "Shan", "Human"]];
 
@@ -91,7 +91,45 @@ function appendData() {
         console.error(err);
     }
 }
-function setCellValue() {
+function setCellValue_obsolete() {
     appendData();
     // updateValues(SHEETID, "A1", "USER_ENTERED", null);
-}    
+}
+/**
+* Called when user clicks a checkbox of the task
+* @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
+*/
+function onTaskAction_obsolete(el) {
+    console.log(el);
+    console.log(el.dataset);
+
+    runRemoteScript(
+        (data) => {
+            console.log(data);
+        },
+        "checkTask",
+        {
+            year: STARTYEAR,
+            month: STARTMONTH,
+            date: STARTDATE,
+            hours: STARTHOURS,
+            minutes: STARTMINUTES,
+            seconds: STARTSECONDS,
+            id: el.dataset.taskid
+        }
+    );
+    const url = el.dataset.taskaction;
+    if (isValidURL(url)) {
+        window.open(url, "_blank");
+    }
+    el.textContent = CHECKMARK;
+}
+
+function getFile() {
+    const request = gapi.client.drive.files.get({
+        fileId: FILEID
+    });
+    request.execute((data) => {
+        console.log(data);
+    })
+}

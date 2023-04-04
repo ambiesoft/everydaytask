@@ -90,38 +90,14 @@ async function onGetTasks() {
 
   try {
     startWaitUI();
-    await onGetTasks2();
+    let tasks = await doGetTasks();
+    clearTasks();
+    for (task of tasks) {
+      createTask(task);
+    }
+
   } finally {
     finishWaitUI();
-  }
-}
-async function onGetTasks2() {
-  var params = {
-    spreadsheetId: userData.spreadID,
-    ranges: ['Tasks!A:C'],
-  };
-
-  try {
-    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-    console.log(response);
-    // valueRange is a set of "ID", "Task" and "Action"
-    // valueRanges[0][0] is a row of column names
-    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
-      console.log("No tasks found");
-      return;
-    }
-
-    clearTasks();
-    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-      taskdata = response.result.valueRanges[0].values[i];
-      createTask({
-        id: taskdata[0],
-        name: taskdata[1],
-        action: taskdata[2],
-      });
-    }
-  } catch (error) {
-    console.log('error: ' + error.result.error.message);
   }
 }
 
@@ -151,6 +127,7 @@ function createTask(task) {
   const itemeditinputname = template.content.querySelector(".itemeditinputname");
   const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
 
+  taskbutton.dataset.taskrow = task.row;
   taskbutton.dataset.taskid = task.id;
   taskbutton.dataset.taskname = task.name;
   taskbutton.dataset.taskaction = task.action;
@@ -190,30 +167,46 @@ function onEditItem(el) {
 * Called when user clicks a checkbox of the task
 * @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
 */
-function onTaskAction(el) {
+async function onTaskAction(el) {
   console.log(el);
   console.log(el.dataset);
 
-  runRemoteScript(
-    (data) => {
-      console.log(data);
-    },
-    "checkTask",
-    {
-      year: STARTYEAR,
-      month: STARTMONTH,
-      date: STARTDATE,
-      hours: STARTHOURS,
-      minutes: STARTMINUTES,
-      seconds: STARTSECONDS,
-      id: el.dataset.taskid
-    }
-  );
-  const url = el.dataset.taskaction;
-  if (isValidURL(url)) {
-    window.open(url, "_blank");
+  if (!userData.spreadID) {
+    OnGetSpread();
+    return;
   }
-  el.textContent = CHECKMARK;
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    // Find the row of taskid
+    let tasks = await doGetTasks();
+    let row = -1;
+    for (task of tasks) {
+      if (task.id == el.dataset.taskid) {
+        row = task.row;
+        break;
+      }
+    }
+    if (row < 0) {
+      showError(`No rows found from taskid(${el.dataset.taskid})`);
+      return;
+    }
+
+    // Add check on remote cell
+    await doTaskAction(row);
+
+    // open URL action if any
+    const url = el.dataset.taskaction;
+    if (isValidURL(url)) {
+      window.open(url, "_blank");
+    }
+    el.textContent = CHECKMARK;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 function getFile() {
@@ -256,10 +249,36 @@ async function getSpread() {
     if (!spread) {
       throw new Error("Failed to get Google Sheet");
     }
-    userData.spreadID = spread.result.spreadsheetId; // { expires: 30 });
+    console.log("spread", spread);
+    userData.spreadID = spread.result.spreadsheetId;
     userData.spreadURL = spread.result.spreadsheetUrl;
     userData.taskSheetID = spread.result.sheets[1].properties.sheetId;
     console.log("spread id is set", userData.spreadID);
+
+    // find log sheet
+    userData.todaySheetID = null;
+    userData.todaySheetYear =null;
+    userData.todaySheetMonth = null;
+    for (i = 2; i < spread.result.sheets.length; ++i) {
+      let title = spread.result.sheets[i].title;
+      const matchResult = title.match(/^(\d{4})\/\(d{1,2})$/);  // 2023/4
+      if (matchResult) {
+        const year = matchResult[1];
+        const month = matchResult[2];
+        if (STARTYEAR == year && STARTMONTH == month) {
+          userData.todaySheetID = spread.result.sheets[i].properties.sheetId;
+          userData.todaySheetYear = year;
+          userData.todaySheetMonth = month;
+          break;
+        }
+      }
+    }
+    if(!userData.taskSheetID) {
+      // create new log sheet
+      
+    }
+
+
   } catch (e) {
     console.error(e);
   }

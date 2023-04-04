@@ -262,50 +262,53 @@ async function doCreateSpread() {
 }
 
 // https://developers.google.com/drive/api/v3/reference/files/list
-async function doGetSpread() {
-    let res = await gapi.client.drive.files.list({
-        q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}'`,
-        // fields: 'nextPageToken, files(id, name)',
-        // spaces: 'appDataFolder',
-    });
-    /*
-  {
-      "result": {
-          "kind": "drive#fileList",
-          "incompleteSearch": false,
-          "files": [
-              {
-                  "kind": "drive#file",
-                  "mimeType": "application/vnd.google-apps.spreadsheet",
-                  "id": "1vA8F9N2sn4BhcbQshsqneBV_WdWsAZ50_q57jtEgkvU",
-                  "name": "EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586"
-              }
-          ]
-      },
-      "body": "{\n  \"kind\": \"drive#fileList\",\n  \"incompleteSearch\": false,\n  \"files\": [\n    {\n      \"kind\": \"drive#file\",\n      \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n      \"id\": \"1vA8F9N2sn4BhcbQshsqneBV_WdWsAZ50_q57jtEgkvU\",\n      \"name\": \"EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586\"\n    }\n  ]\n}\n",
-      "headers": {
-          "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-          "content-encoding": "gzip",
-          "content-length": "251",
-          "content-type": "application/json; charset=UTF-8",
-          "date": "Sat, 01 Apr 2023 07:01:18 GMT",
-          "expires": "Mon, 01 Jan 1990 00:00:00 GMT",
-          "pragma": "no-cache",
-          "server": "ESF",
-          "vary": "Origin, X-Origin"
-      },
-      "status": 200,
-      "statusText": null
-  }  
-    */
-    console.log(res);
-    if (res.result.files.length == 0) {
-        return null;
+async function doGetSpread(spreadid) {
+    if (!spreadid) {
+        let res = await gapi.client.drive.files.list({
+            q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}'`,
+            // fields: 'nextPageToken, files(id, name)',
+            // spaces: 'appDataFolder',
+        });
+        /*
+      {
+          "result": {
+              "kind": "drive#fileList",
+              "incompleteSearch": false,
+              "files": [
+                  {
+                      "kind": "drive#file",
+                      "mimeType": "application/vnd.google-apps.spreadsheet",
+                      "id": "1vA8F9N2sn4BhcbQshsqneBV_WdWsAZ50_q57jtEgkvU",
+                      "name": "EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586"
+                  }
+              ]
+          },
+          "body": "{\n  \"kind\": \"drive#fileList\",\n  \"incompleteSearch\": false,\n  \"files\": [\n    {\n      \"kind\": \"drive#file\",\n      \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n      \"id\": \"1vA8F9N2sn4BhcbQshsqneBV_WdWsAZ50_q57jtEgkvU\",\n      \"name\": \"EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586\"\n    }\n  ]\n}\n",
+          "headers": {
+              "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+              "content-encoding": "gzip",
+              "content-length": "251",
+              "content-type": "application/json; charset=UTF-8",
+              "date": "Sat, 01 Apr 2023 07:01:18 GMT",
+              "expires": "Mon, 01 Jan 1990 00:00:00 GMT",
+              "pragma": "no-cache",
+              "server": "ESF",
+              "vary": "Origin, X-Origin"
+          },
+          "status": 200,
+          "statusText": null
+      }  
+        */
+        console.log(res);
+        if (res.result.files.length == 0) {
+            return null;
+        }
+        spreadid = res.result.files[0].id;
     }
 
     var params = {
         // The spreadsheet to request.
-        spreadsheetId: res.result.files[0].id,  // TODO: Update placeholder value.
+        spreadsheetId: spreadid,  // TODO: Update placeholder value.
 
         // The ranges to retrieve from the spreadsheet.
         ranges: [],  // TODO: Update placeholder value.
@@ -318,3 +321,68 @@ async function doGetSpread() {
     return await gapi.client.sheets.spreadsheets.get(params);
 }
 
+async function doGetTasks() {
+    var params = {
+        spreadsheetId: userData.spreadID,
+        ranges: ['Tasks!A:C'],
+    };
+
+    try {
+        response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+        console.log(response);
+        // valueRange[0] is a set of "ID", "Task" and "Action"
+        // valueRanges[0][0] is a row of column names
+        if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
+            console.log("No tasks found");
+            return;
+        }
+
+        let tasks = [];
+        for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
+            let taskdata = response.result.valueRanges[0].values[i];
+            if (!taskdata[0] || taskdata[0] <= 0)
+                continue;
+            tasks.push({
+                row: i + 1, // first row is header
+                id: taskdata[0],
+                name: taskdata[1],
+                action: taskdata[2],
+            });
+        }
+        return tasks;
+    } catch (error) {
+        console.log('error: ' + error.result.error.message);
+    }
+}
+async function doTaskAction(row) {
+
+    // Get the sheet of current month
+
+    // If not the sheet, create it
+
+    // Update the sheet
+    let values = [
+        [
+            1 // Cell values ...
+        ],
+        // Additional rows ...
+    ];
+
+    const body = {
+        values: values,
+    };
+    try {
+        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update
+        let res = await gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId: userData.spreadID,
+            range: [`Tasks!R${row}C4`],
+            valueInputOption: 'USER_ENTERED',
+            resource: body,
+        });
+
+        const result = res.result;
+        console.log(`${result.updatedCells} cells updated.`);
+    } catch (err) {
+        console.log(err);
+    }
+}

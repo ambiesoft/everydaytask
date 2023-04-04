@@ -11,7 +11,7 @@ function toggleLoginButton() {
     }
 }
 function showError(res) {
-    window.alert(res.detail);
+    window.alert(res);
 }
 
 function startWaitUI() {
