@@ -378,7 +378,8 @@ async function doGetTasks() {
     } else {
         for (task of tasks) {
             for (i = 0; i < response.result.valueRanges[1].values.length; ++i) {
-                if (response.result.valueRanges[1].values[i][1] == task.id) {
+                if (response.result.valueRanges[1].values[i][0] == STARTDATE &&
+                    response.result.valueRanges[1].values[i][1] == task.id) {
                     task.checked = true;
                 }
             }
