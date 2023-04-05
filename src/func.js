@@ -1,24 +1,27 @@
 
 
-function gisLoaded() {
+async function gisLoaded() {
   console.log("gisLoaded is called")
 
   // initialize a new token client with your web app's client ID
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPES,
-    callback: (tokenResponce) => {
+    callback: async (tokenResponce) => {
       // This will be called after 'requestToken'
       console.log("tokenResponce called")
-      console.log(tokenResponce)
+      console.log("tokenResponce", tokenResponce);
       toggleLoginButton();
       if (tokenResponce.access_token != null) {
+        try {
         if (!userData.spreadID) {
-          onGetSpread();
+          await onGetSpread();
         }
-      }
-    }
-  });
+        await onGetTasks();
+      } catch(err) {
+        console.error(err);
+    }}
+  }});
   console.log("tokenClient", tokenClient)
   gisInited = true;
 }
@@ -45,12 +48,6 @@ async function initializeGapiClient() {
 window.onload = () => {
   console.log("window.onload has been called");
 
-  // let token = Cookies.get('token');
-  // console.log("Cookie", token);
-  // if (token && !gapi.client.getToken()) {
-  //   gapi.client.setToken(token);
-  //   console.log("setToken called");
-  // }
   console.log(gapi);
   toggleLoginButton();
 }
