@@ -15,7 +15,7 @@ function showError(res) {
 }
 
 function startWaitUI() {
-    document.getElementById("guruguru").innerText = "Guru";
+    document.getElementById("guruguru").innerText = "🌐 > > > 💻";
 }
 function finishWaitUI() {
     document.getElementById("guruguru").innerText = "";

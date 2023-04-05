@@ -15,7 +15,7 @@ const STARTHOURS = STARTDATEOBJ.getHours().toString().padStart(2, '0');
 const STARTMINUTES = STARTDATEOBJ.getMinutes().toString().padStart(2, '0');
 const STARTSECONDS = STARTDATEOBJ.getSeconds().toString().padStart(2, '0');
 
-const SPREAD_NAME = "EverydayTask.Ambiesoft.com_16053688-8F91-400D-8CBE-4AF19E561586";
+const SPREAD_NAME = "EverydayTask - Ambiesoft.com";
 const UNCHECKMARK = "☐";
 const CHECKMARK = "☑️";
 

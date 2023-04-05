@@ -14,7 +14,7 @@ function gisLoaded() {
       toggleLoginButton();
       if (tokenResponce.access_token != null) {
         if (!userData.spreadID) {
-          OnGetSpread();
+          onGetSpread();
         }
       }
     }
@@ -80,7 +80,7 @@ function revokeToken() {
 
 async function onGetTasks() {
   if (!userData.spreadID) {
-    OnGetSpread();
+    onGetSpread();
     return;
   }
   if (!gapi.client.getToken()) {
@@ -91,11 +91,16 @@ async function onGetTasks() {
   try {
     startWaitUI();
     let tasks = await doGetTasks();
-    clearTasks();
-    for (task of tasks) {
-      createTask(task);
+    if (tasks) {
+      clearTasks();
+      for (task of tasks) {
+        createTask(task);
+      }
+    } else {
+      if (tasks !== null) {
+        showError("Tasks must be not empty or null");
+      }
     }
-
   } finally {
     finishWaitUI();
   }
@@ -103,7 +108,7 @@ async function onGetTasks() {
 
 function onShowSpread() {
   if (!userData.spreadID) {
-    OnGetSpread();
+    onGetSpread();
     return;
   }
   window.open(getTaskSheetUrl());
@@ -172,7 +177,7 @@ async function onTaskAction(el) {
   console.log(el.dataset);
 
   if (!userData.spreadID) {
-    OnGetSpread();
+    onGetSpread();
     return;
   }
   if (!gapi.client.getToken()) {
@@ -221,15 +226,15 @@ function getFile() {
   })
 }
 
-async function OnGetSpread() {
+async function onGetSpread() {
   try {
     startWaitUI();
-    await OnGetSpread2();
+    await onGetSpread2();
   } finally {
     finishWaitUI();
   }
 }
-async function OnGetSpread2() {
+async function onGetSpread2() {
   if (!gapi.client.getToken()) {
     ensureToken();
     return;

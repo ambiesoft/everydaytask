@@ -356,7 +356,21 @@ async function doGetTasks() {
     // valueRanges[0][0] is a row of column names
     if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
         console.log("No tasks found");
-        return;
+        return null;
+    }
+
+    // check Duplicated id
+    let idsForDupCheck = [];
+    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
+        let taskdata = response.result.valueRanges[0].values[i];
+        if (!taskdata[0] || taskdata[0] <= 0)
+            continue;
+        idsForDupCheck.push(taskdata[0]);
+    }
+    const dupIDs = getDuplicateValues(idsForDupCheck);
+    if (dupIDs.length != 0) {
+        showError(`TaskID ${dupIDs.join(",")} are duplicated. Please fix them by editting the tasks.`);
+        return null;
     }
 
     let tasks = [];

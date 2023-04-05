@@ -10,6 +10,13 @@ h1 {
 
 h4 {
     margin-top: 0;
+    margin-bottom: 4px;
+}
+
+#guruguru {
+    display: flex;
+    justify-content: center;
+    height: 20px;
 }
 
 .box {}
@@ -26,6 +33,7 @@ h4 {
     text-align: center;
 }
 
+
 .taskbutton,
 .taskeditbutton {
     display: inline-block;
@@ -37,21 +45,39 @@ h4 {
     font-size: 16px;
     cursor: pointer;
     text-align: center;
+    width: 64px;
 }
 
 .wrapper {
     display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+#guruguru {
+    display: flex;
+    justify-content: center;
+    height: 20px;
 }
 
 .container {
     display: flex;
     flex-direction: column;
+    width: 93%;
+}
+
+.itemwrapper {
+    border: 1px solid #e0c7c7;
 }
 
 .item {
     display: flex;
     align-items: center;
+}
+
+.twobutton {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .itemedit {
@@ -61,4 +87,6 @@ h4 {
 
 .text {
     padding-right: 5px;
+    width: 80%;
+    word-break: break-all;
 }
