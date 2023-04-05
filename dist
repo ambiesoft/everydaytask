@@ -1,4 +1,4 @@
 #/bin/sh
 
-cp -v src/*.js src/*.html src/*.css ~/html/virtual/everydaytask/
+cp -v src/*.js src/*.html src/*.css src/*.ico ~/html/virtual/everydaytask/
 
