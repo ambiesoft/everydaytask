@@ -265,7 +265,7 @@ async function doCreateSpread() {
 async function doGetSpread(spreadid) {
     if (!spreadid) {
         let res = await gapi.client.drive.files.list({
-            q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}'`,
+            q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}' and trashed = false`,
             // fields: 'nextPageToken, files(id, name)',
             // spaces: 'appDataFolder',
         });
@@ -299,7 +299,7 @@ async function doGetSpread(spreadid) {
           "statusText": null
       }  
         */
-        console.log(res);
+        console.log("drive > list", res);
         if (res.result.files.length == 0) {
             return null;
         }
@@ -356,7 +356,7 @@ async function doGetTasks() {
     // valueRanges[0][0] is a row of column names
     if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
         console.log("No tasks found");
-        return null;
+        return [];
     }
 
     // check Duplicated id
@@ -414,15 +414,19 @@ async function doTaskAction(taskid) {
         return;
     }
 
-    if (!isCorrectDate()) {
+    const date = new Date();
+    if (!isCorrectDate(date)) {
         showError("Current date has been changed. Please refresh the page.");
         return;
     }
+    const currentHOURS = date.getHours().toString().padStart(2, '0');
+    const currentMINUTES = date.getMinutes().toString().padStart(2, '0');
+    const currentSECONDS = date.getSeconds().toString().padStart(2, '0');
 
     // Append Check to log sheet
     let values = [
         [
-            `${STARTDATE}`, taskid, // Cell values ...
+            `${STARTDATE}`, taskid, `${currentHOURS}:${currentMINUTES}:${currentSECONDS}`, // Cell values ...
         ],
         // Additional rows ...
     ];
@@ -431,10 +435,10 @@ async function doTaskAction(taskid) {
         values: values,
     };
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
     let res = await gapi.client.sheets.spreadsheets.values.append({
         spreadsheetId: userData.spreadID,
-        range: [`${userData.todaySheetYear}/${userData.todaySheetMonth}!A:B`],
+        range: [`${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
         valueInputOption: 'USER_ENTERED',
         resource: body,
     });

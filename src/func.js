@@ -150,17 +150,6 @@ function createTask(task) {
   document.getElementById('container').appendChild(itemwrapper.cloneNode(true));
 }
 
-
-
-
-
-
-
-
-
-
-
-
 function onShowEdit(el) {
   console.log(el.dataset);
   document.getElementById("itemedit" + el.dataset.id).style.display = "block";
@@ -168,6 +157,7 @@ function onShowEdit(el) {
 function onEditItem(el) {
   console.log(el.dataset);
 }
+
 /**
 * Called when user clicks a checkbox of the task
 * @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
@@ -187,19 +177,6 @@ async function onTaskAction(el) {
 
   try {
     startWaitUI();
-    // // Find the row of taskid
-    // let tasks = await doGetTasks();
-    // let row = -1;
-    // for (task of tasks) {
-    //   if (task.id == el.dataset.taskid) {
-    //     row = task.row;
-    //     break;
-    //   }
-    // }
-    // if (row < 0) {
-    //   showError(`No rows found from taskid(${el.dataset.taskid})`);
-    //   return;
-    // }
 
     // Add check on remote cell
     await doTaskAction(el.dataset.taskid);
@@ -242,13 +219,13 @@ async function onGetSpread2() {
 
   try {
     startWaitUI();
-    await getSpread();
+    await onGetSpread3();
   } catch (e) {
     console.error(e);
   }
 }
 
-async function getSpread() {
+async function onGetSpread3() {
   try {
     let spread = await doGetSpread();
     if (!spread) {
