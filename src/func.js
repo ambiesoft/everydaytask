@@ -182,9 +182,17 @@ async function onTaskAction(el) {
     await doTaskAction(el.dataset.taskid);
 
     // open URL action if any
-    const url = el.dataset.taskaction;
-    if (isValidURL(url)) {
-      window.open(url, "_blank");
+    if (el.dataset.taskaction) {
+      const urls = el.dataset.taskaction.split(" ");
+      console.log("urls", urls);
+      for (url of urls) {
+        if (isValidURL(url)) {
+          console.log("Opening", url);
+          window.open(url, "_blank");
+        } else {
+          console.error(`${url} is not a valid url`);
+        }
+      }
     }
     el.textContent = CHECKMARK;
   } catch (err) {
