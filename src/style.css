@@ -6,7 +6,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    max-width: 800px;
+    max-width: 650px;
 }
 
 h1 {
@@ -69,7 +69,7 @@ h4 {
     display: flex;
     flex-direction: column;
     width: 93%;
-    max-width: 800px;
+    max-width: 650px;
 }
 
 .itemwrapper {
