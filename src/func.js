@@ -6,6 +6,7 @@ async function gisLoaded() {
   // initialize a new token client with your web app's client ID
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
+    // https://developers.google.com/identity/protocols/oauth2/scopes
     scope: SCOPES,
     callback: async (tokenResponce) => {
       // This will be called after 'requestToken'
@@ -14,14 +15,16 @@ async function gisLoaded() {
       toggleLoginButton();
       if (tokenResponce.access_token != null) {
         try {
-        if (!userData.spreadID) {
-          await onGetSpread();
+          if (!userData.spreadID) {
+            await onGetSpread();
+          }
+          await onGetTasks();
+        } catch (err) {
+          console.error(err);
         }
-        await onGetTasks();
-      } catch(err) {
-        console.error(err);
-    }}
-  }});
+      }
+    }
+  });
   console.log("tokenClient", tokenClient)
   gisInited = true;
 }
