@@ -13,6 +13,25 @@ async function gisLoaded() {
       console.log("tokenResponce called")
       console.log("tokenResponce", tokenResponce);
       toggleLoginButton();
+      if (tokenResponce.expires_in) {
+        // set timer when token expires
+        setTimeout((access_token) => {
+          // check if the previous token == current token 
+          console.log("token compare", gapi.client.getToken(), access_token);
+          if (gapi.client.getToken().access_token == access_token) {
+            // the token expires
+            if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
+              // "Yes" がクリックされた場合の処理
+              location.reload();
+            } else {
+              // "No" がクリックされた場合の処理
+            }
+          }
+        },
+          tokenResponce.expires_in * 1000, // timeout
+          tokenResponce.access_token);
+        console.log(`Timer is set in ${tokenResponce.expires_in * 1000}`);
+      }
       if (tokenResponce.access_token != null) {
         try {
           if (!userData.spreadID) {
@@ -196,7 +215,8 @@ async function onTaskAction(el) {
     }
     el.textContent = CHECKMARK;
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    showErrorWithCode(err.result.error.code);
   } finally {
     finishWaitUI();
   }

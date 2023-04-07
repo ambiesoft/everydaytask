@@ -20,7 +20,17 @@ function toggleLoginButton() {
 function showError(res) {
     window.alert(res);
 }
-
+function showErrorWithCode(code) {
+    let message;
+    switch (code) {
+        case 401:
+            message = "認証に失敗しました。ページをリロードしてログインし直してください";
+            break;
+        default:
+            message = "未知のエラーです";
+    }
+    showError(message);
+}
 function startWaitUI() {
     document.getElementById("guruguru").innerText = "🌐 > > > 💻";
 }
