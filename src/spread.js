@@ -446,3 +446,46 @@ async function doTaskAction(taskid) {
     const result = res.result;
     console.log(`${result.updatedCells} cells updated.`);
 }
+async function doTaskEditItem(taskid, taskname, taskaction) {
+    if (!userData.spreadID) {
+        showError("No spread id");
+        return;
+    }
+    // Get the sheet of current month
+    if (!userData.todaySheetID) {
+        showError("No todaySheetID");
+        return;
+    }
+
+    // First, find the row of the task
+    let tasks = await doGetTasks();
+    let row = -1;
+    for (task of tasks) {
+        if (task.id == taskid) {
+            row = task.row;
+            break;
+        }
+    }
+    if (row <= 0) {
+        showError(`Illegal row ${row}`);
+        throw new Error(`Illegal row ${row}`);
+    }
+
+    // Update the spread on row
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddSheetRequest
+    let param = {
+        spreadsheetId: userData.spreadID,
+        range: `Tasks!B${row}:C${row}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            values: [
+                [taskname, taskaction],
+            ],
+        },
+    };
+
+    console.log("param", param);
+    let res = await gapi.client.sheets.spreadsheets.values.update(param);
+    console.log(res);
+    return res;
+}

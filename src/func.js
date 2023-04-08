@@ -162,19 +162,73 @@ function createTask(task) {
   itemedit.id = "itemedit" + task.id;
 
   text.textContent = task.name;
+  text.id = "tasktext" + task.id;
+
+  itemeditinputname.id = "itemeditinputname" + task.id;
   itemeditinputname.value = task.name;
-  itemeditinputaction.value = task.action;
+
+  itemeditinputaction.id = "itemeditinputaction" + task.id;
+  itemeditinputaction.value = task.action ? task.action : "";
 
   taskbutton.textContent = task.checked ? CHECKMARK : UNCHECKMARK;
   document.getElementById('container').appendChild(itemwrapper.cloneNode(true));
 }
 
-function onShowEdit(el) {
-  console.log(el.dataset);
-  document.getElementById("itemedit" + el.dataset.id).style.display = "block";
+function toggleEdit(taskid) {
+  let itemedit = document.getElementById("itemedit" + taskid);
+  if (itemedit.style.display == "block") {
+    itemedit.style.display = "none";
+  } else {
+    itemedit.style.display = "block";
+  }
 }
-function onEditItem(el) {
-  console.log(el.dataset);
+function onShowEdit(taskbutton) {
+  console.log(taskbutton.dataset);
+  toggleEdit(taskbutton.dataset.id);
+}
+async function onEditItem(eb) {
+  const taskid = eb.dataset.id;
+  let taskbutton = document.getElementById(taskid);
+
+  console.log(taskbutton.dataset);
+  console.log("taskbutton", taskbutton);
+
+  // input element
+  let itemeditinputname = document.getElementById("itemeditinputname" + taskid);
+  let itemeditinputaction = document.getElementById("itemeditinputaction" + taskid);
+  let inputtext = itemeditinputname.value;
+  let inputaction = itemeditinputaction.value;
+
+  // output element is taskbutton
+  tasktext = document.getElementById("tasktext" + taskid);
+
+  if (!userData.spreadID) {
+    onGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    startWaitUI();
+
+    // Add check on remote cell
+    let resUnused = await doTaskEditItem(taskid, inputtext, inputaction);
+    console.log("res", resUnused);
+    taskbutton.dataset.taskname = inputtext;
+    taskbutton.dataset.taskaction = inputaction;
+    tasktext.textContent = inputtext;
+
+    toggleEdit(taskid);
+  } catch (err) {
+    console.error(err);
+    showErrorWithCode(err.result.error.code);
+  } finally {
+    finishWaitUI();
+  }
+
 }
 
 /**
