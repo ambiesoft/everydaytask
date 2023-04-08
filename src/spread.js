@@ -489,3 +489,56 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
     console.log(res);
     return res;
 }
+
+function getRowFromRanges(str) {
+    const regex = /^Tasks!A(\d+):B(\d+)$/;
+    const match = str.match(regex);
+    if (match && match[1] === match[2]) {
+        return parseInt(match[1], 10);
+    }
+    return null;
+}
+async function doAddNewTask() {
+    if (!userData.spreadID) {
+        showError("No spread id");
+        return;
+    }
+
+    // First, determine new ID = (max value of IDs) + 1
+    let tasks = await doGetTasks();
+    let maxid = 0;
+    for (const task of tasks) {
+        maxid = Math.max(maxid, task.id);
+    }
+    const newID = maxid + 1;
+    const newTaskName = "新しいタスク";
+    // Appen new task with newID and default name
+    let values = [
+        [
+            newID, newTaskName, // Cell values ...
+        ],
+        // Additional rows ...
+    ];
+
+    const body = {
+        values: values,
+    };
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
+    let res = await gapi.client.sheets.spreadsheets.values.append({
+        spreadsheetId: userData.spreadID,
+        range: [`Tasks!A:B`],
+        valueInputOption: 'USER_ENTERED',
+        resource: body,
+    });
+
+    const result = res.result;
+    console.log(`${result.updatedCells} cells updated.`);
+    const row = getRowFromRanges(result.updates.updatedRange);
+    return {
+        row: row,
+        id: newID,
+        name: newTaskName,
+        action: null,
+    };
+}

@@ -133,7 +133,37 @@ function onShowSpread() {
   window.open(getTaskSheetUrl());
 }
 
-function onAddNewTask() {
+async function onAddNewTask() {
+  if (!userData.spreadID) {
+    onGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    startWaitUI();
+    const newTask = await doAddNewTask();
+
+    // New task created with default name, open edit mode
+    createTask(newTask);
+
+    // edit it
+    await onEditItem2(newTask.id);
+
+    // select all text of itemeditname element
+    document.getElementById("itemeditinputname" + newTask.id).select();
+
+    // scroll to editting element
+    scrollToElement(document.getElementById("itemeditinputaction" + newTask.id));
+
+  } catch (err) {
+    showError(err);
+  } finally {
+    finishWaitUI();
+  }
 
 }
 function clearTasks() {
@@ -188,6 +218,9 @@ function onShowEdit(taskbutton) {
 }
 async function onEditItem(eb) {
   const taskid = eb.dataset.id;
+  onEditItem2(taskid);
+}
+async function onEditItem2(taskid) {
   let taskbutton = document.getElementById(taskid);
 
   console.log(taskbutton.dataset);
