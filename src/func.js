@@ -25,6 +25,7 @@ async function gisLoaded() {
               location.reload();
             } else {
               // "No" がクリックされた場合の処理
+              gapi.client.setToken();
             }
           }
         },
