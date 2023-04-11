@@ -346,7 +346,7 @@ async function doGetMonthSheet(year, month) {
 async function doGetTasks() {
     let params = {
         spreadsheetId: userData.spreadID,
-        ranges: ['Tasks!A:C', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:B`],
+        ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
     };
 
     // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
@@ -383,19 +383,50 @@ async function doGetTasks() {
             id: taskdata[0],
             name: taskdata[1],
             action: taskdata[2],
+            starttime: taskdata[3],
+            endtime: taskdata[4],
+            enabled: false,
         });
     }
+    // end of 'tasks' sheet
 
+    // start of log sheet
+    const now = new Date();
     // valueRange[1] is a set of "Date" and "Check"
-    if (!response.result.valueRanges[1].values || response.result.valueRanges[1].values.length <= 0) {
+    const dc = response.result.valueRanges[1];
+    if (!dc.values || dc.values.length <= 0) {
         // No tasks checked
     } else {
-        for (task of tasks) {
-            for (i = 0; i < response.result.valueRanges[1].values.length; ++i) {
-                if (response.result.valueRanges[1].values[i][0] == STARTDATE &&
-                    response.result.valueRanges[1].values[i][1] == task.id) {
-                    task.checked = true;
+        for (let task of tasks) {
+            for (i = 0; i < dc.values.length; ++i) {
+                if (dc.values[i][1] != task.id) {
+                    continue;
                 }
+
+                const logDate = getLogDate(
+                    userData.todaySheetYear,
+                    userData.todaySheetMonth,
+                    dc.values[i][0],
+                    dc.values[i][2]);
+                if (isNowBeforeStartTime(task, now)) {
+                    const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
+                    if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
+                        task.enabled = true;
+                    }
+                    if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
+                        task.checked = true;
+                    }
+                } else {
+                    const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
+                    if (taskTodayStart <= now && now < taskTodayEnd) {
+                        task.enabled = true;
+                    }
+                    if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+                        task.checked = true;
+                    }
+                }
+                // if (dc.values[i][0] == STARTDATE) {
+                // }
             }
         }
     }

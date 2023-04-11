@@ -95,3 +95,63 @@ function getDuplicateValues(arr) {
     }
     return duplicateValues;
 }
+
+function getLogDate(year, month, day, timeString) {
+    let ret = new Date();
+    ret.setFullYear(parseInt(year));
+    ret.setMonth(parseInt(month) - 1);
+    ret.setDate(parseInt(day));
+
+    const [hour, minute, sec] = timeString.match(/\d+/g).map(Number);
+    ret.setHours(parseInt(hour));
+    ret.setMinutes(parseInt(minute));
+    if (sec)
+        ret.setSeconds(sec);
+    ret.setMilliseconds(0);
+
+    return ret;
+}
+function isNowBeforeStartTime(task, now) {
+    if (!task.starttime)
+        return false;
+
+    const [hour, minute] = task.starttime.match(/\d+/g).map(Number);
+    let cmp = new Date(now);
+    cmp.setHours(hour);
+    cmp.setMinutes(minute);
+    cmp.setSeconds(0);
+
+    return now < cmp;
+}
+function getTaskYesterday(now, task) {
+    let [s, e] = getTaskToday(now, task);
+    s.setDate(s.getDate() - 1);
+    e.setDate(e.getDate() - 1);
+    return [s, e];
+}
+function getTaskToday(now, task) {
+    let starthour = 0;
+    let startminute = 0;
+    let endhour = 23;
+    let endminute = 59;
+
+    if (task.starttime) {
+        [starthour, startminute] = task.starttime.match(/\d+/g).map(Number);
+    }
+    if (task.endtime) {
+        [endhour, endminute] = task.endtime.match(/\d+/g).map(Number);
+    }
+    let taskStart = new Date(now);
+    taskStart.setHours(starthour);
+    taskStart.setMinutes(startminute);
+    taskStart.setSeconds(0);
+    taskStart.setMilliseconds(0);
+
+    let taskEnd = new Date(now);
+    taskEnd.setHours(endhour);
+    taskEnd.setMinutes(endminute);
+    taskEnd.setSeconds(59);
+    taskEnd.setMilliseconds(0);
+
+    return [taskStart, taskEnd];
+}
