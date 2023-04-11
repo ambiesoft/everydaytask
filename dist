@@ -2,3 +2,7 @@
 
 cp -v src/*.js src/*.html src/*.css src/*.ico ~/html/virtual/everydaytask/
 
+mkdir ~/html/virtual/everydaytask/tests
+cp -v src/tests/*.js src/tests/*.html ~/html/virtual/everydaytask/tests/
+
+
