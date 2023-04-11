@@ -95,35 +95,6 @@ function setCellValue_obsolete() {
     appendData();
     // updateValues(SHEETID, "A1", "USER_ENTERED", null);
 }
-/**
-* Called when user clicks a checkbox of the task
-* @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
-*/
-function onTaskAction_obsolete(el) {
-    console.log(el);
-    console.log(el.dataset);
-
-    runRemoteScript(
-        (data) => {
-            console.log(data);
-        },
-        "checkTask",
-        {
-            year: STARTYEAR,
-            month: STARTMONTH,
-            date: STARTDATE,
-            hours: STARTHOURS,
-            minutes: STARTMINUTES,
-            seconds: STARTSECONDS,
-            id: el.dataset.taskid
-        }
-    );
-    const url = el.dataset.taskaction;
-    if (isValidURL(url)) {
-        window.open(url, "_blank");
-    }
-    el.textContent = CHECKMARK;
-}
 
 function getFile() {
     const request = gapi.client.drive.files.get({

@@ -427,8 +427,6 @@ async function doGetTasks() {
                         task.checked = true;
                     }
                 }
-                // if (dc.values[i][0] == STARTDATE) {
-                // }
             }
         }
     }

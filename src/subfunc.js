@@ -14,8 +14,6 @@ function parseJwt(token) {
 }
 
 function isInToday(first, last) {
-    // STARTDATE:ページが開かれたDate, Extract only Year, month and date
-
     let [iFirstHour, iFirstMinute] = first.match(/\d+/g).map(Number);
     let [iLastHour, iLastMinute] = last.match(/\d+/g).map(Number);
 
