@@ -13,6 +13,39 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
+function isInToday(first, last) {
+    // STARTDATE:ページが開かれたDate, Extract only Year, month and date
+
+    let [iFirstHour, iFirstMinute] = first.match(/\d+/g).map(Number);
+    let [iLastHour, iLastMinute] = last.match(/\d+/g).map(Number);
+
+    let iFirstAdded = 0;
+    if (iFirstHour > 23) {
+        iFirstAdded += 1;
+        iFirstHour -= 24;
+    }
+    let iLastAdded = 0;
+    if (iLastHour > 23) {
+        iLastAdded += 1;
+        iLastHour -= 24;
+    }
+
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    const firstSec = (iFirstAdded * 24 * 3600) + (iFirstHour * 3600) + (iFirstMinute * 60);
+    const lastSec = (iLastAdded * 24 * 3600) + (iLastHour * 3600) + (iLastMinute * 60) + 60;
+    const currentSec = (currentHours * 3600) + (currentMinutes * 60);
+    if (firstSec <= currentSec) {
+        if (currentSec < lastSec) {
+            // last < current
+            return true;
+        }
+    }
+    return false;
+}
+
 var depid_head = "AKfycbznJza6mTsxZhaa-uUnN9PIzo5eTNIRhsFZWPmo5f2L";
 var depid_anygoogleaccount = "AKfycbxsom08ZDe1KuNH0yZNyGsTpySYQPLl_9AgeTZ-Ee-mT7pXNeorGL8LbYPXY8RnuV8KDQ";
 var depid_anyone = "AKfycbxyG52BkbMZd-EneXxwaLpC-8KUj2QQsi0B1kW3zpLYKlQTciFGiFeCK_vTeUR4Q0j5aA";
