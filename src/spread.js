@@ -394,42 +394,45 @@ async function doGetTasks() {
     const now = new Date();
     // valueRange[1] is a set of "Date" and "Check"
     const dc = response.result.valueRanges[1];
+    let dcLen = 0;
     if (!dc.values || dc.values.length <= 0) {
-        // No tasks checked
+        dcLen = 0;
     } else {
-        for (let task of tasks) {
-            const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
-            const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
+        dcLen = dc.values.length;
+    }
+    for (let task of tasks) {
+        const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
+        const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
+
+        if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
+            task.enabled = true;
+        } else if (taskTodayStart <= now && now < taskTodayEnd) {
+            task.enabled = true;
+        }
+
+        for (i = 0; i < dcLen; ++i) {
+            if (dc.values[i][1] != task.id) {
+                continue;
+            }
+
+            const logDate = getLogDate(
+                userData.todaySheetYear,
+                userData.todaySheetMonth,
+                dc.values[i][0],
+                dc.values[i][2]);
 
             if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
-                task.enabled = true;
-            } else if (taskTodayStart <= now && now < taskTodayEnd) {
-                task.enabled = true;
-            }
-            
-            for (i = 0; i < dc.values.length; ++i) {
-                if (dc.values[i][1] != task.id) {
-                    continue;
+                if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
+                    task.checked = true;
                 }
-
-                const logDate = getLogDate(
-                    userData.todaySheetYear,
-                    userData.todaySheetMonth,
-                    dc.values[i][0],
-                    dc.values[i][2]);
-
-                if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
-                    if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
-                        task.checked = true;
-                    }
-                } else {
-                    if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
-                        task.checked = true;
-                    }
+            } else {
+                if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+                    task.checked = true;
                 }
             }
         }
     }
+
 
     return tasks;
 }
