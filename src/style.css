@@ -54,6 +54,20 @@ h4 {
     height: 42px;
 }
 
+.taskbutton-disabled {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: grey;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    width: 64px;
+    height: 42px;
+}
+
 .wrapper {
     display: flex;
     justify-content: center;

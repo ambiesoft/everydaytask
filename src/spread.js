@@ -385,7 +385,7 @@ async function doGetTasks() {
             action: taskdata[2],
             starttime: taskdata[3],
             endtime: taskdata[4],
-            enabled: false,
+            enabled: true,
         });
     }
     // end of 'tasks' sheet
@@ -398,6 +398,8 @@ async function doGetTasks() {
         // No tasks checked
     } else {
         for (let task of tasks) {
+            const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
+            const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
             for (i = 0; i < dc.values.length; ++i) {
                 if (dc.values[i][1] != task.id) {
                     continue;
@@ -408,18 +410,18 @@ async function doGetTasks() {
                     userData.todaySheetMonth,
                     dc.values[i][0],
                     dc.values[i][2]);
-                if (isNowBeforeStartTime(task, now)) {
-                    const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
-                    if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
-                        task.enabled = true;
-                    }
+
+                if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
+                    task.enabled = true;
+
                     if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
                         task.checked = true;
                     }
                 } else {
-                    const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
                     if (taskTodayStart <= now && now < taskTodayEnd) {
                         task.enabled = true;
+                    } else {
+                        task.enabled = false;
                     }
                     if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
                         task.checked = true;

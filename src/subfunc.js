@@ -123,6 +123,15 @@ function isNowBeforeStartTime(task, now) {
 
     return now < cmp;
 }
+function isNowShouldBeYesterday(task, now) {
+    if (!task.starttime)
+        return false;
+
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const [hour, minute] = task.starttime.match(/\d+/g).map(Number);
+}
 function getTaskYesterday(now, task) {
     let [s, e] = getTaskToday(now, task);
     s.setDate(s.getDate() - 1);

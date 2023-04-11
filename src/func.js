@@ -186,6 +186,10 @@ function createTask(task) {
   taskbutton.dataset.taskid = task.id;
   taskbutton.dataset.taskname = task.name;
   taskbutton.dataset.taskaction = task.action;
+  taskbutton.dataset.taskstarttime = task.starttime;
+  taskbutton.dataset.taskendtime = task.endtime;
+  taskbutton.dataset.taskenabled = task.enabled;
+
   taskbutton.id = task.id;
 
   taskeditbutton.dataset.id = task.id;
@@ -201,8 +205,14 @@ function createTask(task) {
   itemeditinputaction.id = "itemeditinputaction" + task.id;
   itemeditinputaction.value = task.action ? task.action : "";
 
-  taskbutton.textContent = task.checked ? CHECKMARK : UNCHECKMARK;
+  taskbutton.textContent = (task.checked ? CHECKMARK : UNCHECKMARK);
+
   document.getElementById('container').appendChild(itemwrapper.cloneNode(true));
+
+  if (!task.enabled) {
+    document.getElementById(task.id).className = "taskbutton-disabled";
+  }
+
 }
 
 function toggleEdit(taskid) {
@@ -273,6 +283,10 @@ async function onTaskAction(el) {
   console.log(el);
   console.log(el.dataset);
 
+  if (el.dataset.taskenabled != "true") {
+    alert(`このタスクの有効な時刻は${el.dataset.taskstarttime}から${el.dataset.taskendtime}です。`);
+    return;
+  }
   if (!userData.spreadID) {
     onGetSpread();
     return;
