@@ -425,15 +425,11 @@ async function doGetTasks() {
                 if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
                     task.checked = true;
                 }
-            } else {
-                if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
-                    task.checked = true;
-                }
+            } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+                task.checked = true;
             }
         }
     }
-
-
     return tasks;
 }
 

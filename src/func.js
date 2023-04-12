@@ -70,11 +70,18 @@ async function initializeGapiClient() {
 
 window.onload = () => {
   console.log("window.onload has been called");
+  console.log("gapi", gapi);
 
-  console.log(gapi);
   toggleLoginButton();
 }
 
+function isLoggedIn() {
+  let loggedin = gapi.client.getToken() != null;
+  loggedin &= gisInited;
+  loggedin &= gapiInited;
+  console.log("loggedin", loggedin);
+  return loggedin;
+}
 function ensureToken() {
   if (gapi.client.getToken() === null) {
     // Prompt the user to select a Google Account and ask for consent to share their data
@@ -168,7 +175,7 @@ async function onAddNewTask() {
 
 }
 function clearTasks() {
-  document.getElementById('container').innerHTML = '';
+  document.getElementById('itemcontainer').innerHTML = '';
 }
 function createTask(task) {
   // テンプレートから要素を取得する
@@ -207,7 +214,7 @@ function createTask(task) {
 
   taskbutton.textContent = (task.checked ? CHECKMARK : UNCHECKMARK);
 
-  document.getElementById('container').appendChild(itemwrapper.cloneNode(true));
+  document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
   if (!task.enabled) {
     document.getElementById(task.id).className = "taskbutton-disabled";

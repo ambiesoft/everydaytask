@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <div id="loggedin" style="display: none;">
+  <div id="page_loggedin" style="display: none;">
     <div class="wrapper">
       <button class="button" onclick="onGetTasks()">タスク取得</button>
       <button class="button" onclick="onAddNewTask()">タスク追加</button>
@@ -50,47 +50,7 @@
     <div id="guruguru"></div>
 
     <div id="wrapper" class="wrapper">
-      <div id="container" class="container">
-        <div class="itemwrapper">
-          <div class="item">
-            <p class="text">テキスト1aaaaaaaaaa</p>
-            <div class="twobutton">
-              <button class="taskbutton" data-taskid=100 data-taskaction="100" onclick="onTaskAction(this)">☐</button>
-              <button class="taskeditbutton" data-id=100 onclick="onShowEdit(this)">✎</button>
-            </div>
-          </div>
-          <div id="itemedit100" class="itemedit" style="display: none;">
-            <div>
-              <input type="text" />
-            </div>
-            <div>
-              <input type="text" />
-            </div>
-            <div>
-              <button class="editbutton" data-id=100 onclick="onEditItem(this)">変更</button>
-            </div>
-          </div>
-        </div>
-        <div class="itemwrapper">
-          <div class="item">
-            <p class="text">fffffffffffffffffffffffffffffffffffffwefwe</p>
-            <div class="twobutton">
-              <button class="taskbutton" data-taskid=101 data-taskaction="101" onclick="onTaskAction(this)">☐</button>
-              <button class="taskeditbutton" data-id=101 onclick="onShowEdit(this)">✎</button>
-            </div>
-          </div>
-          <div id="itemedit101" class="itemedit" style="display: none;">
-            <div>
-              <input type="text" />
-            </div>
-            <div>
-              <input type="text" />
-            </div>
-            <div>
-              <button class="editbutton" data-id=101 onclick="onEditItem(this)">変更</button>
-            </div>
-          </div>
-        </div>
+      <div id="itemcontainer" class="container">
       </div>
     </div>
     <template id="taskTemplate">
@@ -118,23 +78,44 @@
   <!-- <button onclick="onGetTasks()">タスク取得</button>
   <button onclick="onGetSpread()">onGetSpread</button> -->
 
-  <div id="loggedout">
+  <div id="page_loggedout">
     <div class="wrapper">
       <p>ログインしてください</p>
     </div>
   </div>
 
+  <div id="band"></div>
+
   <footer>
     <div class="wrapper">
-      <div class="container">
-        <ul class="list-inline">
-          <li class="list-inline-item"><a href="#">利用規約</a></li>
-          <li class="list-inline-item"><a href="#">利用方法</a></li>
-          <li class="list-inline-item"><a href="#">プライバシーポリシー</a></li>
-          <li class="list-inline-item"><a href="#">お問い合わせ</a></li>
-        </ul>
-        <p>&copy; 2023 ambiesoft.com</p>
-      </div>
+      <button class="button" onclick='toggleFooter("howto")'>利用方法</button>
+      <button class="button" onclick='toggleFooter("privacy")'>プライバシー</button>
+      <button class="button" onclick='toggleFooter("contact")'>お問い合わせ</button>
+
+      <template id="howtoTemplate">
+        <div class="howtoHtml">
+          <p>使い方をここに書く</p>
+        </div>
+      </template>
+
+      <template id="privacyTemplate">
+        <div class="privacyHtml">
+          <p>プライバシーをここに書く</p>
+        </div>
+      </template>
+
+      <template id="contactTemplate">
+        <div class="contactHtml">
+          <p>お問い合わせをここに書く</p>
+        </div>
+      </template>
+    </div>
+
+    <div class="wrapper">
+      <div id="otherinfo"></div>
+    </div>
+    <div class="wrapper">
+      <p>&copy; 2023 ambiesoft.com</p>
     </div>
   </footer>
 

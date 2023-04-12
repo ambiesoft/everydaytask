@@ -112,3 +112,20 @@ h4 {
     width: 80%;
     word-break: break-all;
 }
+
+#band {
+    padding-bottom: 16px;
+}
+
+ul {
+    list-style: none;
+    /* 箇条書きのマーカーを削除 */
+    padding: 0;
+}
+
+li {
+    display: inline-block;
+    /* 横並びにする */
+    margin-right: 10px;
+    /* 各要素の間に余白をつける */
+}
