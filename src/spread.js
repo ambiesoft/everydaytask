@@ -379,25 +379,30 @@ async function doGetTasks() {
         if (!rowdata[0])
             continue;
         if (!isPositiveInteger(rowdata[0])) {
+            // Specail Item
             switch (rowdata[0]) {
                 case "separator":
+                    tasks.push(new Separator(rowdata[1]));
                     break;
             }
-            break;
+        } else {
+            // Normal Task
+            tasks.push(new Task(
+                i + 1, // first row is header
+                rowdata[0],
+                rowdata[1],
+                rowdata[2],
+                rowdata[3],
+                rowdata[4],
+                false));
         }
-        tasks.push(new Task(
-            i + 1, // first row is header
-            rowdata[0],
-            rowdata[1],
-            rowdata[2],
-            rowdata[3],
-            rowdata[4],
-            false));
     }
     for (let task of tasks) {
-        if (!checkTaskTime(task)) {
-            showError(`TaskID ${task.getId()} has invalid time value(s)` + "\n" + getLastError());
-            return null;
+        if (task instanceof Task) {
+            if (!checkTaskTime(task)) {
+                showError(`TaskID ${task.getId()} has invalid time value(s)` + "\n" + getLastError());
+                return null;
+            }
         }
     }
     // end of 'tasks' sheet
@@ -413,6 +418,9 @@ async function doGetTasks() {
         dcLen = dc.values.length;
     }
     for (let task of tasks) {
+        if (!(task instanceof Task)) {
+            continue;
+        }
         const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
         const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
 
@@ -502,7 +510,7 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
     // First, find the row of the task
     let tasks = await doGetTasks();
     let row = -1;
-    for (task of tasks) {
+    for (let task of tasks) {
         if (task.getId() == taskid) {
             row = task.getRow();
             break;

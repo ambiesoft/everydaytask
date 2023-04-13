@@ -1,6 +1,12 @@
 
-class Task {
+class Item {
+    getId() {
+        return -1;
+    }
+}
+class Task extends Item {
     constructor(row, id, name, action, starttime, endtime, enabled) {
+        super();
         this.row = row;
         this.id = id;
         this.name = name;
@@ -10,7 +16,7 @@ class Task {
         this.enabled = enabled;
         this.checked = false;
     }
-    
+
     getRow() {
         return this.row;
     }
@@ -42,5 +48,15 @@ class Task {
     }
     setChecked(b) {
         this.checked = b;
+    }
+}
+
+class Separator extends Item {
+    constructor(headText) {
+        super();
+        this.headText = headText;
+    }
+    getHeadText() {
+        return this.headText;
     }
 }

@@ -178,46 +178,54 @@ function clearTasksDom() {
 }
 
 function appendTaskDom(task) {
-  // テンプレートから要素を取得する
-  const template = document.getElementById("taskTemplate");
-  const itemwrapper = template.content.querySelector(".itemwrapper");
-  const text = template.content.querySelector(".text");
-  const taskbutton = template.content.querySelector(".taskbutton");
-  const taskeditbutton = template.content.querySelector(".taskeditbutton");
-  const editbutton = template.content.querySelector(".editbutton");
-  const itemedit = template.content.querySelector(".itemedit");
-  const itemeditinputname = template.content.querySelector(".itemeditinputname");
-  const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
+  if (task instanceof Task) {
+    // テンプレートから要素を取得する
+    const template = document.getElementById("taskTemplate");
+    const itemwrapper = template.content.querySelector(".itemwrapper");
+    const text = template.content.querySelector(".text");
+    const taskbutton = template.content.querySelector(".taskbutton");
+    const taskeditbutton = template.content.querySelector(".taskeditbutton");
+    const editbutton = template.content.querySelector(".editbutton");
+    const itemedit = template.content.querySelector(".itemedit");
+    const itemeditinputname = template.content.querySelector(".itemeditinputname");
+    const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
 
-  taskbutton.dataset.taskrow = task.getRow();
-  taskbutton.dataset.taskid = task.getId();
-  taskbutton.dataset.taskname = task.getName();
-  taskbutton.dataset.taskaction = task.getAction();
-  taskbutton.dataset.taskstarttime = task.getStartTime();
-  taskbutton.dataset.taskendtime = task.getEndTime();
-  taskbutton.dataset.taskenabled = task.isEnabled();
+    taskbutton.dataset.taskrow = task.getRow();
+    taskbutton.dataset.taskid = task.getId();
+    taskbutton.dataset.taskname = task.getName();
+    taskbutton.dataset.taskaction = task.getAction();
+    taskbutton.dataset.taskstarttime = task.getStartTime();
+    taskbutton.dataset.taskendtime = task.getEndTime();
+    taskbutton.dataset.taskenabled = task.isEnabled();
 
-  taskbutton.id = task.getId();
+    taskbutton.id = task.getId();
 
-  taskeditbutton.dataset.id = task.getId();
-  editbutton.dataset.id = task.getId();
-  itemedit.id = "itemedit" + task.getId();
+    taskeditbutton.dataset.id = task.getId();
+    editbutton.dataset.id = task.getId();
+    itemedit.id = "itemedit" + task.getId();
 
-  text.textContent = task.getName();
-  text.id = "tasktext" + task.getId();
+    text.textContent = task.getName();
+    text.id = "tasktext" + task.getId();
 
-  itemeditinputname.id = "itemeditinputname" + task.getId();
-  itemeditinputname.value = task.getName();
+    itemeditinputname.id = "itemeditinputname" + task.getId();
+    itemeditinputname.value = task.getName();
 
-  itemeditinputaction.id = "itemeditinputaction" + task.getId();
-  itemeditinputaction.value = task.getAction() ? task.getAction() : "";
+    itemeditinputaction.id = "itemeditinputaction" + task.getId();
+    itemeditinputaction.value = task.getAction() ? task.getAction() : "";
 
-  taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
+    taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
 
-  document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
+    document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
-  if (!task.isEnabled()) {
-    document.getElementById(task.getId()).className = "taskbutton-disabled";
+    if (!task.isEnabled()) {
+      document.getElementById(task.getId()).className = "taskbutton-disabled";
+    }
+  } else if (task instanceof Separator) {
+    const template = document.getElementById("separatorTemplate");
+    const itemseparator = template.content.querySelector(".itemseparator");
+    const itemsep_h1 = template.content.querySelector(".itemsep_h1");
+    itemsep_h1.innerText = task.getHeadText();
+    document.getElementById('itemcontainer').appendChild(itemseparator.cloneNode(true));
   }
 }
 
