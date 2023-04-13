@@ -388,6 +388,12 @@ async function doGetTasks() {
             enabled: false,
         });
     }
+    for (let task of tasks) {
+        if (!checkTaskTime(task)) {
+            showError(`TaskID ${task.id} has invalid time value(s)` + "\n" + getLastError());
+            return null;
+        }
+    }
     // end of 'tasks' sheet
 
     // start of log sheet
@@ -570,5 +576,6 @@ async function doAddNewTask() {
         id: newID,
         name: newTaskName,
         action: null,
+        enabled: true,
     };
 }

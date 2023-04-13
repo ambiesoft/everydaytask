@@ -1,5 +1,4 @@
 
-
 async function gisLoaded() {
   console.log("gisLoaded is called")
 
@@ -119,9 +118,9 @@ async function onGetTasks() {
     startWaitUI();
     let tasks = await doGetTasks();
     if (tasks) {
-      clearTasks();
-      for (task of tasks) {
-        createTask(task);
+      clearTasksDom();
+      for (let task of tasks) {
+        appendTaskDom(task);
       }
     } else {
       if (tasks !== null) {
@@ -156,7 +155,7 @@ async function onAddNewTask() {
     const newTask = await doAddNewTask();
 
     // New task created with default name, open edit mode
-    createTask(newTask);
+    appendTaskDom(newTask);
 
     // edit it
     await onEditItem2(newTask.id);
@@ -172,12 +171,13 @@ async function onAddNewTask() {
   } finally {
     finishWaitUI();
   }
-
 }
-function clearTasks() {
+
+function clearTasksDom() {
   document.getElementById('itemcontainer').innerHTML = '';
 }
-function createTask(task) {
+
+function appendTaskDom(task) {
   // テンプレートから要素を取得する
   const template = document.getElementById("taskTemplate");
   const itemwrapper = template.content.querySelector(".itemwrapper");
@@ -219,7 +219,6 @@ function createTask(task) {
   if (!task.enabled) {
     document.getElementById(task.id).className = "taskbutton-disabled";
   }
-
 }
 
 function toggleEdit(taskid) {
@@ -311,7 +310,7 @@ async function onTaskAction(el) {
 
     // open URL action if any
     if (el.dataset.taskaction) {
-      const urls = el.dataset.taskaction.split(" ");
+      const urls = el.dataset.taskaction.split(/\s+/);
       console.log("urls", urls);
       for (url of urls) {
         if (isValidURL(url)) {

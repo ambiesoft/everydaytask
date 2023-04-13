@@ -12,7 +12,7 @@ function isEqual(a, b, c, here) {
         hereMessage += `${here.fileName}:${here.lineNumber}`;
     }
 
-    let message = c + "=> ";
+    let message = c + " => ";
     if (a === b) {
         okCount++;
         message += "OK";
@@ -29,6 +29,12 @@ function isEqual(a, b, c, here) {
         message += "  right is " + b;
     }
     appendText(message);
+}
+function isTrue(a, m, here) {
+    isEqual(!!a, true, m, here);
+}
+function isFalse(a, m, here) {
+    isEqual(!a, true, m, here);
 }
 function appendHeadText(message) {
     const line = "-----------------";
@@ -174,6 +180,67 @@ function test_getTaskTodayYesterdayCompare() {
         isEqual(diffInHours, 24, 'diff between yesterday and today must be 24 hours', toHere(new Error()));
     }
 }
+function test_checkTaskTime() {
+    appendHeadText("test_checkTaskTime")
+    isTrue(checkTaskTime({
+    }), 'empty time must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "0:0",
+    }), 'empty endtime must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        endtime: "10:00",
+    }), 'empty stattime must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "0:0",
+        endtime: "10:00",
+    }), '0:0 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "0:00",
+        endtime: "10:00",
+    }), '0:00 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "01:0",
+        endtime: "10:00",
+    }), '01:0 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "01:01",
+        endtime: "10:00",
+    }), '01:01 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "12:12",
+        endtime: "15:00",
+    }), '12:12 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "23:59",
+        endtime: "30:00",
+    }), '0:0 must be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "24:00",
+        endtime: "25:00",
+    }), '24:00 must NOT be OK', toHere(new Error()));
+    isTrue(checkTaskTime({
+        starttime: "10:00 AM",
+        endtime: "25:00",
+    }), '24:00 must NOT be OK', toHere(new Error()));
+
+    isFalse(checkTaskTime({
+        starttime: "22:60",
+        endtime: "23:30",
+    }), '22:60 must NOT be OK', toHere(new Error()));
+    isFalse(checkTaskTime({
+        starttime: "10:00",
+        endtime: "9:30",
+    }), 'starttime must be smaller', toHere(new Error()));
+    isFalse(checkTaskTime({
+        starttime: "-1:00",
+        endtime: "9:30",
+    }), 'Minus must NOT be OK', toHere(new Error()));
+    isFalse(checkTaskTime({
+        starttime: "1:00",
+        endtime: "1:00",
+    }), 'same date must NOT be OK', toHere(new Error()));
+
+}
 window.onload = () => {
     // test_test();
     test_getLogDate();
@@ -181,5 +248,6 @@ window.onload = () => {
     test_getTaskToday();
     test_getTaskYesterday();
     test_getTaskTodayYesterdayCompare();
+    test_checkTaskTime();
     showTestResults();
 }

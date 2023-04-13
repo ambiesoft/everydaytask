@@ -1,3 +1,9 @@
+function getLastError() {
+    return lastError;
+}
+function setLastError(err) {
+    lastError = err;
+}
 function isValidURL(url) {
     const urlRegExp = /^(?:http(?:s)?:\/\/(?:www\.)?)?[^\s.]+\.[^\s]{2,}$/i;
     return urlRegExp.test(url);
@@ -13,75 +19,6 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
-function isInToday(first, last) {
-    let [iFirstHour, iFirstMinute] = first.match(/\d+/g).map(Number);
-    let [iLastHour, iLastMinute] = last.match(/\d+/g).map(Number);
-
-    let iFirstAdded = 0;
-    if (iFirstHour > 23) {
-        iFirstAdded += 1;
-        iFirstHour -= 24;
-    }
-    let iLastAdded = 0;
-    if (iLastHour > 23) {
-        iLastAdded += 1;
-        iLastHour -= 24;
-    }
-
-    const now = new Date();
-    const currentHours = now.getHours();
-    const currentMinutes = now.getMinutes();
-
-    const firstSec = (iFirstAdded * 24 * 3600) + (iFirstHour * 3600) + (iFirstMinute * 60);
-    const lastSec = (iLastAdded * 24 * 3600) + (iLastHour * 3600) + (iLastMinute * 60) + 60;
-    const currentSec = (currentHours * 3600) + (currentMinutes * 60);
-    if (firstSec <= currentSec) {
-        if (currentSec < lastSec) {
-            // last < current
-            return true;
-        }
-    }
-    return false;
-}
-
-var depid_head = "AKfycbznJza6mTsxZhaa-uUnN9PIzo5eTNIRhsFZWPmo5f2L";
-var depid_anygoogleaccount = "AKfycbxsom08ZDe1KuNH0yZNyGsTpySYQPLl_9AgeTZ-Ee-mT7pXNeorGL8LbYPXY8RnuV8KDQ";
-var depid_anyone = "AKfycbxyG52BkbMZd-EneXxwaLpC-8KUj2QQsi0B1kW3zpLYKlQTciFGiFeCK_vTeUR4Q0j5aA";
-var depid_tanin = "AKfycbw1uH-oQ8FO4RmdXzRdykkFUdcBPMce4EJ1xcRTd1qG8T-S5kE";
-
-function runRemoteScript(callback, func, parameters) {
-    if (!ensureToken()) {
-        return;
-    }
-    let url = `https://script.googleapis.com/v1/scripts/${depid_head}:run`;
-    // let data = "key=AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8";
-    let postdata = {
-        "function": func,
-        "parameters": parameters,
-        // "sessionState": string,
-        // "devMode": true,
-    };
-    token = gapi.client.getToken();
-    console.log(token)
-
-    fetch(url, {
-        method: 'POST',
-        redirect: "follow",
-        headers: {
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/x-www-form-urlencoded'
-            'Content-Type': 'application/json',
-            'Authorization': token.token_type + ' ' + token.access_token,
-        },
-        body: JSON.stringify(postdata),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            callback(data);
-        })
-        .catch(error => console.error(error));
-}
 function getDuplicateValues(arr) {
     var duplicateValues = [];
     for (var i = 0; i < arr.length; i++) {
@@ -136,17 +73,20 @@ function getTaskYesterday(now, task) {
     e.setDate(e.getDate() - 1);
     return [s, e];
 }
+function getHourAndMinute(time) {
+    return time.match(/(-?\d{1,2}):(-?\d{1,2})/).slice(1).map(Number);
+}
 function getTaskToday(now, task) {
     let starthour = 0;
     let startminute = 0;
-    let endhour = 23;
-    let endminute = 59;
+    let endhour = 24;
+    let endminute = 0;
 
     if (task.starttime) {
-        [starthour, startminute] = task.starttime.match(/\d+/g).map(Number);
+        [starthour, startminute] = getHourAndMinute(task.starttime);
     }
     if (task.endtime) {
-        [endhour, endminute] = task.endtime.match(/\d+/g).map(Number);
+        [endhour, endminute] = getHourAndMinute(task.endtime);
     }
     let taskStart = new Date(now);
     taskStart.setHours(starthour);
@@ -157,8 +97,101 @@ function getTaskToday(now, task) {
     let taskEnd = new Date(now);
     taskEnd.setHours(endhour);
     taskEnd.setMinutes(endminute);
-    taskEnd.setSeconds(59);
+    taskEnd.setSeconds(0);
     taskEnd.setMilliseconds(0);
 
     return [taskStart, taskEnd];
+}
+function checkTaskTime(task) {
+    try {
+        if (!checkTaskTime2(task.starttime))
+            return false;
+        if (!checkTaskTime2(task.endtime))
+            return false;
+
+        let starthour = 0;
+        let startminute = 0;
+        let endhour = 48;
+        let endminute = 0;
+
+        if (task.starttime) {
+            [starthour, startminute] = getHourAndMinute(task.starttime);
+        }
+        if (task.endtime) {
+            [endhour, endminute] = getHourAndMinute(task.endtime);
+        }
+        if (24 < starthour) {
+            setLastError(`start hour must be lesser than 24`);
+            return false;
+        }
+        if (startminute < 0) {
+            setLastError(`start minutes must not be minus`);
+            return false;
+        }
+        if (59 < startminute) {
+            setLastError(`start minutes must be lesser than or equal to 59`);
+            return false;
+        }
+        if (48 < endhour) {
+            setLastError(`end hour must must be lesser than or equal to 48`);
+            return false;
+        }
+        if (48 == endhour && endminute != 0) {
+            setLastError(`if end hour is 48, end minutes must be 0`);
+            return false;
+        }
+        if (endminute < 0) {
+            setLastError(`end minites must not be minus`);
+            return false;
+        }
+        if (59 < endminute) {
+            setLastError(`end minutes must be lesser than or equal to 59`);
+            return false;
+        }
+
+        let taskStart = new Date();
+        taskStart.setHours(starthour);
+        taskStart.setMinutes(startminute);
+        taskStart.setSeconds(0);
+        taskStart.setMilliseconds(0);
+
+        let taskEnd = new Date();
+        taskEnd.setHours(endhour);
+        taskEnd.setMinutes(endminute);
+        taskEnd.setSeconds(0);
+        taskEnd.setMilliseconds(0);
+
+        if (taskEnd <= taskStart) {
+            setLastError(`start time must be lesser than end time`);
+            return false;
+        }
+
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function checkTaskTime2(time) {
+    let ret;
+    if (time) {
+        ret = getHourAndMinute(time);
+        if (!ret) {
+            setLastError(`Illegal time format in '${time}'`);
+            return false;
+        }
+        if (ret.length != 2) {
+            setLastError(`Illegal time format in '${time}'`);
+            return false;
+        }
+        if (!(0 <= ret[0] && ret[0] <= 48)) {
+            setLastError(`Hour must be between 0 and 48. '${time}'`);
+            return false;
+        }
+        if (!(0 <= ret[0] && ret[0] <= 59)) {
+            setLastError(`Minutes must be between 0 and 59. '${time}'`);
+            return false;
+        }
+    }
+    return true;
 }
