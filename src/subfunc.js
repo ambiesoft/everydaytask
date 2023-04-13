@@ -9,6 +9,15 @@ function isValidURL(url) {
     return urlRegExp.test(url);
 }
 
+function isPositiveInteger(num) {
+    if (Array.isArray(num))
+        return false;
+    if (! /^[0-9]+$/.test(num))
+        return false;
+
+    return Number(num) > 0;
+}
+
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -47,10 +56,10 @@ function getLogDate(year, month, day, timeString) {
     return ret;
 }
 function isNowBeforeStartTime(task, now) {
-    if (!task.starttime)
+    if (!task.getStartTime())
         return false;
 
-    const [hour, minute] = task.starttime.match(/\d+/g).map(Number);
+    const [hour, minute] = task.getStartTime().match(/\d+/g).map(Number);
     let cmp = new Date(now);
     cmp.setHours(hour);
     cmp.setMinutes(minute);
@@ -59,13 +68,13 @@ function isNowBeforeStartTime(task, now) {
     return now < cmp;
 }
 function isNowShouldBeYesterday(task, now) {
-    if (!task.starttime)
+    if (!task.getStartTime())
         return false;
 
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const [hour, minute] = task.starttime.match(/\d+/g).map(Number);
+    const [hour, minute] = task.getStartTime().match(/\d+/g).map(Number);
 }
 function getTaskYesterday(now, task) {
     let [s, e] = getTaskToday(now, task);
@@ -82,11 +91,11 @@ function getTaskToday(now, task) {
     let endhour = 24;
     let endminute = 0;
 
-    if (task.starttime) {
-        [starthour, startminute] = getHourAndMinute(task.starttime);
+    if (task.getStartTime()) {
+        [starthour, startminute] = getHourAndMinute(task.getStartTime());
     }
-    if (task.endtime) {
-        [endhour, endminute] = getHourAndMinute(task.endtime);
+    if (task.getEndTime()) {
+        [endhour, endminute] = getHourAndMinute(task.getEndTime());
     }
     let taskStart = new Date(now);
     taskStart.setHours(starthour);
@@ -104,9 +113,9 @@ function getTaskToday(now, task) {
 }
 function checkTaskTime(task) {
     try {
-        if (!checkTaskTime2(task.starttime))
+        if (!checkTaskTime2(task.getStartTime()))
             return false;
-        if (!checkTaskTime2(task.endtime))
+        if (!checkTaskTime2(task.getEndTime()))
             return false;
 
         let starthour = 0;
@@ -114,11 +123,11 @@ function checkTaskTime(task) {
         let endhour = 48;
         let endminute = 0;
 
-        if (task.starttime) {
-            [starthour, startminute] = getHourAndMinute(task.starttime);
+        if (task.getStartTime()) {
+            [starthour, startminute] = getHourAndMinute(task.getStartTime());
         }
-        if (task.endtime) {
-            [endhour, endminute] = getHourAndMinute(task.endtime);
+        if (task.getEndTime()) {
+            [endhour, endminute] = getHourAndMinute(task.getEndTime());
         }
         if (24 < starthour) {
             setLastError(`start hour must be lesser than 24`);

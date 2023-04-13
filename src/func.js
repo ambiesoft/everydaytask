@@ -189,35 +189,35 @@ function appendTaskDom(task) {
   const itemeditinputname = template.content.querySelector(".itemeditinputname");
   const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
 
-  taskbutton.dataset.taskrow = task.row;
-  taskbutton.dataset.taskid = task.id;
-  taskbutton.dataset.taskname = task.name;
-  taskbutton.dataset.taskaction = task.action;
-  taskbutton.dataset.taskstarttime = task.starttime;
-  taskbutton.dataset.taskendtime = task.endtime;
-  taskbutton.dataset.taskenabled = task.enabled;
+  taskbutton.dataset.taskrow = task.getRow();
+  taskbutton.dataset.taskid = task.getId();
+  taskbutton.dataset.taskname = task.getName();
+  taskbutton.dataset.taskaction = task.getAction();
+  taskbutton.dataset.taskstarttime = task.getStartTime();
+  taskbutton.dataset.taskendtime = task.getEndTime();
+  taskbutton.dataset.taskenabled = task.isEnabled();
 
-  taskbutton.id = task.id;
+  taskbutton.id = task.getId();
 
-  taskeditbutton.dataset.id = task.id;
-  editbutton.dataset.id = task.id;
-  itemedit.id = "itemedit" + task.id;
+  taskeditbutton.dataset.id = task.getId();
+  editbutton.dataset.id = task.getId();
+  itemedit.id = "itemedit" + task.getId();
 
-  text.textContent = task.name;
-  text.id = "tasktext" + task.id;
+  text.textContent = task.getName();
+  text.id = "tasktext" + task.getId();
 
-  itemeditinputname.id = "itemeditinputname" + task.id;
-  itemeditinputname.value = task.name;
+  itemeditinputname.id = "itemeditinputname" + task.getId();
+  itemeditinputname.value = task.getName();
 
-  itemeditinputaction.id = "itemeditinputaction" + task.id;
-  itemeditinputaction.value = task.action ? task.action : "";
+  itemeditinputaction.id = "itemeditinputaction" + task.getId();
+  itemeditinputaction.value = task.getAction() ? task.getAction() : "";
 
-  taskbutton.textContent = (task.checked ? CHECKMARK : UNCHECKMARK);
+  taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
 
   document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
-  if (!task.enabled) {
-    document.getElementById(task.id).className = "taskbutton-disabled";
+  if (!task.isEnabled()) {
+    document.getElementById(task.getId()).className = "taskbutton-disabled";
   }
 }
 

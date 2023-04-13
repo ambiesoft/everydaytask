@@ -362,10 +362,10 @@ async function doGetTasks() {
     // check Duplicated id
     let idsForDupCheck = [];
     for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-        let taskdata = response.result.valueRanges[0].values[i];
-        if (!taskdata[0] || taskdata[0] <= 0)
+        let rowdata = response.result.valueRanges[0].values[i];
+        if (!rowdata[0] || !isPositiveInteger(rowdata[0]))
             continue;
-        idsForDupCheck.push(taskdata[0]);
+        idsForDupCheck.push(rowdata[0]);
     }
     const dupIDs = getDuplicateValues(idsForDupCheck);
     if (dupIDs.length != 0) {
@@ -375,22 +375,28 @@ async function doGetTasks() {
 
     let tasks = [];
     for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-        let taskdata = response.result.valueRanges[0].values[i];
-        if (!taskdata[0] || taskdata[0] <= 0)
+        let rowdata = response.result.valueRanges[0].values[i];
+        if (!rowdata[0])
             continue;
-        tasks.push({
-            row: i + 1, // first row is header
-            id: taskdata[0],
-            name: taskdata[1],
-            action: taskdata[2],
-            starttime: taskdata[3],
-            endtime: taskdata[4],
-            enabled: false,
-        });
+        if (!isPositiveInteger(rowdata[0])) {
+            switch (rowdata[0]) {
+                case "separator":
+                    break;
+            }
+            break;
+        }
+        tasks.push(new Task(
+            i + 1, // first row is header
+            rowdata[0],
+            rowdata[1],
+            rowdata[2],
+            rowdata[3],
+            rowdata[4],
+            false));
     }
     for (let task of tasks) {
         if (!checkTaskTime(task)) {
-            showError(`TaskID ${task.id} has invalid time value(s)` + "\n" + getLastError());
+            showError(`TaskID ${task.getId()} has invalid time value(s)` + "\n" + getLastError());
             return null;
         }
     }
@@ -411,13 +417,13 @@ async function doGetTasks() {
         const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
 
         if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
-            task.enabled = true;
+            task.setEnabled(true);
         } else if (taskTodayStart <= now && now < taskTodayEnd) {
-            task.enabled = true;
+            task.setEnabled(true);
         }
 
         for (i = 0; i < dcLen; ++i) {
-            if (dc.values[i][1] != task.id) {
+            if (dc.values[i][1] != task.getId()) {
                 continue;
             }
 
@@ -429,10 +435,10 @@ async function doGetTasks() {
 
             if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
                 if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
-                    task.checked = true;
+                    task.setChecked(true);
                 }
             } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
-                task.checked = true;
+                task.setChecked(true);
             }
         }
     }
@@ -497,8 +503,8 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
     let tasks = await doGetTasks();
     let row = -1;
     for (task of tasks) {
-        if (task.id == taskid) {
-            row = task.row;
+        if (task.getId() == taskid) {
+            row = task.getRow();
             break;
         }
     }
@@ -544,7 +550,7 @@ async function doAddNewTask() {
     let tasks = await doGetTasks();
     let maxid = 0;
     for (const task of tasks) {
-        maxid = Math.max(maxid, task.id);
+        maxid = Math.max(maxid, task.getId());
     }
     const newID = maxid + 1;
     const newTaskName = "新しいタスク";
@@ -571,11 +577,5 @@ async function doAddNewTask() {
     const result = res.result;
     console.log(`${result.updatedCells} cells updated.`);
     const row = getRowFromRanges(result.updates.updatedRange);
-    return {
-        row: row,
-        id: newID,
-        name: newTaskName,
-        action: null,
-        enabled: true,
-    };
+    return new Task(row, newID, newTaskName, null, null, null, true);
 }

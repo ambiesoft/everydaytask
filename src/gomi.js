@@ -109,8 +109,8 @@ function getFile() {
     // let tasks = await doGetTasks();
     // let row = -1;
     // for (task of tasks) {
-    //   if (task.id == el.dataset.taskid) {
-    //     row = task.row;
+    //   if (task.getId() == el.dataset.taskid) {
+    //     row = task.getRow();
     //     break;
     //   }
     // }
