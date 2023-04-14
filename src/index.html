@@ -32,7 +32,7 @@
     <div class="flex-container">
       <div class="box">
         <h1>EverydayTask</h1>
-        <h4>毎日のタスクをチェック</h2>
+        <h4>毎日のタスクをチェック</h4>
       </div class="box">
       <div>
         <button id="beforelogin" class="button" onclick="ensureToken()">Googleでログイン</button>
@@ -48,7 +48,7 @@
       <button class="button" onclick="onShowSpread()">タスク編集</button>
     </div>
 
-    <div id="guruguru"></div>
+    <div class="guruguru"></div>
 
     <div id="wrapper" class="wrapper">
       <div id="itemcontainer" class="container">
@@ -78,9 +78,16 @@
 
     <template id="separatorTemplate">
       <div class="itemseparator">
-        <h1 class="itemsep_h1"></h1>
+        <h2 class="itemsep_h2"></h2>
       </div>
     </template>
+
+    <div class="guruguru"></div>
+    <div class="wrapper">
+      <button class="button" onclick="onGetTasks()">タスク取得</button>
+      <button class="button" onclick="onAddNewTask()">タスク追加</button>
+      <button class="button" onclick="onShowSpread()">タスク編集</button>
+    </div>
   </div>
 
   <!-- <button onclick="onGetTasks()">タスク取得</button>

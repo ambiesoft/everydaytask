@@ -13,16 +13,16 @@ h1 {
     margin-bottom: 0;
 }
 
+h2 {
+    margin-bottom: 0;
+}
+
 h4 {
     margin-top: 0;
     margin-bottom: 4px;
 }
 
-#guruguru {
-    display: flex;
-    justify-content: center;
-    height: 20px;
-}
+
 
 .box {}
 
@@ -74,7 +74,7 @@ h4 {
     width: 100%;
 }
 
-#guruguru {
+.guruguru {
     display: flex;
     justify-content: center;
     height: 20px;

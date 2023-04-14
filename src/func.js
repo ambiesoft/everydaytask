@@ -223,8 +223,8 @@ function appendTaskDom(task) {
   } else if (task instanceof Separator) {
     const template = document.getElementById("separatorTemplate");
     const itemseparator = template.content.querySelector(".itemseparator");
-    const itemsep_h1 = template.content.querySelector(".itemsep_h1");
-    itemsep_h1.innerText = task.getHeadText();
+    const itemsep_h2 = template.content.querySelector(".itemsep_h2");
+    itemsep_h2.innerText = task.getHeadText();
     document.getElementById('itemcontainer').appendChild(itemseparator.cloneNode(true));
   }
 }

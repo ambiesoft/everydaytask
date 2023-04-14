@@ -49,11 +49,16 @@ function showErrorWithCode(code) {
     showError(message);
 }
 function startWaitUI() {
-    document.getElementById("guruguru").innerText = "🌐 > > > 💻";
+    Array.from(document.querySelectorAll(".guruguru")).forEach(node => {
+        node.innerText = "🌐 > > > 💻";
+    });
 }
 function finishWaitUI() {
-    document.getElementById("guruguru").innerText = "";
+    Array.from(document.querySelectorAll(".guruguru")).forEach(node => {
+        node.innerText = "";
+    });
 }
+
 function scrollToElement(element) {
     var elementTop = element.getBoundingClientRect().top; // 要素の画面上部の位置を取得
     var bodyRect = document.body.getBoundingClientRect();
