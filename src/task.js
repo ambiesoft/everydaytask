@@ -3,6 +3,9 @@ class Item {
     getId() {
         return -1;
     }
+    isChecked() {
+        return false;
+    }
 }
 class Task extends Item {
     constructor(row, id, name, action, starttime, endtime, enabled) {
@@ -60,3 +63,5 @@ class Separator extends Item {
         return this.headText;
     }
 }
+
+var gTasks = [];

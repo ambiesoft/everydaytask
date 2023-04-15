@@ -93,3 +93,8 @@ function showBottomTaskButtons(show) {
     document.getElementById("taskbuttons_only5moreitems").style.display =
         show ? 'block' : 'none';
 }
+
+function updateTitle(tasks) {
+    const checkedCount =  tasks.filter((task) => task.isChecked()).length;
+    document.title = `${APP_NAME} (${checkedCount}/${tasks.length})`;
+}

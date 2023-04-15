@@ -123,6 +123,8 @@ async function onGetTasks() {
         appendTaskDom(task);
       }
       showBottomTaskButtons(tasks.length > 7);
+      updateTitle(tasks);
+      gTasks = tasks;
     } else {
       if (tasks !== null) {
         showError("Tasks must be not empty or null");
@@ -154,6 +156,7 @@ async function onAddNewTask() {
   try {
     startWaitUI();
     const newTask = await doAddNewTask();
+    gTasks.push(newTask);
 
     // New task created with default name, open edit mode
     appendTaskDom(newTask);
@@ -166,7 +169,8 @@ async function onAddNewTask() {
 
     // scroll to editting element
     scrollToElement(document.getElementById("itemeditinputaction" + newTask.id));
-
+    
+    updateTitle(gTasks);
   } catch (err) {
     showError(err);
   } finally {
@@ -317,6 +321,13 @@ async function onTaskAction(el) {
     // Add check on remote cell
     await doTaskAction(el.dataset.taskid);
 
+    // call setCheck
+    for(let task of gTasks) {
+      if(el.dataset.taskid == task.getId()) {
+        task.setChecked(true);
+        break;
+      }
+    }
     // open URL action if any
     if (el.dataset.taskaction) {
       const urls = el.dataset.taskaction.split(/\s+/);
@@ -331,6 +342,8 @@ async function onTaskAction(el) {
       }
     }
     el.textContent = CHECKMARK;
+
+    updateTitle(gTasks);
   } catch (err) {
     console.error(err);
     showErrorWithCode(err.result.error.code);
