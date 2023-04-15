@@ -63,5 +63,10 @@ class Separator extends Item {
         return this.headText;
     }
 }
+class ItemEmpty extends Item {
+    constructor() {
+        super();
+    }
+}
 
 var gTasks = [];

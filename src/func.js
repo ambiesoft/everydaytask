@@ -169,7 +169,7 @@ async function onAddNewTask() {
 
     // scroll to editting element
     scrollToElement(document.getElementById("itemeditinputaction" + newTask.id));
-    
+
     updateTitle(gTasks);
   } catch (err) {
     showError(err);
@@ -231,6 +231,12 @@ function appendTaskDom(task) {
     const itemsep_h2 = template.content.querySelector(".itemsep_h2");
     itemsep_h2.innerText = task.getHeadText();
     document.getElementById('itemcontainer').appendChild(itemseparator.cloneNode(true));
+  } else if (task instanceof ItemEmpty) {
+    const template = document.getElementById("emptyTemplate");
+    const emptyTask = template.content.querySelector(".emptyTask");
+    document.getElementById('itemcontainer').appendChild(emptyTask.cloneNode(true));
+  } else {
+    console.error("Unkown task type")
   }
 }
 
@@ -322,8 +328,8 @@ async function onTaskAction(el) {
     await doTaskAction(el.dataset.taskid);
 
     // call setCheck
-    for(let task of gTasks) {
-      if(el.dataset.taskid == task.getId()) {
+    for (let task of gTasks) {
+      if (el.dataset.taskid == task.getId()) {
         task.setChecked(true);
         break;
       }

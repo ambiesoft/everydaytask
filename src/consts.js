@@ -22,3 +22,12 @@ const SPREAD_NAME = "EverydayTask - Ambiesoft.com";
 const UNCHECKMARK = "☐";
 const CHECKMARK = "☑️";
 
+const TASK_COLUMN_ID = "ID";
+const TASK_COLUMN_TASK = "Task";
+const TASK_COLUMN_ACTION = "Action";
+const TASK_COLUMN_MEMO = "Memo";
+const TASK_COLUMN_STARTTIME = "Start Time";
+const TASK_COLUMN_ENDTIME = "End Time";
+const TASK_COLUMNS = [
+    TASK_COLUMN_ID, TASK_COLUMN_TASK, TASK_COLUMN_ACTION, TASK_COLUMN_MEMO, TASK_COLUMN_STARTTIME, TASK_COLUMN_ENDTIME,
+]

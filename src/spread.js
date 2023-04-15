@@ -70,27 +70,7 @@ async function doCreateSpread() {
                             {
                                 // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
                                 "values": [
-                                    {
-                                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-                                        "userEnteredValue": {
-                                            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": "ID",
-                                        },
-                                    },
-                                    {
-                                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-                                        "userEnteredValue": {
-                                            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": "Task",
-                                        },
-                                    },
-                                    {
-                                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-                                        "userEnteredValue": {
-                                            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": "Action",
-                                        },
-                                    },
+                                    // filled by following lines
                                 ],
                             },
                         ],
@@ -99,6 +79,18 @@ async function doCreateSpread() {
             },
         ],
     };
+
+    for (column of TASK_COLUMNS) {
+        spreadsheetBody.sheets[1].data[0].rowData[0].values.push({
+            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
+            "userEnteredValue": {
+                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
+                "stringValue": column,
+            },
+        });
+    }
+    console.log(spreadsheetBody);
+
 
     const res = await gapi.client.sheets.spreadsheets.create({}, spreadsheetBody);
 
@@ -343,29 +335,46 @@ async function doGetMonthSheet(year, month) {
     console.log(res);
     return res;
 }
+
+function getTaskColumnRange() {
+    let endColumn = TASK_COLUMNS.length;
+    return `A:${getAlpahFromColumnIndex(endColumn)}`;
+
+}
 async function doGetTasks() {
     let params = {
         spreadsheetId: userData.spreadID,
-        ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
+        // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
+        ranges: [`Tasks!${getTaskColumnRange()}`, `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
     };
+    console.log("params", params);
 
     // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
     response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-    console.log(response);
-    // valueRange[0] is a set of "ID", "Task" and "Action"
+    console.log("responce", response);
+    // valueRange[0] is a set of "ID", "Task", "Action", ...
     // valueRanges[0][0] is a row of column names
     if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
         console.log("No tasks found");
-        return [];
+        return [new ItemEmpty()];
     }
+
+    // response.result.valueRanges[0].values[0][0]==="ID"
+    const retRows = response.result.valueRanges[0].values;
+
+    const iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
+    const taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
+    const actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
+    const startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
+    const endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
 
     // check Duplicated id
     let idsForDupCheck = [];
-    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-        let rowdata = response.result.valueRanges[0].values[i];
-        if (!rowdata[0] || !isPositiveInteger(rowdata[0]))
+    for (i = 1; i < retRows.length; ++i) {
+        let rowdata = retRows[i];
+        if (!rowdata[iDColumnIndex] || !isPositiveInteger(rowdata[iDColumnIndex]))
             continue;
-        idsForDupCheck.push(rowdata[0]);
+        idsForDupCheck.push(rowdata[iDColumnIndex]);
     }
     const dupIDs = getDuplicateValues(idsForDupCheck);
     if (dupIDs.length != 0) {
@@ -374,26 +383,26 @@ async function doGetTasks() {
     }
 
     let tasks = [];
-    for (i = 1; i < response.result.valueRanges[0].values.length; ++i) {
-        let rowdata = response.result.valueRanges[0].values[i];
-        if (!rowdata[0])
+    for (i = 1; i < retRows.length; ++i) {
+        let rowdata = retRows[i];
+        if (!rowdata[iDColumnIndex])
             continue;
-        if (!isPositiveInteger(rowdata[0])) {
+        if (!isPositiveInteger(rowdata[iDColumnIndex])) {
             // Specail Item
-            switch (rowdata[0]) {
+            switch (rowdata[iDColumnIndex]) {
                 case "separator":
-                    tasks.push(new Separator(rowdata[1]));
+                    tasks.push(new Separator(rowdata[taskColumnIndex]));
                     break;
             }
         } else {
             // Normal Task
             tasks.push(new Task(
                 i + 1, // first row is header
-                rowdata[0],
-                rowdata[1],
-                rowdata[2],
-                rowdata[3],
-                rowdata[4],
+                rowdata[iDColumnIndex],
+                rowdata[taskColumnIndex],
+                rowdata[actionColumnIndex],
+                rowdata[startTimeColumnIndex],
+                rowdata[endTimeColumnIndex],
                 false));
         }
     }

@@ -204,3 +204,32 @@ function checkTaskTime2(time) {
     }
     return true;
 }
+
+function getNextAlphabet(char) {
+    if (char === 'Z') {
+        return 'A';
+    } else if (char === 'z') {
+        return 'a';
+    } else if (/^[a-zA-Z]$/.test(char)) {
+        return String.fromCharCode(char.charCodeAt(0) + 1);
+    } else {
+        return 'A';
+    }
+}
+function getAlpahFromColumnIndex(index) {
+    index--;
+    let a = "A";
+    for (let i = 0; i < index; ++i) {
+        a = getNextAlphabet(a);
+    }
+    return a;
+}
+
+function getColumnIndexFromColumnName(colArray, colName) {
+    for (let i = 0; i < colArray.length; ++i) {
+        if (colArray[i] == colName) {
+            return i;
+        }
+    }
+    return -1;
+}
