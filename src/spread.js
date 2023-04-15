@@ -361,7 +361,12 @@ async function doGetTasks() {
 
     // response.result.valueRanges[0].values[0][0]==="ID"
     const retRows = response.result.valueRanges[0].values;
-
+    const missingRows = getMissingRows(retRows[0]);
+    if (missingRows.length > 0) {
+        const message = `以下のTaskシートのコラムがありません\n${missingRows}`;
+        showError(message);
+        throw new Error(message);
+    }
     const iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
     const taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
     const actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
