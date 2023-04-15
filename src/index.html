@@ -82,11 +82,13 @@
       </div>
     </template>
 
-    <div class="guruguru"></div>
-    <div class="wrapper">
-      <button class="button" onclick="onGetTasks()">タスク取得</button>
-      <button class="button" onclick="onAddNewTask()">タスク追加</button>
-      <button class="button" onclick="onShowSpread()">タスク編集</button>
+    <div id="taskbuttons_only5moreitems" style="display: none;">
+      <div class="guruguru"></div>
+      <div class="wrapper">
+        <button class="button" onclick="onGetTasks()">タスク取得</button>
+        <button class="button" onclick="onAddNewTask()">タスク追加</button>
+        <button class="button" onclick="onShowSpread()">タスク編集</button>
+      </div>
     </div>
   </div>
 
@@ -103,13 +105,39 @@
 
   <footer>
     <div class="wrapper">
-      <button class="button" onclick='toggleFooter("howto")'>利用方法</button>
-      <button class="button" onclick='toggleFooter("privacy")'>プライバシー</button>
-      <button class="button" onclick='toggleFooter("contact")'>お問い合わせ</button>
+
+      <button id="howto" class="button" onclick='toggleFooter(this)'>利用方法</button>
+      <button id="privacy" class="button" onclick='toggleFooter(this)'>プライバシー</button>
+      <button id="contact" class="button" onclick='toggleFooter(this)'>コンタクト</button>
 
       <template id="howtoTemplate">
         <div class="howtoHtml">
-          <p>使い方をここに書く</p>
+          <h2>目的</h2>
+          <p class="setumei">このアプリは毎日決まってやるべきタスクを登録しておき、その達成状況を把握するためのアプリです。</p>
+          <h2 class="midashi">Googleでログイン</h2>
+          <p class="setumei">このアプリを使うためにはGoogleのアカウントを所有している必要があります。タスクのデータはあなたのGoogleドライブにスプレッドシートとして保存されます。</p>
+          <h2 class="midashi">タスクのチェック</h2>
+          <p class="setumei">
+            チェックボタンをクリックするとタスクがチェックされます。タスクのアクションにURLが指定されていればそれが開かれます。URLは複数指定することもできます。タスクを編集し、スペースや改行でURLを区切ってください。
+          </p>
+          <h2 class="midashi">タスクの編集</h2>
+          <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
+          <ul>
+            <li>
+              <h4 class="midashi">ID</h4>
+              <p class="setumei">
+                タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
+            </li>
+            <li>
+              <h4 class="midashi">Task</h4>
+              <p class="setumei">aaa</p>
+            </li>
+            <li>
+              <h4 class="midashi">Action</h4>
+              <p class="setumei">bbb</p>
+            </li>
+          </ul>
+
         </div>
       </template>
 

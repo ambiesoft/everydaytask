@@ -24,7 +24,7 @@ h4 {
 
 
 
-.box {}
+
 
 .button {
     display: inline-block;
@@ -66,6 +66,18 @@ h4 {
     text-align: center;
     width: 64px;
     height: 42px;
+}
+
+.buttonSelected {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgb(50, 76, 153);
+    color: yellow;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
 }
 
 .wrapper {
@@ -117,15 +129,28 @@ h4 {
     padding-bottom: 16px;
 }
 
-ul {
-    list-style: none;
-    /* 箇条書きのマーカーを削除 */
-    padding: 0;
+/* ul { */
+/* list-style: none; */
+/* 箇条書きのマーカーを削除 */
+/* padding: 0; */
+/* } */
+
+/* li { */
+/* display: inline-block; */
+/* 横並びにする */
+/* margin-right: 10px; */
+/* 各要素の間に余白をつける */
+/* } */
+
+.howtoHtml {
+    width: 80%;
+    margin: 0 auto;
 }
 
-li {
-    display: inline-block;
-    /* 横並びにする */
-    margin-right: 10px;
-    /* 各要素の間に余白をつける */
+.midashi {
+    margin-bottom: 0;
+}
+
+.setumei {
+    margin-top: 0;
 }

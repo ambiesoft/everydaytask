@@ -122,6 +122,7 @@ async function onGetTasks() {
       for (let task of tasks) {
         appendTaskDom(task);
       }
+      showBottomTaskButtons(tasks.length > 7);
     } else {
       if (tasks !== null) {
         showError("Tasks must be not empty or null");

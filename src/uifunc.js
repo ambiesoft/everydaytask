@@ -28,12 +28,34 @@ function togglePage(page) {
             console.error(`Unkown page ${page}`);
     }
 }
-function toggleFooter(infopage) {
-    const template = document.getElementById(infopage + "Template");
-    const html = template.content.querySelector("." + infopage + "Html");
-    document.getElementById('otherinfo').innerHTML = "";
-    document.getElementById('otherinfo').appendChild(html.cloneNode(true));
+
+var currentPage;
+var footerButtons = [
+    "howto", "privacy", "contact"
+]
+function toggleFooter(button) {
+    // Chage buttons to narmal
+    footerButtons.forEach((b) => {
+        document.getElementById(b).className = "button";
+    });
+
+    if (currentPage == button) {
+        // same button clicked
+        document.getElementById('otherinfo').innerHTML = "";
+        currentPage = null;
+    } else {
+        // newly clicked or other button clicked
+        button.className = "buttonSelected";
+
+        const template = document.getElementById(button.id + "Template");
+        const html = template.content.querySelector("." + button.id + "Html");
+        document.getElementById('otherinfo').innerHTML = "";
+        document.getElementById('otherinfo').appendChild(html.cloneNode(true));
+
+        currentPage = button;
+    }
 }
+
 function showError(res) {
     window.alert(res);
 }
@@ -66,4 +88,8 @@ function scrollToElement(element) {
 
     console.log("scroll to", offset);
     window.scrollTo(0, offset); // スクロールを移動
+}
+function showBottomTaskButtons(show) {
+    document.getElementById("taskbuttons_only5moreitems").style.display =
+        show ? 'block' : 'none';
 }
