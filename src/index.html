@@ -45,9 +45,9 @@
 
   <div id="page_loggedin" style="display: none;">
     <div class="wrapper">
-      <button class="button" onclick="onGetTasks()">タスク取得</button>
-      <button class="button" onclick="onAddNewTask()">タスク追加</button>
-      <button class="button" onclick="onShowSpread()">タスク編集</button>
+      <button class="button" str="str_get_tasks" onclick="onGetTasks()"></button>
+      <button class="button" str="str_add_task" onclick="onAddNewTask()"></button>
+      <button class="button" str="str_edit_task" onclick="onShowSpread()"></button>
     </div>
 
     <div class="guruguru"></div>
@@ -86,16 +86,16 @@
 
     <template id="emptyTemplate">
       <div class="emptyTask">
-        <p>タスクがありません</p>
+        <p str="str_no_tasks"></p>
       </div>
     </template>
 
     <div id="taskbuttons_only5moreitems" style="display: none;">
       <div class="guruguru"></div>
       <div class="wrapper">
-        <button class="button" str="str_get_tasks" onclick="onGetTasks()">タスク取得</button>
-        <button class="button" onclick="onAddNewTask()">タスク追加</button>
-        <button class="button" onclick="onShowSpread()">タスク編集</button>
+        <button class="button" str="str_get_tasks" onclick="onGetTasks()"></button>
+        <button class="button" str="str_add_task" onclick="onAddNewTask()"></button>
+        <button class="button" str="str_edit_task" onclick="onShowSpread()"></button>
       </div>
     </div>
   </div>
@@ -111,9 +111,9 @@
   <footer>
     <div class="wrapper">
 
-      <button id="howto" class="button" onclick='toggleFooter(this)'>利用方法</button>
-      <button id="privacy" class="button" onclick='toggleFooter(this)'>プライバシー</button>
-      <button id="contact" class="button" onclick='toggleFooter(this)'>コンタクト</button>
+      <button id="howto" str="str_how_to_use" class="button" onclick='toggleFooter(this)'></button>
+      <button id="privacy" str="str_privacy" class="button" onclick='toggleFooter(this)'></button>
+      <button id="contact" str="str_contact" class="button" onclick='toggleFooter(this)'></button>
 
       <template id="howtoTemplate">
         <div class="howtoHtml">

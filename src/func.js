@@ -71,7 +71,6 @@ window.onload = () => {
   console.log("window.onload has been called");
   console.log("gapi", gapi);
 
-  initLanguage();
   toggleLoginButton();
 }
 
