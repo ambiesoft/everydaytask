@@ -325,7 +325,9 @@ async function onTaskAction(el) {
     startWaitUI();
 
     // Add check on remote cell
-    await doTaskAction(el.dataset.taskid);
+    if (!await doTaskAction(el.dataset.taskid)) {
+      return;
+    }
 
     // call setCheck
     for (let task of gTasks) {
@@ -431,8 +433,6 @@ async function onGetSpread3() {
       userData.todaySheetMonth = STARTMONTH;
       console.log("logsheetid", userData.todaySheetID);
     }
-
-
   } catch (e) {
     console.error(e);
   }

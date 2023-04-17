@@ -470,18 +470,18 @@ async function doGetTasks() {
 async function doTaskAction(taskid) {
     if (!userData.spreadID) {
         showError("No spread id");
-        return;
+        return false;
     }
     // Get the sheet of current month
     if (!userData.todaySheetID) {
         showError("No todaySheetID");
-        return;
+        return false;
     }
 
     const date = new Date();
     if (!isCorrectDate(date)) {
-        showError("Current date has been changed. Please refresh the page.");
-        return;
+        showError("The date has been changed. Please refresh the page.");
+        return false;
     }
     const currentHOURS = date.getHours().toString().padStart(2, '0');
     const currentMINUTES = date.getMinutes().toString().padStart(2, '0');
@@ -509,6 +509,8 @@ async function doTaskAction(taskid) {
 
     const result = res.result;
     console.log(`${result.updatedCells} cells updated.`);
+
+    return true;
 }
 async function doTaskEditItem(taskid, taskname, taskaction) {
     if (!userData.spreadID) {
