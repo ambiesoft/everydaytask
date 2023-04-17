@@ -95,6 +95,7 @@ function showBottomTaskButtons(show) {
 }
 
 function updateTitle(tasks) {
-    const checkedCount =  tasks.filter((task) => task.isChecked()).length;
-    document.title = `${APP_NAME} (${checkedCount}/${tasks.length})`;
+    const checkedCount = tasks.filter((task) => task.isChecked()).length;
+    const totalTaskCount = tasks.filter((task) => task.getId() > 0).length;
+    document.title = `${APP_NAME} (${checkedCount}/${totalTaskCount})`;
 }
