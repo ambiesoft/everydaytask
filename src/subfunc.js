@@ -237,3 +237,4 @@ function getColumnIndexFromColumnName(colArray, colName) {
 function getMissingRows(rows) {
     return TASK_COLUMNS.filter(item => !rows.includes(item));
 }
+

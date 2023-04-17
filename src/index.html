@@ -12,6 +12,7 @@
     integrity="sha512-wT7uPE7tOP6w4o28u1DN775jYjHQApdBnib5Pho4RB0Pgd9y7eSkAV1BTqQydupYDB9GBhTcQQzyNMPMV3cAew=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="consts.js?v=20230417"></script>
+  <script src="lang.js"></script>
   <script src="globals.js?v=20230417"></script>
   <script src="userdata.js?v=20230417"></script>
   <script src="task.js?v=20230417"></script>
@@ -32,11 +33,12 @@
     <div class="flex-container">
       <div class="box">
         <h1>EverydayTask</h1>
-        <h4>毎日のタスクをチェック</h4>
+        <h4 str="str_check_everyday_task"></h4>
       </div class="box">
       <div>
-        <button id="beforelogin" class="button" onclick="ensureToken()">Googleでログイン</button>
-        <button id="afterlogin" class="button" onclick="location.reload()" style="display: none;">ログオフ</button>
+        <button id="beforelogin" str="str_login_by_google" class="button" onclick="ensureToken()"></button>
+        <button id="afterlogin" str="str_logoff" class="button" onclick="location.reload()"
+          style="display: none;"></button>
       </div>
     </div>
   </div>
@@ -91,19 +93,16 @@
     <div id="taskbuttons_only5moreitems" style="display: none;">
       <div class="guruguru"></div>
       <div class="wrapper">
-        <button class="button" onclick="onGetTasks()">タスク取得</button>
+        <button class="button" str="str_get_tasks" onclick="onGetTasks()">タスク取得</button>
         <button class="button" onclick="onAddNewTask()">タスク追加</button>
         <button class="button" onclick="onShowSpread()">タスク編集</button>
       </div>
     </div>
   </div>
 
-  <!-- <button onclick="onGetTasks()">タスク取得</button>
-  <button onclick="onGetSpread()">onGetSpread</button> -->
-
   <div id="page_loggedout">
     <div class="wrapper">
-      <p>ログインしてください</p>
+      <p str="str_please_login"></p>
     </div>
   </div>
 
