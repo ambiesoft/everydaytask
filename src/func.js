@@ -188,6 +188,7 @@ function appendTaskDom(task) {
     const template = document.getElementById("taskTemplate");
     const itemwrapper = template.content.querySelector(".itemwrapper");
     const text = template.content.querySelector(".text");
+    const timetext = template.content.querySelector(".timetext");
     const taskbutton = template.content.querySelector(".taskbutton");
     const taskeditbutton = template.content.querySelector(".taskeditbutton");
     const editbutton = template.content.querySelector(".editbutton");
@@ -211,6 +212,8 @@ function appendTaskDom(task) {
 
     text.textContent = task.getName();
     text.id = "tasktext" + task.getId();
+
+    timetext.textContent = task.getTimeRangeAsString();
 
     itemeditinputname.id = "itemeditinputname" + task.getId();
     itemeditinputname.value = task.getName();

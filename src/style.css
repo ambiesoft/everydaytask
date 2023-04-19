@@ -106,6 +106,21 @@ h4 {
 .item {
     display: flex;
     align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.itemtext {
+    width: 80%;
+}
+
+.timetext {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: 5px;
+    padding-left: 5px;
+    font-size: small;
+    color: darkslategray;
 }
 
 .twobutton {
@@ -121,6 +136,8 @@ h4 {
 .text {
     padding-right: 5px;
     padding-left: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
     width: 80%;
     word-break: break-all;
 }
