@@ -11,9 +11,9 @@ const DISCOVERY_DOC_DRIVE = 'https://www.googleapis.com/discovery/v1/apis/drive/
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.currentonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/drive.appdata';
 
 const STARTDATEOBJ = new Date();
-const STARTYEAR = STARTDATEOBJ.getFullYear(); // 年を取得
-const STARTMONTH = STARTDATEOBJ.getMonth() + 1; // 月を取得（0-11の範囲で返されるため、1を加算）
-const STARTDATE = STARTDATEOBJ.getDate(); // 日を取得
+const STARTYEAR = STARTDATEOBJ.getFullYear();
+const STARTMONTH = STARTDATEOBJ.getMonth() + 1; // 0-base
+const STARTDATE = STARTDATEOBJ.getDate();
 const STARTHOURS = STARTDATEOBJ.getHours().toString().padStart(2, '0');
 const STARTMINUTES = STARTDATEOBJ.getMinutes().toString().padStart(2, '0');
 const STARTSECONDS = STARTDATEOBJ.getSeconds().toString().padStart(2, '0');
