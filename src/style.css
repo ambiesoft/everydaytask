@@ -175,3 +175,8 @@ h4 {
 .emptyTask {
     text-align: center;
 }
+
+#productinfo{
+    font-style: italic;
+    font-size: small;
+}
