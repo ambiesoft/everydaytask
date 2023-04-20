@@ -36,9 +36,8 @@
         <h4 str="str_check_everyday_task"></h4>
       </div class="box">
       <div>
-        <button id="beforelogin" str="str_login_by_google" class="button" onclick="ensureToken()"></button>
-        <button id="afterlogin" str="str_logoff" class="button" onclick="location.reload()"
-          style="display: none;"></button>
+        <button id="beforelogin" str="str_login_by_google" class="button" onclick="onLogin()"></button>
+        <button id="afterlogin" str="str_logoff" class="button" onclick="onLogoff()" style="display: none;"></button>
       </div>
     </div>
   </div>
@@ -170,8 +169,42 @@
     </div>
   </footer>
 
+  <script>
+    function handleCredentialResponse(response) {
+      // Here we can do whatever process with the response we want
+      // Note that response.credential is a JWT ID token
+      console.log("Encoded JWT ID token: ", response);
+      const parsed = parseJwt(response.credential);
+      console.log("parsed", parsed);
+      cred = response.credential;
+      // gapi.auth2.authorize({
+      //   client_id: CLIENT_ID,
+      //   response_type: 'permission', // Access Token.
+      //   scope: SCOPES,
+      //   login_hint: parsed.sub,
+      // }, function (result) {
+      //   console.log(result);
+      //   onGetTasks();
+      // });
+      onGetTasks();
+    }
+    function onLogin() {
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID, // Replace with your Google Client ID
+        "data-callback": "handleCredentialResponse",
+      });
+      // // You can skip the next instruction if you don't want to show the "Sign-in" button
+      // google.accounts.id.renderButton(
+      //   document.getElementById("buttonDiv"), // Ensure the element exist and it is a div to display correcctly
+      //   { theme: "outline", size: "large" }  // Customization attributes
+      // );
+      // google.accounts.id.prompt(); // Display the One Tap dialog
+      onGetTasks();
+    }
+  </script>
+  <div id="buttonDiv"></div>
   <div id="g_id_onload" data-client_id="335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com"
-    data-auto_select="true" data-login_uri="https://ambiesoft.com/everydaytask/">
+    data-auto_select="true" data-callback="handleCredentialResponse">
   </div>
 
   <!-- GIS Google Identity Service -->

@@ -82,11 +82,15 @@ function isLoggedIn() {
   return loggedin;
 }
 function ensureToken() {
+  console.log("ensureToken", gapi.client.getToken());
+  console.log("ensureToken", tokenClient);
   if (gapi.client.getToken() === null) {
     // Prompt the user to select a Google Account and ask for consent to share their data
     // when establishing a new session.
     // https://developers.google.com/identity/protocols/oauth2/web-server#httprest_1
-    tokenClient.requestAccessToken();
+    tokenClient.requestAccessToken({
+      prompt: cred ? "none" : "",
+    });
     return false;
   } else {
     // Skip display of account chooser and consent dialog for an existing session.
@@ -95,6 +99,10 @@ function ensureToken() {
   }
 }
 
+function onLogoff() {
+  clearTasksDom();
+  revokeToken();
+}
 function revokeToken() {
   const token = gapi.client.getToken();
   if (token !== null) {
