@@ -41,6 +41,9 @@ async function gisLoaded() {
         } catch (err) {
           console.error(err);
         }
+      } else {
+
+        cred = null;
       }
     }
   });
