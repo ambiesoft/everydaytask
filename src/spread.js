@@ -422,7 +422,8 @@ async function doGetTasks() {
     // end of 'tasks' sheet
 
     // start of log sheet
-    const now = new Date();
+    const searchDate = targetDate ? targetDate : new Date();
+
     // valueRange[1] is a set of "Date" and "Check"
     const dc = response.result.valueRanges[1];
     let dcLen = 0;
@@ -435,13 +436,19 @@ async function doGetTasks() {
         if (!(task instanceof Task)) {
             continue;
         }
-        const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(now, task);
-        const [taskTodayStart, taskTodayEnd] = getTaskToday(now, task);
+        const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(searchDate, task);
+        const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
 
-        if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
-            task.setEnabled(true);
-        } else if (taskTodayStart <= now && now < taskTodayEnd) {
-            task.setEnabled(true);
+        if (searchDate != targetDate) {
+            // searchDate is now
+            if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
+                task.setEnabled(true);
+            } else if (taskTodayStart <= searchDate && searchDate < taskTodayEnd) {
+                task.setEnabled(true);
+            }
+        } else {
+            // searching specific date
+            task.setEnabled(false);
         }
 
         for (i = 0; i < dcLen; ++i) {
@@ -455,7 +462,7 @@ async function doGetTasks() {
                 dc.values[i][0],
                 dc.values[i][2]);
 
-            if (taskYesterdayStart <= now && now < taskYesterdayEnd) {
+            if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
                 if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
                     task.setChecked(true);
                 }

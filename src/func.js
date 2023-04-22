@@ -76,6 +76,11 @@ window.onload = () => {
   console.log("window.onload has been called");
   console.log("gapi", gapi);
 
+  let today = new Date().toISOString().substr(0, 10);
+  document.querySelectorAll('.id_target_date').forEach((e) => {
+    e.value = today;
+  });
+
   toggleLoginButton();
 }
 
@@ -452,4 +457,27 @@ async function onGetSpread3() {
   } catch (e) {
     console.error(e);
   }
+}
+
+function onDateChange(dateInput) {
+
+  document.querySelectorAll('.id_target_date').forEach((e) => {
+    if (dateInput != e) {
+      e.value = dateInput.value;
+    }
+  });
+  const today = new Date();
+  const selectedDate = new Date(dateInput.value);
+  if (selectedDate.getFullYear() === today.getFullYear()
+    && selectedDate.getMonth() === today.getMonth()
+    && selectedDate.getDate() === today.getDate()) {
+    console.log('選択された日付は今日です');
+    targetDate = null;
+  } else {
+    console.log('選択された日付は今日ではありません');
+    targetDate = selectedDate;
+  }
+
+  console.log("targetDate", targetDate);
+  onGetTasks();
 }
