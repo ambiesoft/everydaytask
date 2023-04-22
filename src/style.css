@@ -86,13 +86,9 @@ h4 {
     width: 100%;
 }
 
-.guruguru {
-    display: flex;
-    justify-content: center;
-    height: 20px;
-}
-
 .dateWrapper {
+    padding-top: 8px;
+    padding-bottom: 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;

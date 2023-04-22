@@ -70,15 +70,32 @@ function showErrorWithCode(code) {
     }
     showError(message);
 }
-function startWaitUI() {
-    Array.from(document.querySelectorAll(".guruguru")).forEach(node => {
-        node.innerText = "🌐 > > > 💻";
-    });
+
+function startfinish_common2(node, start) {
+    let origText = node.getAttribute("origText");
+    if (!origText) {
+        origText = eval(node.getAttribute("str"));
+    }
+    node.innerText = start ? "🌐" : origText;
 }
-function finishWaitUI() {
-    Array.from(document.querySelectorAll(".guruguru")).forEach(node => {
-        node.innerText = "";
-    });
+function startfinish_common(els, start) {
+    if (!els) {
+        return;
+    }
+    if (Array.isArray(els)) {
+        els.forEach(node => {
+            // node.innerText = "🌐 > > > 💻";
+            startfinish_common2(node, start);
+        });
+    } else {
+        startfinish_common2(els, start);
+    }
+}
+function startWaitUI(els) {
+    startfinish_common(els, true);
+}
+function finishWaitUI(els) {
+    startfinish_common(els, false);
 }
 
 function scrollToElement(element) {

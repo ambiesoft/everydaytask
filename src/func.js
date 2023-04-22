@@ -133,7 +133,7 @@ async function onGetTasks() {
   }
 
   try {
-    startWaitUI();
+    startWaitUI(Array.from(document.querySelectorAll(`[btnType=getTask]`)));
     let tasks = await doGetTasks();
     if (tasks) {
       clearTasksDom();
@@ -149,7 +149,7 @@ async function onGetTasks() {
       }
     }
   } finally {
-    finishWaitUI();
+    finishWaitUI(Array.from(document.querySelectorAll(`[btnType=getTask]`)));
   }
 }
 
@@ -172,7 +172,7 @@ async function onAddNewTask() {
   }
 
   try {
-    startWaitUI();
+    startWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
     const newTask = await doAddNewTask();
     gTasks.push(newTask);
 
@@ -192,7 +192,7 @@ async function onAddNewTask() {
   } catch (err) {
     showError(err);
   } finally {
-    finishWaitUI();
+    finishWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
   }
 }
 
@@ -226,6 +226,7 @@ function appendTaskDom(task) {
 
     taskeditbutton.dataset.id = task.getId();
     editbutton.dataset.id = task.getId();
+    editbutton.id = "editbutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
 
     text.textContent = task.getName();
@@ -240,6 +241,8 @@ function appendTaskDom(task) {
     itemeditinputaction.value = task.getAction() ? task.getAction() : "";
 
     taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
+    taskbutton.setAttribute("origText", taskbutton.textContent);
+    editbutton.setAttribute("origText", editbutton.textContent);
 
     document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
@@ -279,6 +282,7 @@ async function onEditItem(eb) {
 }
 async function onEditItem2(taskid) {
   let taskbutton = document.getElementById(taskid);
+  let taskeditbutton = document.getElementById("editbutton" + taskid);
 
   console.log(taskbutton.dataset);
   console.log("taskbutton", taskbutton);
@@ -302,7 +306,7 @@ async function onEditItem2(taskid) {
   }
 
   try {
-    startWaitUI();
+    startWaitUI(taskeditbutton);
 
     // Add check on remote cell
     let resUnused = await doTaskEditItem(taskid, inputtext, inputaction);
@@ -316,7 +320,7 @@ async function onEditItem2(taskid) {
     console.error(err);
     showErrorWithCode(err.result.error.code);
   } finally {
-    finishWaitUI();
+    finishWaitUI(taskeditbutton);
   }
 
 }
@@ -343,7 +347,7 @@ async function onTaskAction(el) {
   }
 
   try {
-    startWaitUI();
+    startWaitUI(el);
 
     // Add check on remote cell
     if (!await doTaskAction(el.dataset.taskid)) {
@@ -377,7 +381,7 @@ async function onTaskAction(el) {
     console.error(err);
     showErrorWithCode(err.result.error.code);
   } finally {
-    finishWaitUI();
+    finishWaitUI(el);
   }
 }
 
@@ -392,10 +396,10 @@ function getFile() {
 
 async function onGetSpread() {
   try {
-    startWaitUI();
+    startWaitUI(Array.from(document.querySelectorAll(`[btnType=editTask]`)));
     await onGetSpread2();
   } finally {
-    finishWaitUI();
+    finishWaitUI(Array.from(document.querySelectorAll(`[btnType=editTask]`)));
   }
 }
 async function onGetSpread2() {
@@ -405,7 +409,6 @@ async function onGetSpread2() {
   }
 
   try {
-    startWaitUI();
     await onGetSpread3();
   } catch (e) {
     console.error(e);
