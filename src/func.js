@@ -33,6 +33,8 @@ async function gisLoaded() {
         console.log(`Timer is set in ${tokenResponce.expires_in * 1000}`);
       }
       if (tokenResponce.access_token != null) {
+        authFailed = false;
+        document.getElementById("id_please_login").innerText = "";
         try {
           if (!userData.spreadID) {
             await onGetSpread();
@@ -42,8 +44,8 @@ async function gisLoaded() {
           console.error(err);
         }
       } else {
-
-        cred = null;
+        authFailed = true;
+        document.getElementById("id_please_login").innerText = str_please_login_again_to_authorize;
       }
     }
   });
@@ -92,7 +94,7 @@ function ensureToken() {
     // when establishing a new session.
     // https://developers.google.com/identity/protocols/oauth2/web-server#httprest_1
     tokenClient.requestAccessToken({
-      prompt: cred ? "none" : "",
+      prompt: !authFailed ? "none" : "",
     });
     return false;
   } else {
