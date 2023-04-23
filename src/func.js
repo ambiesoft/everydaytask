@@ -375,6 +375,7 @@ async function onTaskAction(el) {
       }
     }
     el.textContent = CHECKMARK;
+    el.setAttribute("origText", el.textContent);
 
     updateTitle(gTasks);
   } catch (err) {
