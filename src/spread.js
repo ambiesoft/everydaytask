@@ -370,6 +370,8 @@ async function doGetTasks() {
     const iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
     const taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
     const actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
+    const stateColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STATE);
+    const createdColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_CREATED);
     const startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
     const endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
 
@@ -386,12 +388,32 @@ async function doGetTasks() {
         showError(`TaskID ${dupIDs.join(",")} are duplicated. Please fix them by editting the tasks.`);
         return null;
     }
+    // start of log sheet
+    const searchDate = targetDate ? targetDate : new Date();
 
     let tasks = [];
     for (i = 1; i < retRows.length; ++i) {
         let rowdata = retRows[i];
         if (!rowdata[iDColumnIndex])
             continue;
+        if (rowdata[stateColumnIndex] == "deleted")
+            continue;
+
+        // if searchDate < Created , skip it
+        if (rowdata[createdColumnIndex]) {
+            try {
+                const createdDate = new Date(rowdata[createdColumnIndex]);
+                console.log("searchDate", searchDate);
+                console.log("createdDate", createdDate);
+                if (searchDate < createdDate) {
+                    console.log("Skipping task that was created before target date");
+                    continue;
+                }
+            } catch {
+                // run through if illegal date
+            }
+        }
+
         if (!isPositiveInteger(rowdata[iDColumnIndex])) {
             // Specail Item
             switch (rowdata[iDColumnIndex]) {
@@ -421,8 +443,7 @@ async function doGetTasks() {
     }
     // end of 'tasks' sheet
 
-    // start of log sheet
-    const searchDate = targetDate ? targetDate : new Date();
+
 
     // valueRange[1] is a set of "Date" and "Check"
     const dc = response.result.valueRanges[1];
@@ -588,7 +609,12 @@ async function doAddNewTask() {
     // Appen new task with newID and default name
     let values = [
         [
-            newID, newTaskName, // Cell values ...
+            newID,
+            newTaskName,
+            "", // Action
+            "", // State
+            "", // Memo
+            (new Date()).toDateString(), // created
         ],
         // Additional rows ...
     ];

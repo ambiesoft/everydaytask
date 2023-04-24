@@ -464,7 +464,14 @@ async function onGetSpread3() {
 }
 
 function onDateChange(dateInput) {
-
+  if (!dateInput.value) {
+    let today = new Date().toISOString().substr(0, 10);
+    document.querySelectorAll('.id_target_date').forEach((e) => {
+      e.value = today;
+    });
+    onDateChange(dateInput);
+    return;
+  }
   document.querySelectorAll('.id_target_date').forEach((e) => {
     if (dateInput != e) {
       e.value = dateInput.value;
