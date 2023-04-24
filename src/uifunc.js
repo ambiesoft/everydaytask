@@ -3,13 +3,15 @@ function toggleLoginButton() {
     let loggedin = isLoggedIn();
 
     if (loggedin) {
-        document.getElementById('beforelogin').style.display = 'none';
-        document.getElementById('afterlogin').style.display = 'block';
+        document.getElementById('btnLogin').style.display = 'none';
+        document.getElementById('btnLogoff').style.display = 'block';
 
         togglePage("page_loggedin");
     } else {
-        document.getElementById('beforelogin').style.display = 'block';
-        document.getElementById('afterlogin').style.display = 'none';
+        document.getElementById('btnLogin').style.display = 'block';
+        document.getElementById('btnLogin').className = gisInited ? "button" : "button-disabled";
+
+        document.getElementById('btnLogoff').style.display = 'none';
 
         togglePage("page_loggedout");
     }

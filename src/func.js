@@ -2,6 +2,17 @@
 async function gisLoaded() {
   console.log("gisLoaded is called")
 
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID, // Replace with your Google Client ID
+    "data-callback": "handleCredentialResponse",
+  });
+  // // You can skip the next instruction if you don't want to show the "Sign-in" button
+  // google.accounts.id.renderButton(
+  //   document.getElementById("buttonDiv"), // Ensure the element exist and it is a div to display correcctly
+  //   { theme: "outline", size: "large" }  // Customization attributes
+  // );
+  // google.accounts.id.prompt(); // Display the One Tap dialog
+
   // initialize a new token client with your web app's client ID
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
@@ -101,19 +112,10 @@ function handleCredentialResponse(response) {
   //   console.log(result);
   //   onGetTasks();
   // });
-  onGetTasks();
+
+  // onGetTasks();
 }
 function onLogin() {
-  google.accounts.id.initialize({
-    client_id: CLIENT_ID, // Replace with your Google Client ID
-    "data-callback": "handleCredentialResponse",
-  });
-  // // You can skip the next instruction if you don't want to show the "Sign-in" button
-  // google.accounts.id.renderButton(
-  //   document.getElementById("buttonDiv"), // Ensure the element exist and it is a div to display correcctly
-  //   { theme: "outline", size: "large" }  // Customization attributes
-  // );
-  // google.accounts.id.prompt(); // Display the One Tap dialog
   onGetTasks();
 }
 
