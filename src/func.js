@@ -84,6 +84,39 @@ window.onload = () => {
   toggleLoginButton();
 }
 
+
+function handleCredentialResponse(response) {
+  // Here we can do whatever process with the response we want
+  // Note that response.credential is a JWT ID token
+  console.log("Encoded JWT ID token: ", response);
+  const parsed = parseJwt(response.credential);
+  console.log("parsed", parsed);
+  cred = response.credential;
+  // gapi.auth2.authorize({
+  //   client_id: CLIENT_ID,
+  //   response_type: 'permission', // Access Token.
+  //   scope: SCOPES,
+  //   login_hint: parsed.sub,
+  // }, function (result) {
+  //   console.log(result);
+  //   onGetTasks();
+  // });
+  onGetTasks();
+}
+function onLogin() {
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID, // Replace with your Google Client ID
+    "data-callback": "handleCredentialResponse",
+  });
+  // // You can skip the next instruction if you don't want to show the "Sign-in" button
+  // google.accounts.id.renderButton(
+  //   document.getElementById("buttonDiv"), // Ensure the element exist and it is a div to display correcctly
+  //   { theme: "outline", size: "large" }  // Customization attributes
+  // );
+  // google.accounts.id.prompt(); // Display the One Tap dialog
+  onGetTasks();
+}
+
 function isLoggedIn() {
   let loggedin = gapi.client.getToken() != null;
   loggedin &= gisInited;

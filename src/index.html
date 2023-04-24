@@ -11,17 +11,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"
     integrity="sha512-wT7uPE7tOP6w4o28u1DN775jYjHQApdBnib5Pho4RB0Pgd9y7eSkAV1BTqQydupYDB9GBhTcQQzyNMPMV3cAew=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="consts.js?v=20230424"></script>
-  <script src="lang.js?v=20230424"></script>
-  <script src="globals.js?v=20230424"></script>
-  <script src="userdata.js?v=20230424"></script>
-  <script src="task.js?v=20230424"></script>
-  <script src="subfunc.js?v=20230424"></script>
-  <script src="uifunc.js?v=20230424"></script>
-  <script src="spread.js?v=20230424"></script>
-  <script src="func.js?v=20230424"></script>
+  <script src="consts.js?v=20230425"></script>
+  <script src="lang.js?v=20230425"></script>
+  <script src="globals.js?v=20230425"></script>
+  <script src="userdata.js?v=20230425"></script>
+  <script src="task.js?v=20230425"></script>
+  <script src="subfunc.js?v=20230425"></script>
+  <script src="uifunc.js?v=20230425"></script>
+  <script src="spread.js?v=20230425"></script>
+  <script src="func.js?v=20230425"></script>
 
-  <link rel="stylesheet" href="style.css?v=20230424">
+  <link rel="stylesheet" href="style.css?v=20230425">
 </head>
 
 <body>
@@ -172,47 +172,9 @@
       <div id="otherinfo"></div>
     </div>
     <div class="wrapper">
-      <p id="productinfo">EverydayTask v20230424 &copy; 2023 ambiesoft.com</p>
+      <p id="productinfo">EverydayTask v20230425 &copy; 2023 ambiesoft.com</p>
     </div>
   </footer>
-
-  <script>
-    function handleCredentialResponse(response) {
-      // Here we can do whatever process with the response we want
-      // Note that response.credential is a JWT ID token
-      console.log("Encoded JWT ID token: ", response);
-      const parsed = parseJwt(response.credential);
-      console.log("parsed", parsed);
-      cred = response.credential;
-      // gapi.auth2.authorize({
-      //   client_id: CLIENT_ID,
-      //   response_type: 'permission', // Access Token.
-      //   scope: SCOPES,
-      //   login_hint: parsed.sub,
-      // }, function (result) {
-      //   console.log(result);
-      //   onGetTasks();
-      // });
-      onGetTasks();
-    }
-    function onLogin() {
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID, // Replace with your Google Client ID
-        "data-callback": "handleCredentialResponse",
-      });
-      // // You can skip the next instruction if you don't want to show the "Sign-in" button
-      // google.accounts.id.renderButton(
-      //   document.getElementById("buttonDiv"), // Ensure the element exist and it is a div to display correcctly
-      //   { theme: "outline", size: "large" }  // Customization attributes
-      // );
-      // google.accounts.id.prompt(); // Display the One Tap dialog
-      onGetTasks();
-    }
-  </script>
-  <div id="buttonDiv"></div>
-  <div id="g_id_onload" data-client_id="335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com"
-    data-auto_select="true" data-callback="handleCredentialResponse">
-  </div>
 
   <!-- GIS Google Identity Service -->
   <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
