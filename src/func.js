@@ -88,11 +88,8 @@ window.onload = () => {
   console.log("gapi", gapi);
 
   let today = new Date();
-  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  const stringToday = today.toJSON().slice(0, 10);
-
   document.querySelectorAll('.id_target_date').forEach((e) => {
-    e.value = stringToday;
+    e.value = getDateAsElementInput(today);
   });
 
   toggleLoginButton();
@@ -503,9 +500,9 @@ async function onGetSpread3() {
 
 function onDateChange(dateInput) {
   if (!dateInput.value) {
-    let today = new Date().toISOString().substr(0, 10);
+    let today = new Date();
     document.querySelectorAll('.id_target_date').forEach((e) => {
-      e.value = today;
+      e.value = getDateAsElementInput(today);
     });
     onDateChange(dateInput);
     return;

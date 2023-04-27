@@ -238,3 +238,7 @@ function getMissingRows(rows) {
     return TASK_COLUMNS.filter(item => !rows.includes(item));
 }
 
+function getDateAsElementInput(date) {
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return date.toJSON().slice(0, 10);
+}
