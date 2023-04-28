@@ -245,6 +245,7 @@ function appendTaskDom(task) {
     const taskbutton = template.content.querySelector(".taskbutton");
     const taskeditbutton = template.content.querySelector(".taskeditbutton");
     const editbutton = template.content.querySelector(".editbutton");
+    const deletebutton = template.content.querySelector(".deletebutton");
     const itemedit = template.content.querySelector(".itemedit");
     const itemeditinputname = template.content.querySelector(".itemeditinputname");
     const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
@@ -262,6 +263,8 @@ function appendTaskDom(task) {
     taskeditbutton.dataset.id = task.getId();
     editbutton.dataset.id = task.getId();
     editbutton.id = "editbutton" + task.getId();
+    deletebutton.dataset.id = task.getId();
+    deletebutton.id = "deletebutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
 
     text.textContent = task.getName();
@@ -278,6 +281,7 @@ function appendTaskDom(task) {
     taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
     taskbutton.setAttribute("origText", taskbutton.textContent);
     editbutton.setAttribute("origText", editbutton.textContent);
+    deletebutton.setAttribute("origText", deletebutton.textContent);
 
     document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
@@ -359,6 +363,59 @@ async function onEditItem2(taskid) {
   }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+async function onDeleteItem(eb) {
+  const taskid = eb.dataset.id;
+  onDeleteItem2(taskid);
+}
+async function onDeleteItem2(taskid) {
+
+  let taskdeletebutton = document.getElementById("deletebutton" + taskid);
+
+  if (!userData.spreadID) {
+    onGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    startWaitUI(taskdeletebutton);
+
+    // Add check on remote cell
+    let resUnused = await doTaskDeleteItem(taskid);
+    console.log("res", resUnused);
+
+    // refresh tasks
+    onGetTasks()
+  } catch (err) {
+    console.error(err);
+    showErrorWithCode(err.result.error.code);
+  } finally {
+    finishWaitUI(taskdeletebutton);
+  }
+
+}
+
+
+
+
+
+
+
+
 
 /**
 * Called when user clicks a checkbox of the task

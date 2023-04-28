@@ -217,7 +217,6 @@ function getNextAlphabet(char) {
     }
 }
 function getAlpahFromColumnIndex(index) {
-    index--;
     let a = "A";
     for (let i = 0; i < index; ++i) {
         a = getNextAlphabet(a);

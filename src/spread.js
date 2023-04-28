@@ -338,10 +338,10 @@ async function doGetMonthSheet(year, month) {
 
 function getTaskColumnRange() {
     let endColumn = TASK_COLUMNS.length;
-    return `A:${getAlpahFromColumnIndex(endColumn)}`;
+    return `A:${getAlpahFromColumnIndex(endColumn - 1)}`;
 
 }
-async function doGetTasks() {
+async function doGetTasks(colIndexes) {
     let params = {
         spreadsheetId: userData.spreadID,
         // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
@@ -352,6 +352,7 @@ async function doGetTasks() {
     // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
     response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
     console.log("responce", response);
+
     // valueRange[0] is a set of "ID", "Task", "Action", ...
     // valueRanges[0][0] is a row of column names
     if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
@@ -367,21 +368,27 @@ async function doGetTasks() {
         showError(message);
         throw new Error(message);
     }
-    const iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
-    const taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
-    const actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
-    const stateColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STATE);
-    const createdColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_CREATED);
-    const startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
-    const endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
+
+    if (!colIndexes) {
+        colIndexes = {};
+    }
+
+    colIndexes.iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
+    colIndexes.taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
+    colIndexes.actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
+    colIndexes.stateColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STATE);
+    colIndexes.createdColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_CREATED);
+    colIndexes.startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
+    colIndexes.endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
+
 
     // check Duplicated id
     let idsForDupCheck = [];
     for (i = 1; i < retRows.length; ++i) {
         let rowdata = retRows[i];
-        if (!rowdata[iDColumnIndex] || !isPositiveInteger(rowdata[iDColumnIndex]))
+        if (!rowdata[colIndexes.iDColumnIndex] || !isPositiveInteger(rowdata[colIndexes.iDColumnIndex]))
             continue;
-        idsForDupCheck.push(rowdata[iDColumnIndex]);
+        idsForDupCheck.push(rowdata[colIndexes.iDColumnIndex]);
     }
     const dupIDs = getDuplicateValues(idsForDupCheck);
     if (dupIDs.length != 0) {
@@ -394,15 +401,15 @@ async function doGetTasks() {
     let tasks = [];
     for (i = 1; i < retRows.length; ++i) {
         let rowdata = retRows[i];
-        if (!rowdata[iDColumnIndex])
+        if (!rowdata[colIndexes.iDColumnIndex])
             continue;
-        if (rowdata[stateColumnIndex] == "deleted")
+        if (rowdata[colIndexes.stateColumnIndex] == "deleted")
             continue;
 
         // if searchDate < Created , skip it
-        if (rowdata[createdColumnIndex]) {
+        if (rowdata[colIndexes.createdColumnIndex]) {
             try {
-                const createdDate = new Date(rowdata[createdColumnIndex]);
+                const createdDate = new Date(rowdata[colIndexes.createdColumnIndex]);
                 console.log("searchDate", searchDate);
                 console.log("createdDate", createdDate);
                 if (searchDate < createdDate) {
@@ -414,22 +421,22 @@ async function doGetTasks() {
             }
         }
 
-        if (!isPositiveInteger(rowdata[iDColumnIndex])) {
+        if (!isPositiveInteger(rowdata[colIndexes.iDColumnIndex])) {
             // Specail Item
-            switch (rowdata[iDColumnIndex]) {
+            switch (rowdata[colIndexes.iDColumnIndex]) {
                 case "separator":
-                    tasks.push(new Separator(rowdata[taskColumnIndex]));
+                    tasks.push(new Separator(rowdata[colIndexes.taskColumnIndex]));
                     break;
             }
         } else {
             // Normal Task
             tasks.push(new Task(
                 i + 1, // first row is header
-                rowdata[iDColumnIndex],
-                rowdata[taskColumnIndex],
-                rowdata[actionColumnIndex],
-                rowdata[startTimeColumnIndex],
-                rowdata[endTimeColumnIndex],
+                rowdata[colIndexes.iDColumnIndex],
+                rowdata[colIndexes.taskColumnIndex],
+                rowdata[colIndexes.actionColumnIndex],
+                rowdata[colIndexes.startTimeColumnIndex],
+                rowdata[colIndexes.endTimeColumnIndex],
                 false));
         }
     }
@@ -552,7 +559,8 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
     }
 
     // First, find the row of the task
-    let tasks = await doGetTasks();
+    let colIndexes = {};
+    let tasks = await doGetTasks(colIndexes);
     let row = -1;
     for (let task of tasks) {
         if (task.getId() == taskid) {
@@ -565,21 +573,82 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
         throw new Error(`Illegal row ${row}`);
     }
 
-    // Update the spread on row
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddSheetRequest
-    let param = {
-        spreadsheetId: userData.spreadID,
-        range: `Tasks!B${row}:C${row}`,
-        valueInputOption: 'USER_ENTERED',
-        resource: {
+    const data = [
+        {
+            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.taskColumnIndex)}${row}`,
             values: [
-                [taskname, taskaction],
-            ],
+                [taskname]
+            ]
         },
+        {
+            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.actionColumnIndex)}${row}`,
+            values: [
+                [taskaction]
+            ]
+        },
+    ];
+    let params = {
+        spreadsheetId: userData.spreadID,
+        resource: {
+            data: data,
+            valueInputOption: "USER_ENTERED"
+        }
     };
+    console.log("params", params);
 
-    console.log("param", param);
-    let res = await gapi.client.sheets.spreadsheets.values.update(param);
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
+
+    console.log(res);
+    return res;
+}
+
+async function doTaskDeleteItem(taskid) {
+    if (!userData.spreadID) {
+        showError("No spread id");
+        return;
+    }
+    // Get the sheet of current month
+    if (!userData.todaySheetID) {
+        showError("No todaySheetID");
+        return;
+    }
+
+    // First, find the row of the task
+    let colIndexes = {}
+    let tasks = await doGetTasks(colIndexes);
+    let row = -1;
+    for (let task of tasks) {
+        if (task.getId() == taskid) {
+            row = task.getRow();
+            break;
+        }
+    }
+    if (row <= 0) {
+        showError(`Illegal row ${row}`);
+        throw new Error(`Illegal row ${row}`);
+    }
+
+    const data = [
+        {
+            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.stateColumnIndex)}${row}`,
+            values: [
+                ["deleted"]
+            ]
+        },
+    ];
+    let params = {
+        spreadsheetId: userData.spreadID,
+        resource: {
+            data: data,
+            valueInputOption: "USER_ENTERED"
+        }
+    };
+    console.log("params", params);
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
+
     console.log(res);
     return res;
 }
