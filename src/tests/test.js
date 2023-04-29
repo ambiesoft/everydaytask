@@ -105,7 +105,7 @@ function test_getTaskToday() {
     appendHeadText("test_getTaskToday")
     let [start, end] = getTaskToday(
         new Date("2000/1/1 8:00"),
-        new Task(0, 0, "", null, "7:59", "10:00"));
+        new Task(0, 0, "", null, null, "7:59", "10:00"));
 
     isEqual(start.getFullYear(), end.getFullYear(), 'same year', toHere(new Error()));
     isEqual(start.getMonth(), end.getMonth(), 'same month', toHere(new Error()));
@@ -122,7 +122,7 @@ function test_getTaskYesterday() {
     {
         let [start, end] = getTaskYesterday(
             new Date("2000/1/1 8:00"),
-            new Task(0, 0, "", null, "7:59", "10:00"));
+            new Task(0, 0, "", null, null, "7:59", "10:00"));
 
         isEqual(start.getFullYear(), end.getFullYear(), 'same year', toHere(new Error()));
         isEqual(start.getMonth(), end.getMonth(), 'same month', toHere(new Error()));
@@ -137,7 +137,7 @@ function test_getTaskYesterday() {
     {
         let [start, end] = getTaskYesterday(
             new Date("2000/1/1 8:00"),
-            new Task(0, 0, "", null, "8:00", "31:59"));
+            new Task(0, 0, "", null, null, "8:00", "31:59"));
 
         isEqual(start.getFullYear(), 1999, 'last year', toHere(new Error()));
         isEqual(start.getMonth() + 1, 12, 'last month', toHere(new Error()));
@@ -156,11 +156,11 @@ function test_getTaskTodayYesterdayCompare() {
     appendHeadText("test_getTaskTodayYesterdayCompare")
     let [tstart, tend] = getTaskToday(
         new Date("2000/1/1 8:00"),
-        new Task(0, 0, "", null, "7:59", "10:00"));
+        new Task(0, 0, "", null, null, "7:59", "10:00"));
 
     let [ystart, yend] = getTaskYesterday(
         new Date("2000/1/1 8:00"),
-        new Task(0, 0, "", null, "7:59", "10:00"));
+        new Task(0, 0, "", null, null, "7:59", "10:00"));
     {
         const diffInMs = tstart.getTime() - ystart.getTime();
         const diffInHours = diffInMs / (1000 * 60 * 60);
@@ -179,32 +179,32 @@ function test_checkTaskTime() {
     isTrue(checkTaskTime(new Task(0, 0, "", null, "0:0")),
         'empty endtime must be OK', toHere(new Error()));
 
-    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "10:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, null, "10:00")),
         'empty stattime must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "0:0", "10:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "0:0", "10:00")),
         '0:0 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "0:00", "10:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "0:00", "10:00")),
         '0:00 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "01:0", "10:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "01:0", "10:00")),
         '01:0 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "01:01", "10:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "01:01", "10:00")),
         '01:01 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "12:12", "15:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "12:12", "15:00")),
         '12:12 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "23:59", "30:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "23:59", "30:00")),
         '0:0 must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "24:00", "25:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "24:00", "25:00")),
         '24:00 must NOT be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "10:00 AM", "25:00")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "10:00 AM", "25:00")),
         '24:00 must NOT be OK', toHere(new Error()));
 
-    isFalse(checkTaskTime(new Task(0, 0, "", null, "22:60", "23:30")),
+    isFalse(checkTaskTime(new Task(0, 0, "", null, null, "22:60", "23:30")),
         '22:60 must NOT be OK', toHere(new Error()));
-    isFalse(checkTaskTime(new Task(0, 0, "", null, "10:00", "9:30")),
+    isFalse(checkTaskTime(new Task(0, 0, "", null, null, "10:00", "9:30")),
         'starttime must be smaller', toHere(new Error()));
-    isFalse(checkTaskTime(new Task(0, 0, "", null, "-1:00", "9:30")),
+    isFalse(checkTaskTime(new Task(0, 0, "", null, null, "-1:00", "9:30")),
         'Minus must NOT be OK', toHere(new Error()));
-    isFalse(checkTaskTime(new Task(0, 0, "", null, "1:00", "1:00")),
+    isFalse(checkTaskTime(new Task(0, 0, "", null, null, "1:00", "1:00")),
         'same date must NOT be OK', toHere(new Error()));
 
 }

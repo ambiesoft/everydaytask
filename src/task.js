@@ -8,12 +8,13 @@ class Item {
     }
 }
 class Task extends Item {
-    constructor(row, id, name, action, starttime, endtime, enabled) {
+    constructor(row, id, name, action, memo, starttime, endtime, enabled) {
         super();
         this.row = row;
         this.id = id;
         this.name = name;
         this.action = action;
+        this.memo = memo;
         this.starttime = starttime;
         this.endtime = endtime;
         this.enabled = enabled;
@@ -31,6 +32,9 @@ class Task extends Item {
     }
     getAction() {
         return this.action;
+    }
+    getMemo() {
+        return this.memo ?? "";
     }
     getStartTime() {
         return this.starttime;

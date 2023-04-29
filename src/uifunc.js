@@ -118,3 +118,4 @@ function updateTitle(tasks) {
     const totalTaskCount = tasks.filter((task) => task.getId() > 0).length;
     document.title = `${APP_NAME} (${checkedCount}/${totalTaskCount})`;
 }
+

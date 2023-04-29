@@ -377,6 +377,7 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
     colIndexes.taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
     colIndexes.actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
     colIndexes.stateColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STATE);
+    colIndexes.memoColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_MEMO);
     colIndexes.createdColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_CREATED);
     colIndexes.startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
     colIndexes.endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
@@ -435,6 +436,7 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
                 rowdata[colIndexes.iDColumnIndex],
                 rowdata[colIndexes.taskColumnIndex],
                 rowdata[colIndexes.actionColumnIndex],
+                rowdata[colIndexes.memoColumnIndex],
                 rowdata[colIndexes.startTimeColumnIndex],
                 rowdata[colIndexes.endTimeColumnIndex],
                 false));
@@ -703,5 +705,5 @@ async function doAddNewTask() {
     const result = res.result;
     console.log(`${result.updatedCells} cells updated.`);
     const row = getRowFromRanges(result.updates.updatedRange);
-    return new Task(row, newID, newTaskName, null, null, null, true);
+    return new Task(row, newID, newTaskName, null, null, null, null, true);
 }

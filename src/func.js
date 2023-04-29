@@ -240,8 +240,10 @@ function appendTaskDom(task) {
     // テンプレートから要素を取得する
     const template = document.getElementById("taskTemplate");
     const itemwrapper = template.content.querySelector(".itemwrapper");
+    const itemtext = template.content.querySelector(".itemtext");
     const text = template.content.querySelector(".text");
     const timetext = template.content.querySelector(".timetext");
+    const tooltip = template.content.querySelector(".tooltip");
     const taskbutton = template.content.querySelector(".taskbutton");
     const taskeditbutton = template.content.querySelector(".taskeditbutton");
     const editbutton = template.content.querySelector(".editbutton");
@@ -266,6 +268,13 @@ function appendTaskDom(task) {
     deletebutton.dataset.id = task.getId();
     deletebutton.id = "deletebutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
+
+    itemtext.id = "itemtext" + task.getId();
+    itemtext.dataset.id = task.getId();
+
+    tooltip.id = "tooltip" + task.getId();
+    tooltip.dataset.id = task.getId();
+    tooltip.setAttribute("data-wenk", task.getMemo());
 
     text.textContent = task.getName();
     text.id = "tasktext" + task.getId();
