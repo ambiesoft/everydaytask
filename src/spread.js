@@ -341,7 +341,7 @@ function getTaskColumnRange() {
     return `A:${getAlpahFromColumnIndex(endColumn - 1)}`;
 
 }
-async function doGetTasks(colIndexes) {
+async function doGetTasks(colIndexes, bIncludesDeleted) {
     let params = {
         spreadsheetId: userData.spreadID,
         // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
@@ -403,7 +403,7 @@ async function doGetTasks(colIndexes) {
         let rowdata = retRows[i];
         if (!rowdata[colIndexes.iDColumnIndex])
             continue;
-        if (rowdata[colIndexes.stateColumnIndex] == "deleted")
+        if (!bIncludesDeleted && rowdata[colIndexes.stateColumnIndex] == "deleted")
             continue;
 
         // if searchDate < Created , skip it
@@ -668,7 +668,7 @@ async function doAddNewTask() {
     }
 
     // First, determine new ID = (max value of IDs) + 1
-    let tasks = await doGetTasks();
+    let tasks = await doGetTasks({}, true);
     let maxid = 0;
     for (const task of tasks) {
         maxid = Math.max(maxid, task.getId());
