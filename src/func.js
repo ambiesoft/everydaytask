@@ -602,7 +602,7 @@ function onDateChange(dateInput) {
 
 function onSettingsChange_ShowMemo(input) {
   console.log(input.checked);
-  Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked);
+  Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked, getCookieExpire());
 
   document.querySelectorAll(".tooltip").forEach((wenk) => {
     const taskid = wenk.dataset.id;
@@ -619,5 +619,5 @@ function onSettingsChange_ShowMemo(input) {
 }
 
 function onSettingsChange_AutoLogin(input) {
-  Cookies.set(COOKIE_SETTING_AUTO_LOGIN, input.checked);
+  Cookies.set(COOKIE_SETTING_AUTO_LOGIN, input.checked, getCookieExpire());
 }

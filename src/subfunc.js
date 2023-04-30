@@ -242,3 +242,7 @@ function getDateAsElementInput(date) {
     d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     return d.toJSON().slice(0, 10);
 }
+
+function getCookieExpire() {
+    return { expires: 3650 };
+}
