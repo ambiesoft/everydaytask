@@ -41,6 +41,9 @@ function getString(str) {
         case 'str_contact':
             if (isJA) return "コンタクト";
             else return "Contact";
+        case 'str_settings':
+            if (isJA) return "設定";
+            else return "Settings";
         default:
             console.error(`No language resource for "${str}"`);
     }
@@ -57,6 +60,7 @@ const str_no_tasks = getString("str_no_tasks");
 const str_how_to_use = getString("str_how_to_use");
 const str_privacy = getString("str_privacy");
 const str_contact = getString("str_contact");
+const str_settings = getString("str_settings");
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOMContentLoaded");
@@ -72,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setI18NLanguage("str_how_to_use");
     setI18NLanguage("str_privacy");
     setI18NLanguage("str_contact");
+    setI18NLanguage("str_settings");
 });
 
 function setI18NLanguage(str) {

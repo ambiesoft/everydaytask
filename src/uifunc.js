@@ -33,10 +33,10 @@ function togglePage(page) {
 
 var currentPage;
 var footerButtons = [
-    "howto", "privacy", "contact"
+    "howto", "privacy", "contact", "settings"
 ]
 function toggleFooter(button) {
-    // Chage buttons to narmal
+    // Change buttons to narmal
     footerButtons.forEach((b) => {
         document.getElementById(b).className = "button";
     });
@@ -51,6 +51,12 @@ function toggleFooter(button) {
 
         const template = document.getElementById(button.id + "Template");
         const html = template.content.querySelector("." + button.id + "Html");
+
+        if (button.id == "settings") {
+            template.content.getElementById("settings_showmemo").checked =
+                Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP) == "true" ? true : false;
+        }
+
         document.getElementById('otherinfo').innerHTML = "";
         document.getElementById('otherinfo').appendChild(html.cloneNode(true));
 

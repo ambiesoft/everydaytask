@@ -92,6 +92,7 @@ window.onload = () => {
     e.value = getDateAsElementInput(today);
   });
 
+  console.log(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP));
   toggleLoginButton();
 }
 
@@ -274,7 +275,8 @@ function appendTaskDom(task) {
 
     tooltip.id = "tooltip" + task.getId();
     tooltip.dataset.id = task.getId();
-    tooltip.setAttribute("data-wenk", task.getMemo());
+    tooltip.setAttribute("data-wenk",
+      Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP) == "true" ? task.getMemo() : "");
 
     text.textContent = task.getName();
     text.id = "tasktext" + task.getId();
@@ -592,4 +594,23 @@ function onDateChange(dateInput) {
 
   console.log("targetDate", targetDate);
   onGetTasks();
+}
+
+function onSettingsChange(input) {
+  console.log(input.checked);
+  Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked);
+
+  document.querySelectorAll(".tooltip").forEach((wenk) => {
+    const taskid = wenk.dataset.id;
+    if (input.checked) {
+      gTasks.forEach((task) => {
+        if (task.getId() == taskid) {
+          wenk.setAttribute("data-wenk", task.getMemo());
+        }
+      });
+    } else {
+      wenk.setAttribute("data-wenk", "");
+    }
+  });
+
 }
