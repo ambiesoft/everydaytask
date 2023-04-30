@@ -53,8 +53,10 @@ function toggleFooter(button) {
         const html = template.content.querySelector("." + button.id + "Html");
 
         if (button.id == "settings") {
-            template.content.getElementById("settings_showmemo").checked =
-                Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP) == "true" ? true : false;
+            SETID_TO_COOKIE.forEach((idcookie => {
+                template.content.getElementById(idcookie.id).checked =
+                    Cookies.get(idcookie.cookie) == "true" ? true : false;
+            }));
         }
 
         document.getElementById('otherinfo').innerHTML = "";

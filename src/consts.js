@@ -43,3 +43,15 @@ const TASK_COLUMNS = [
 ]
 
 const COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP = "ShowMemoAsToolTip";
+const COOKIE_SETTING_AUTO_LOGIN = "AutoLogin";
+
+const SETID_TO_COOKIE = [
+    {
+        id: "settings_showmemo",
+        cookie: COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP,
+    },
+    {
+        id: "settings_autologin",
+        cookie: COOKIE_SETTING_AUTO_LOGIN,
+    },
+]

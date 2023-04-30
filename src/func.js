@@ -94,6 +94,10 @@ window.onload = () => {
 
   console.log(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP));
   toggleLoginButton();
+
+  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == "true") {
+    onLogin();
+  }
 }
 
 
@@ -596,7 +600,7 @@ function onDateChange(dateInput) {
   onGetTasks();
 }
 
-function onSettingsChange(input) {
+function onSettingsChange_ShowMemo(input) {
   console.log(input.checked);
   Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked);
 
@@ -612,5 +616,8 @@ function onSettingsChange(input) {
       wenk.setAttribute("data-wenk", "");
     }
   });
+}
 
+function onSettingsChange_AutoLogin(input) {
+  Cookies.set(COOKIE_SETTING_AUTO_LOGIN, input.checked);
 }
