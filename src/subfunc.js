@@ -238,6 +238,7 @@ function getMissingRows(rows) {
 }
 
 function getDateAsElementInput(date) {
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    return date.toJSON().slice(0, 10);
+    let d = new Date(date);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toJSON().slice(0, 10);
 }
