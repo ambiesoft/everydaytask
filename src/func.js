@@ -570,20 +570,25 @@ async function onGetSpread3() {
   }
 }
 
+function resetDate(dateInput, date) {
+  document.querySelectorAll('.id_target_date').forEach((e) => {
+    e.value = getDateAsElementInput(date);
+  });
+  onDateChange(dateInput);
+}
+
 function onDateChange(dateInput) {
   if (!dateInput.value) {
-    let today = new Date();
-    document.querySelectorAll('.id_target_date').forEach((e) => {
-      e.value = getDateAsElementInput(today);
-    });
-    onDateChange(dateInput);
+    resetDate(dateInput, new Date());
     return;
   }
+
   document.querySelectorAll('.id_target_date').forEach((e) => {
     if (dateInput != e) {
       e.value = dateInput.value;
     }
   });
+
   const today = new Date();
   const selectedDate = new Date(dateInput.value);
   if (selectedDate.getFullYear() === today.getFullYear()
@@ -593,6 +598,11 @@ function onDateChange(dateInput) {
     targetDate = null;
   } else {
     console.log('選択された日付は今日ではありません');
+    if (today < selectedDate) {
+      alert("未来は設定できません");
+      resetDate(dateInput, targetDate);
+      return;
+    }
     targetDate = selectedDate;
   }
 

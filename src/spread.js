@@ -342,10 +342,12 @@ function getTaskColumnRange() {
 
 }
 async function doGetTasks(colIndexes, bIncludesDeleted) {
+    const searchDate = targetDate ? targetDate : new Date();
+
     let params = {
         spreadsheetId: userData.spreadID,
         // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
-        ranges: [`Tasks!${getTaskColumnRange()}`, `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
+        ranges: [`Tasks!${getTaskColumnRange()}`, `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:C`],
     };
     console.log("params", params);
 
@@ -397,7 +399,6 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
         return null;
     }
     // start of log sheet
-    const searchDate = targetDate ? targetDate : new Date();
 
     let tasks = [];
     for (i = 1; i < retRows.length; ++i) {
@@ -487,8 +488,8 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
             }
 
             const logDate = getLogDate(
-                userData.todaySheetYear,
-                userData.todaySheetMonth,
+                searchDate.getFullYear(),
+                searchDate.getMonth() + 1,
                 dc.values[i][0],
                 dc.values[i][2]);
 
