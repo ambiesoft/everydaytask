@@ -17,6 +17,9 @@ function getString(str) {
         case 'str_please_login_again_to_authorize':
             if (isJA) return "権限取得のために再ログインしてください";
             else return "Please login to authrize."
+        case 'str_please_login_loggingin':
+            if (isJA) return "自動ログインしています・・・";
+            else return "Now logging in..."
         case 'str_logoff':
             if (isJA) return "ログオフ";
             else return "Logoff";
@@ -52,6 +55,7 @@ const str_check_everyday_task = getString("str_check_everyday_task");
 const str_login_by_google = getString("str_login_by_google");
 const str_please_login = getString("str_please_login");
 const str_please_login_again_to_authorize = getString("str_please_login_again_to_authorize");
+const str_please_login_loggingin = getString("str_please_login_loggingin");
 const str_logoff = getString("str_logoff");
 const str_get_tasks = getString("str_get_tasks");
 const str_add_task = getString("str_add_task");

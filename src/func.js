@@ -83,6 +83,13 @@ async function initializeGapiClient() {
   toggleLoginButton();
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+  console.log("DOMContentLoaded");
+  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == "true") {
+    document.getElementById("id_please_login").innerText = str_please_login_loggingin;
+  }
+});
 window.onload = () => {
   console.log("window.onload has been called");
   console.log("gapi", gapi);

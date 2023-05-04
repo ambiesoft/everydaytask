@@ -86,17 +86,17 @@ function test_getLogDate() {
 }
 function test_isNowBeforeStartTime() {
     appendHeadText("test_isNowBeforeStartTime")
-    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, "8:00", "10:00"),
+    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, null, "8:00", "10:00"),
         new Date("2000/1/1 7:59")),
         true,
         "7:59 is before 8:00", toHere(new Error()));
 
-    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, "8:00", "10:00"),
+    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, null, "8:00", "10:00"),
         new Date("2000/1/1 8:00")),
         false,
         "8:00 is not before 8:00", toHere(new Error()));
 
-    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, "8:00", "10:00"),
+    isEqual(isNowBeforeStartTime(new Task(0, 0, "", null, null, "8:00", "10:00"),
         new Date("2000/1/1 8:01")),
         false,
         "8:01 is not before 8:00", toHere(new Error()));
@@ -176,7 +176,7 @@ function test_checkTaskTime() {
     appendHeadText("test_checkTaskTime")
     isTrue(checkTaskTime(new Task()),
         'empty time must be OK', toHere(new Error()));
-    isTrue(checkTaskTime(new Task(0, 0, "", null, "0:0")),
+    isTrue(checkTaskTime(new Task(0, 0, "", null, null, "0:0")),
         'empty endtime must be OK', toHere(new Error()));
 
     isTrue(checkTaskTime(new Task(0, 0, "", null, null, null, "10:00")),
