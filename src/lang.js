@@ -1,4 +1,18 @@
 
+// https://stackoverflow.com/a/4673436
+// First, checks if it isn't implemented yet.
+if (!String.prototype.format) {
+    String.prototype.format = function () {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+                ;
+        });
+    };
+}
+
 const isJA = navigator.language && navigator.language.substring(0, 2) == "ja";
 
 function getString(str) {
@@ -47,10 +61,18 @@ function getString(str) {
         case 'str_settings':
             if (isJA) return "設定";
             else return "Settings";
+        case 'str_confirm_delete_task':
+            if (isJA) return "タスク「{0}」を削除しますか？";
+            else return "Are you sure to delete task '{0}'?";
+        case 'str_confirm_delete_lastcheck':
+            if (isJA) return "タスク「{0}」の最後のチェックを削除しますか？";
+            else return "Are you sure to delete the last check of task '{0}'?";
         default:
             console.error(`No language resource for "${str}"`);
     }
 }
+
+// strings for elements
 const str_check_everyday_task = getString("str_check_everyday_task");
 const str_login_by_google = getString("str_login_by_google");
 const str_please_login = getString("str_please_login");
@@ -65,6 +87,10 @@ const str_how_to_use = getString("str_how_to_use");
 const str_privacy = getString("str_privacy");
 const str_contact = getString("str_contact");
 const str_settings = getString("str_settings");
+
+// strings for runtime
+const str_confirm_delete_task = getString("str_confirm_delete_task");
+const str_confirm_delete_lastcheck = getString("str_confirm_delete_lastcheck");
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOMContentLoaded");

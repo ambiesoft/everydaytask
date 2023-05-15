@@ -260,6 +260,7 @@ function appendTaskDom(task) {
     const taskeditbutton = template.content.querySelector(".taskeditbutton");
     const editbutton = template.content.querySelector(".editbutton");
     const deletebutton = template.content.querySelector(".deletebutton");
+    const deletecheckbutton = template.content.querySelector(".deletecheckbutton");
     const itemedit = template.content.querySelector(".itemedit");
     const itemeditinputname = template.content.querySelector(".itemeditinputname");
     const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
@@ -279,6 +280,8 @@ function appendTaskDom(task) {
     editbutton.id = "editbutton" + task.getId();
     deletebutton.dataset.id = task.getId();
     deletebutton.id = "deletebutton" + task.getId();
+    deletecheckbutton.dataset.id = task.getId();
+    deletecheckbutton.id = "deletecheckbutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
 
     itemtext.id = "itemtext" + task.getId();
@@ -304,6 +307,7 @@ function appendTaskDom(task) {
     taskbutton.setAttribute("origText", taskbutton.textContent);
     editbutton.setAttribute("origText", editbutton.textContent);
     deletebutton.setAttribute("origText", deletebutton.textContent);
+    deletecheckbutton.setAttribute("origText", deletecheckbutton.textContent);
 
     document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
 
@@ -390,7 +394,52 @@ async function onEditItem2(taskid) {
 
 
 
+async function onDeleteLastCheck(eb) {
+  const taskid = eb.dataset.id;
+  const taskname = gTasks.filter((task) => {
+    return task.getId() == taskid;
+  })[0].getName();
+  if (!confirm(str_confirm_delete_lastcheck.format(taskname))) {
+    return;
+  }
 
+  onDeleteLastCheck2(taskid);
+}
+async function onDeleteLastCheck2(taskid) {
+
+  let deletecheckbutton = document.getElementById("deletecheckbutton" + taskid);
+
+  if (!userData.spreadID) {
+    onGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    startWaitUI(deletecheckbutton);
+
+    // Add check on remote cell
+    const task = gTasks.filter((task) => { return task.getId() == taskid; })[0];
+    if (!task) {
+      showError(`No Task found for taskid ${taskid}`);
+      return;
+    }
+    let resUnused = await doTaskDeleteLastCheck(task);
+    console.log("res", resUnused);
+
+    // refresh tasks
+    onGetTasks()
+  } catch (err) {
+    console.error(err);
+    showErrorWithCode(err.result.error.code);
+  } finally {
+    finishWaitUI(deletecheckbutton);
+  }
+
+}
 
 
 
@@ -398,6 +447,13 @@ async function onEditItem2(taskid) {
 
 async function onDeleteItem(eb) {
   const taskid = eb.dataset.id;
+  const taskname = gTasks.filter((task) => {
+    return task.getId() == taskid;
+  })[0].getName();
+  if (!confirm(str_confirm_delete_task.format(taskname))) {
+    return;
+  }
+
   onDeleteItem2(taskid);
 }
 async function onDeleteItem2(taskid) {

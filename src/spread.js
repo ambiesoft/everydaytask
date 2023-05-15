@@ -347,7 +347,7 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
     let params = {
         spreadsheetId: userData.spreadID,
         // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
-        ranges: [`Tasks!${getTaskColumnRange()}`, `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:C`],
+        ranges: [`Tasks!${getTaskColumnRange()}`, `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
     };
     console.log("params", params);
 
@@ -483,6 +483,9 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
         }
 
         for (i = 0; i < dcLen; ++i) {
+            if (dc.values[i][3] == "deleted") {
+                continue;
+            }
             if (dc.values[i][1] != task.getId()) {
                 continue;
             }
@@ -505,7 +508,7 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
     return tasks;
 }
 
-async function doTaskAction(taskid) {
+function isTodaySheetReady(date) {
     if (!userData.spreadID) {
         showError("No spread id");
         return false;
@@ -516,11 +519,19 @@ async function doTaskAction(taskid) {
         return false;
     }
 
-    const date = new Date();
     if (!isCorrectDate(date)) {
         showError("The date has been changed. Please refresh the page.");
         return false;
     }
+    return true;
+}
+
+async function doTaskAction(taskid) {
+    const date = new Date();
+    if (!isTodaySheetReady(date)) {
+        return false;
+    }
+
     const currentHOURS = date.getHours().toString().padStart(2, '0');
     const currentMINUTES = date.getMinutes().toString().padStart(2, '0');
     const currentSECONDS = date.getSeconds().toString().padStart(2, '0');
@@ -550,6 +561,7 @@ async function doTaskAction(taskid) {
 
     return true;
 }
+
 async function doTaskEditItem(taskid, taskname, taskaction) {
     if (!userData.spreadID) {
         showError("No spread id");
@@ -606,6 +618,91 @@ async function doTaskEditItem(taskid, taskname, taskaction) {
     return res;
 }
 
+async function doTaskDeleteLastCheck(task) {
+    const date = new Date();
+    if (!isTodaySheetReady(date)) {
+        return false;
+    }
+
+    const searchDate = date;
+    let params = {
+        spreadsheetId: userData.spreadID,
+        ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
+    };
+    console.log("params", params);
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+    console.log("responce", response);
+
+    // valueRanges[0][i] is data of today's sheet value
+    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
+        console.log("No check data found");
+        return false;
+    }
+
+    // find the range of deleting cell
+    const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(searchDate, task);
+    const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
+
+    let rowDeleting = -1;
+    const dc = response.result.valueRanges[0];
+    for (i = 0; i < dc.values.length; ++i) {
+        if (dc.values[i][1] == task.getId() &&
+            dc.values[i][3] != "deleted") {
+            rowDeleting = i;
+        }
+    }
+    if (rowDeleting == -1) {
+        showError(`No checks found for task '${task.getName()}'`);
+        return false;
+    }
+
+    // Check rowDeleting can be deleted
+    const logDate = getLogDate(
+        searchDate.getFullYear(),
+        searchDate.getMonth() + 1,
+        dc.values[rowDeleting][0],
+        dc.values[rowDeleting][2]);
+
+    let okToDelete = false;
+    if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
+        if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
+            okToDelete = true;
+        }
+    } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+        okToDelete = true;
+    }
+
+    if (!okToDelete) {
+        showError(`No checks found for task '${task.getName()}' in today.`);
+        return false;
+    }
+
+    // Add 'deleted' on the today' sheet
+    const data = [
+        {
+            range: `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!D${rowDeleting + 1}`,
+            values: [
+                ["deleted"]
+            ]
+        },
+    ];
+    params = {
+        spreadsheetId: userData.spreadID,
+        resource: {
+            data: data,
+            valueInputOption: "USER_ENTERED"
+        }
+    };
+    console.log("params", params);
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
+
+    console.log(res);
+    return res;
+}
 async function doTaskDeleteItem(taskid) {
     if (!userData.spreadID) {
         showError("No spread id");
