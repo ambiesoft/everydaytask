@@ -31,8 +31,8 @@ function togglePage(page) {
     }
 }
 
-var currentPage;
-var footerButtons = [
+var currentFooterPage;
+const footerButtons = [
     "howto", "privacy", "contact", "settings"
 ]
 function toggleFooter(button) {
@@ -41,10 +41,10 @@ function toggleFooter(button) {
         document.getElementById(b).className = "button";
     });
 
-    if (currentPage == button) {
+    if (currentFooterPage == button) {
         // same button clicked
         document.getElementById('otherinfo').innerHTML = "";
-        currentPage = null;
+        currentFooterPage = null;
     } else {
         // newly clicked or other button clicked
         button.className = "buttonSelected";
@@ -52,17 +52,19 @@ function toggleFooter(button) {
         const template = document.getElementById(button.id + "Template");
         const html = template.content.querySelector("." + button.id + "Html");
 
+        document.getElementById('otherinfo').innerHTML = "";
+        let copiedHtml = html.cloneNode(true);
+        copiedHtml.innerHTML = getString(`str_${button.id}Html`);
+        document.getElementById('otherinfo').appendChild(copiedHtml);
+
         if (button.id == "settings") {
             SETID_TO_COOKIE.forEach((idcookie => {
-                template.content.getElementById(idcookie.id).checked =
+                document.getElementById(idcookie.id).checked =
                     Cookies.get(idcookie.cookie) == "true" ? true : false;
             }));
         }
 
-        document.getElementById('otherinfo').innerHTML = "";
-        document.getElementById('otherinfo').appendChild(html.cloneNode(true));
-
-        currentPage = button;
+        currentFooterPage = button;
     }
 }
 

@@ -67,6 +67,97 @@ function getString(str) {
         case 'str_confirm_delete_lastcheck':
             if (isJA) return "タスク「{0}」の最後のチェックを削除しますか？";
             else return "Are you sure to delete the last check of task '{0}'?";
+        case 'str_howtoHtml':
+            if (isJA) {
+                return `<h2>概要</h2>
+                <p class="setumei">このアプリは毎日決まってやるべきタスクを登録しておき、その達成状況を把握するためのアプリです。</p>
+                <h2 class="midashi">Googleでログイン</h2>
+                <p class="setumei">このアプリを使うためにはGoogleのアカウントを所有している必要があります。タスクのデータはあなたのGoogleドライブにスプレッドシートとして保存されます。</p>
+                <h2 class="midashi">タスクのチェック</h2>
+                <p class="setumei">
+                チェックボタンをクリックするとタスクがチェックされます。タスクのアクションにURLが指定されていればそれが開かれます。URLは複数指定することもできます。タスクを編集し、スペースや改行でURLを区切ってください。
+                </p>
+                <h2 class="midashi">タスクの編集</h2>
+                <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
+                <ul>
+                  <li>
+                    <h4 class="midashi">ID</h4>
+                    <p class="setumei">
+                      タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Task</h4>
+                    <p class="setumei">aaa</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Action</h4>
+                    <p class="setumei">bbb</p>
+                  </li>
+                </ul>
+                `;
+            } else {
+                return `<h2>summary</h2>
+                <p class="setumei">This application is for registering tasks to be done on a daily basis and keeping track of their accomplishment.</p>
+                <h2 class="midashi">Sign in with Google</h2>
+                <p class="setumei">You must own a Google account to use this application. The task data will be saved as a spreadsheet on your Google Drive.</p>
+                <h2 class="midashi">Check Tasks</h2>
+                <p class="setumei">
+                Clicking the check button will check the task. If a URL is specified in the task's action, it will be opened. Edit the task and separate the URLs with a space or a new line.
+                </p>
+                <h2 class="midashi">タスクの編集</h2>
+                <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
+                <ul>
+                  <li>
+                    <h4 class="midashi">ID</h4>
+                    <p class="setumei">
+                      タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Task</h4>
+                    <p class="setumei">aaa</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Action</h4>
+                    <p class="setumei">bbb</p>
+                  </li>
+                </ul>
+                `;
+            }
+        case 'str_privacyHtml':
+            if (isJA) {
+                return `<p>プライバシーをここに書く</p>`;
+            } else {
+                return `<p>Here privacy info</p>`;
+            }
+        case 'str_contactHtml':
+            if (isJA) {
+                return `<p>お問い合わせをここに書く</p>`;
+            } else {
+                return `<p>Here Contact info</p>`;
+            }
+        case 'str_settingsHtml':
+            if (isJA) {
+                return `<h2>設定</h2>
+                <ul>
+                  <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示
+                  </li>
+                  <li><input id="settings_autologin" type="checkbox"
+                      onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
+                  </li>
+                </ul>
+                `;
+            } else {
+                return `<h2>設定</h2>
+                <ul>
+                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示
+                            </li>
+                            <li><input id="settings_autologin" type="checkbox"
+                                onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
+                            </li>
+                          </ul>
+                `;
+            }
+
         default:
             console.error(`No language resource for "${str}"`);
     }

@@ -12,17 +12,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"
     integrity="sha512-wT7uPE7tOP6w4o28u1DN775jYjHQApdBnib5Pho4RB0Pgd9y7eSkAV1BTqQydupYDB9GBhTcQQzyNMPMV3cAew=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="consts.js?v=20230515"></script>
-  <script src="lang.js?v=20230515"></script>
-  <script src="globals.js?v=20230515"></script>
-  <script src="userdata.js?v=20230515"></script>
-  <script src="task.js?v=20230515"></script>
-  <script src="subfunc.js?v=20230515"></script>
-  <script src="uifunc.js?v=20230515"></script>
-  <script src="spread.js?v=20230515"></script>
-  <script src="func.js?v=20230515"></script>
+  <script src="consts.js?v=20230517"></script>
+  <script src="lang.js?v=20230517"></script>
+  <script src="globals.js?v=20230517"></script>
+  <script src="userdata.js?v=20230517"></script>
+  <script src="task.js?v=20230517"></script>
+  <script src="subfunc.js?v=20230517"></script>
+  <script src="uifunc.js?v=20230517"></script>
+  <script src="spread.js?v=20230517"></script>
+  <script src="func.js?v=20230517"></script>
 
-  <link rel="stylesheet" href="style.css?v=20230515">
+  <link rel="stylesheet" href="style.css?v=20230517">
 </head>
 
 <body>
@@ -135,57 +135,25 @@
 
       <template id="howtoTemplate">
         <div class="howtoHtml">
-          <h2>目的</h2>
-          <p class="setumei">このアプリは毎日決まってやるべきタスクを登録しておき、その達成状況を把握するためのアプリです。</p>
-          <h2 class="midashi">Googleでログイン</h2>
-          <p class="setumei">このアプリを使うためにはGoogleのアカウントを所有している必要があります。タスクのデータはあなたのGoogleドライブにスプレッドシートとして保存されます。</p>
-          <h2 class="midashi">タスクのチェック</h2>
-          <p class="setumei">
-            チェックボタンをクリックするとタスクがチェックされます。タスクのアクションにURLが指定されていればそれが開かれます。URLは複数指定することもできます。タスクを編集し、スペースや改行でURLを区切ってください。
-          </p>
-          <h2 class="midashi">タスクの編集</h2>
-          <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
-          <ul>
-            <li>
-              <h4 class="midashi">ID</h4>
-              <p class="setumei">
-                タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
-            </li>
-            <li>
-              <h4 class="midashi">Task</h4>
-              <p class="setumei">aaa</p>
-            </li>
-            <li>
-              <h4 class="midashi">Action</h4>
-              <p class="setumei">bbb</p>
-            </li>
-          </ul>
 
         </div>
       </template>
 
       <template id="privacyTemplate">
         <div class="privacyHtml">
-          <p>プライバシーをここに書く</p>
+
         </div>
       </template>
 
       <template id="contactTemplate">
         <div class="contactHtml">
-          <p>お問い合わせをここに書く</p>
+
         </div>
       </template>
 
       <template id="settingsTemplate">
         <div class="settingsHtml">
-          <h2>設定</h2>
-          <ul>
-            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示
-            </li>
-            <li><input id="settings_autologin" type="checkbox"
-                onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
-            </li>
-          </ul>
+
         </div>
       </template>
     </div>
@@ -194,7 +162,7 @@
       <div id="otherinfo"></div>
     </div>
     <div class="wrapper">
-      <p id="productinfo">EverydayTask v20230515 &copy; 2023 ambiesoft.com</p>
+      <p id="productinfo">EverydayTask v20230517 &copy; 2023 ambiesoft.com</p>
     </div>
   </footer>
 
