@@ -309,7 +309,13 @@ function appendTaskDom(task) {
     deletebutton.setAttribute("origText", deletebutton.textContent);
     deletecheckbutton.setAttribute("origText", deletecheckbutton.textContent);
 
-    document.getElementById('itemcontainer').appendChild(itemwrapper.cloneNode(true));
+    let node = itemwrapper.cloneNode(true);
+    document.getElementById('itemcontainer').appendChild(node);
+
+    // I18N
+    setI18NLanguage("str_delete_last_check");
+    setI18NLanguage("str_change");
+    setI18NLanguage("str_delete");
 
     if (!task.isEnabled()) {
       document.getElementById(task.getId()).className = "taskbutton-disabled";

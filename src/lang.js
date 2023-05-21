@@ -67,6 +67,15 @@ function getString(str) {
         case 'str_confirm_delete_lastcheck':
             if (isJA) return "タスク「{0}」の最後のチェックを削除しますか？";
             else return "Are you sure to delete the last check of task '{0}'?";
+        case 'str_delete_last_check':
+            if (isJA) return "最後のチェックを削除";
+            else return "Delete the last Check";
+        case 'str_change':
+            if (isJA) return "変更";
+            else return "Change";
+        case 'str_delete':
+            if (isJA) return "削除";
+            else return "Delete";
         case 'str_howtoHtml':
             if (isJA) {
                 return `<h2>概要</h2>
@@ -147,12 +156,12 @@ function getString(str) {
                 </ul>
                 `;
             } else {
-                return `<h2>設定</h2>
+                return `<h2>Options</h2>
                 <ul>
-                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示
+                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">Display Memo as tooltips
                             </li>
                             <li><input id="settings_autologin" type="checkbox"
-                                onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
+                                onchange="onSettingsChange_AutoLogin(this)">Automatic login (may require pop-up permission)
                             </li>
                           </ul>
                 `;
@@ -178,6 +187,9 @@ const str_how_to_use = getString("str_how_to_use");
 const str_privacy = getString("str_privacy");
 const str_contact = getString("str_contact");
 const str_settings = getString("str_settings");
+const str_delete_last_check = getString("str_delete_last_check");
+const str_change = getString("str_change");
+const str_delete = getString("str_delete");
 
 // strings for runtime
 const str_confirm_delete_task = getString("str_confirm_delete_task");
@@ -198,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setI18NLanguage("str_privacy");
     setI18NLanguage("str_contact");
     setI18NLanguage("str_settings");
+
 });
 
 function setI18NLanguage(str) {
