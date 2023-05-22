@@ -33,6 +33,19 @@ class Task extends Item {
     getAction() {
         return this.action;
     }
+    getFirstUrlAction() {
+        if (!this.action)
+            return null;
+        const urls = this.action.split(/\s+/);
+        if (!urls)
+            return null;
+        for (let url of urls) {
+            if (isValidURL(url)) {
+                return url;
+            }
+        }
+        return null;
+    }
     getMemo() {
         return this.memo ?? "";
     }

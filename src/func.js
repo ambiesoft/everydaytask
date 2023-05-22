@@ -115,18 +115,8 @@ function handleCredentialResponse(response) {
   const parsed = parseJwt(response.credential);
   console.log("parsed", parsed);
   cred = response.credential;
-  // gapi.auth2.authorize({
-  //   client_id: CLIENT_ID,
-  //   response_type: 'permission', // Access Token.
-  //   scope: SCOPES,
-  //   login_hint: parsed.sub,
-  // }, function (result) {
-  //   console.log(result);
-  //   onGetTasks();
-  // });
-
-  // onGetTasks();
 }
+
 function onLogin() {
   onGetTasks();
 }
@@ -252,6 +242,7 @@ function appendTaskDom(task) {
     // テンプレートから要素を取得する
     const template = document.getElementById("taskTemplate");
     const itemwrapper = template.content.querySelector(".itemwrapper");
+    const imgfavicon = template.content.querySelector(".img_favicon");
     const itemtext = template.content.querySelector(".itemtext");
     const text = template.content.querySelector(".text");
     const timetext = template.content.querySelector(".timetext");
@@ -283,6 +274,13 @@ function appendTaskDom(task) {
     deletecheckbutton.dataset.id = task.getId();
     deletecheckbutton.id = "deletecheckbutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
+
+    const firstUrl = task.getFirstUrlAction();
+    if (firstUrl) {
+      imgfavicon.src = getFaviconAsUrl(firstUrl);
+    } else {
+      imgfavicon.src = "";
+    }
 
     itemtext.id = "itemtext" + task.getId();
     itemtext.dataset.id = task.getId();

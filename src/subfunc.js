@@ -246,3 +246,8 @@ function getDateAsElementInput(date) {
 function getCookieExpire() {
     return { expires: 3650 };
 }
+
+function getFaviconAsUrl(url) {
+    const retUrl = `https://s2.googleusercontent.com/s2/favicons?domain_url=${encodeURIComponent(url)}`;
+    return retUrl;
+}
