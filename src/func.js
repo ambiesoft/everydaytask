@@ -538,9 +538,11 @@ async function onTaskAction(el) {
     }
     // open URL action if any
     if (el.dataset.taskaction) {
-      const urls = el.dataset.taskaction.split(/\s+/);
-      console.log("urls", urls);
-      for (url of urls) {
+      let urls = el.dataset.taskaction.split(/\s+/);
+      if (Cookies.get(COOKIE_SETTING_REVERSE_URLOPEN) == "true") {
+        urls = urls.reverse();
+      }
+      for (let url of urls) {
         if (isValidURL(url)) {
           console.log("Opening", url);
           window.open(url, "_blank");
@@ -701,4 +703,7 @@ function onSettingsChange_AutoLogin(input) {
 
 function onSettingsChange_Favicon(input) {
   Cookies.set(COOKIE_SETTING_DISPLAY_FAVICON, input.checked, getCookieExpire());
+}
+function onSettingsChange_ReverseUrlOpen(input) {
+  Cookies.set(COOKIE_SETTING_REVERSE_URLOPEN, input.checked, getCookieExpire());
 }

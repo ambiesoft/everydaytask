@@ -153,6 +153,7 @@ function getString(str) {
                       onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
                   </li>
                   <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Faviconを表示</li>
+                  <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">アクションのURLを開く順番を逆にする</li>
                 </ul>
                 `;
             } else {
@@ -163,6 +164,7 @@ function getString(str) {
                                 onchange="onSettingsChange_AutoLogin(this)">Automatic login (may require pop-up permission)
                             </li>
                             <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Display Favicon</li>
+                            <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">Reverse the order of opening URLs in the action</li>
                           </ul>
                 `;
             }

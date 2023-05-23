@@ -45,6 +45,7 @@ const TASK_COLUMNS = [
 const COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP = "ShowMemoAsToolTip";
 const COOKIE_SETTING_AUTO_LOGIN = "AutoLogin";
 const COOKIE_SETTING_DISPLAY_FAVICON = "DisplayFavicon";
+const COOKIE_SETTING_REVERSE_URLOPEN = "ReverseUrlOpen";
 
 const SETID_TO_COOKIE = [
     {
@@ -58,5 +59,9 @@ const SETID_TO_COOKIE = [
     {
         id: "settings_showfavicon",
         cookie: COOKIE_SETTING_DISPLAY_FAVICON,
+    },
+    {
+        id: "settings_reverseUrlOpen",
+        cookie: COOKIE_SETTING_REVERSE_URLOPEN,
     },
 ]
