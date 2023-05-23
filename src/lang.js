@@ -147,22 +147,22 @@ function getString(str) {
         case 'str_settingsHtml':
             if (isJA) {
                 return `<h2>設定</h2>
-                <ul>
-                  <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示
-                  </li>
+                <ul class="settings_list">
+                  <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">メモをツールチップで表示</li>
                   <li><input id="settings_autologin" type="checkbox"
                       onchange="onSettingsChange_AutoLogin(this)">自動でログインする（ポップアップの許可が必要になる場合があります）
                   </li>
+                  <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Faviconを表示</li>
                 </ul>
                 `;
             } else {
                 return `<h2>Options</h2>
-                <ul>
-                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">Display Memo as tooltips
-                            </li>
+                <ul class="settings_list">
+                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">Display Memo as tooltips</li>
                             <li><input id="settings_autologin" type="checkbox"
                                 onchange="onSettingsChange_AutoLogin(this)">Automatic login (may require pop-up permission)
                             </li>
+                            <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Display Favicon</li>
                           </ul>
                 `;
             }

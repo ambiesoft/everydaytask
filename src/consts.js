@@ -44,6 +44,7 @@ const TASK_COLUMNS = [
 
 const COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP = "ShowMemoAsToolTip";
 const COOKIE_SETTING_AUTO_LOGIN = "AutoLogin";
+const COOKIE_SETTING_DISPLAY_FAVICON = "DisplayFavicon";
 
 const SETID_TO_COOKIE = [
     {
@@ -53,5 +54,9 @@ const SETID_TO_COOKIE = [
     {
         id: "settings_autologin",
         cookie: COOKIE_SETTING_AUTO_LOGIN,
+    },
+    {
+        id: "settings_showfavicon",
+        cookie: COOKIE_SETTING_DISPLAY_FAVICON,
     },
 ]

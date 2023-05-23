@@ -275,11 +275,12 @@ function appendTaskDom(task) {
     deletecheckbutton.id = "deletecheckbutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
 
-    const firstUrl = task.getFirstUrlAction();
-    if (firstUrl) {
-      imgfavicon.src = getFaviconAsUrl(firstUrl);
-    } else {
-      imgfavicon.src = "";
+    imgfavicon.src = "";
+    if (Cookies.get(COOKIE_SETTING_DISPLAY_FAVICON) == "true") {
+      const firstUrl = task.getFirstUrlAction();
+      if (firstUrl) {
+        imgfavicon.src = getFaviconAsUrl(firstUrl);
+      }
     }
 
     itemtext.id = "itemtext" + task.getId();
@@ -678,7 +679,6 @@ function onDateChange(dateInput) {
 }
 
 function onSettingsChange_ShowMemo(input) {
-  console.log(input.checked);
   Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked, getCookieExpire());
 
   document.querySelectorAll(".tooltip").forEach((wenk) => {
@@ -697,4 +697,8 @@ function onSettingsChange_ShowMemo(input) {
 
 function onSettingsChange_AutoLogin(input) {
   Cookies.set(COOKIE_SETTING_AUTO_LOGIN, input.checked, getCookieExpire());
+}
+
+function onSettingsChange_Favicon(input) {
+  Cookies.set(COOKIE_SETTING_DISPLAY_FAVICON, input.checked, getCookieExpire());
 }
