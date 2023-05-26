@@ -87,25 +87,32 @@ function getString(str) {
                 チェックボタンをクリックするとタスクがチェックされます。タスクのアクションにURLが指定されていればそれが開かれます。URLは複数指定することもできます。タスクを編集し、スペースや改行でURLを区切ってください。
                 </p>
                 <h2 class="midashi">タスクの編集</h2>
-                <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
+                <p class="setumei">タスクは「EverydayTask - Ambiesoft.com」という名前のスプレッドシートで保存されています。このスプレッドシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
                 <ul>
                   <li>
                     <h4 class="midashi">ID</h4>
-                    <p class="setumei">
-                      タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
+                    <p class="setumei">タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
                   </li>
                   <li>
                     <h4 class="midashi">Task</h4>
-                    <p class="setumei">aaa</p>
+                    <p class="setumei">タスクの名前です。</p>
                   </li>
                   <li>
                     <h4 class="midashi">Action</h4>
-                    <p class="setumei">bbb</p>
+                    <p class="setumei">タスクのチェックボタンをクリックしたときに開くURLです。スペースや改行で区切って複数指定できます。</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Memo</h4>
+                    <p class="setumei">メモです。好きな値を設定できます。設定を変更してこの値をポップアップすることもできます。</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Start Time, End Time</h4>
+                    <p class="setumei">タスクをチェックできる有効な時間間隔です。0:00から48:00まで指定できますが、その間隔は最大で24時間です。</p>
                   </li>
                 </ul>
                 `;
             } else {
-                return `<h2>summary</h2>
+                return `<h2>Summary</h2>
                 <p class="setumei">This application is for registering tasks to be done on a daily basis and keeping track of their accomplishment.</p>
                 <h2 class="midashi">Sign in with Google</h2>
                 <p class="setumei">You must own a Google account to use this application. The task data will be saved as a spreadsheet on your Google Drive.</p>
@@ -113,21 +120,28 @@ function getString(str) {
                 <p class="setumei">
                 Clicking the check button will check the task. If a URL is specified in the task's action, it will be opened. Edit the task and separate the URLs with a space or a new line.
                 </p>
-                <h2 class="midashi">タスクの編集</h2>
-                <p class="setumei">タスクはスプレッドシートで保存されています。このシートのTasksシートを編集することでタスクを編集できます。このシートは以下のようなコラムで構成されています。</p>
+                <h2 class="midashi">Edit Tasks</h2>
+                <p class="setumei">Tasks are stored in a spreadsheet named "EverydayTask - Ambiesoft.com". You can edit a task by editing the Tasks sheet in this spreadsheet. This sheet consists of the following columns:</p>
                 <ul>
                   <li>
                     <h4 class="midashi">ID</h4>
-                    <p class="setumei">
-                      タスクの識別子です。一度決まった値は変更しないでください。1以上の整数です。IDに文字列separatorを指定し、Taskに文字列を指定するとタスクの区切りをつくることができます。</p>
+                    <p class="setumei">The identifier of the task. Do not change the value once it is determined. ID is an integer greater than or equal to 1. You can create a task separator by specifying a string separator for ID and a string for Task.</p>
                   </li>
                   <li>
                     <h4 class="midashi">Task</h4>
-                    <p class="setumei">aaa</p>
+                    <p class="setumei">The name of the task.</p>
                   </li>
                   <li>
                     <h4 class="midashi">Action</h4>
-                    <p class="setumei">bbb</p>
+                    <p class="setumei">The URL to be opened when the check button of the task is clicked. You can specify multiple URLs separated by spaces or line breaks.</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Memo</h4>
+                    <p class="setumei">Memo. You can set any value you like. You can also change the setting to populate this value.</p>
+                  </li>
+                  <li>
+                    <h4 class="midashi">Start Time, End Time</h4>
+                    <p class="setumei">The valid time interval at which tasks can be checked, from 0:00 to 48:00, with a maximum interval of 24 hours.</p>
                   </li>
                 </ul>
                 `;
