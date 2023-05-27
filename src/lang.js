@@ -148,15 +148,15 @@ function getString(str) {
             }
         case 'str_privacyHtml':
             if (isJA) {
-                return `<p>プライバシーをここに書く</p>`;
+                return `<p>このアプリはデータ保存と認証にGoogleを使用しており、Google以外のサーバーにはデータは保存されません。</p>`;
             } else {
-                return `<p>Here privacy info</p>`;
+                return `<p>This app uses Google for data storage and authentication and does not store data on non-Google servers.</p>`;
             }
         case 'str_contactHtml':
             if (isJA) {
-                return `<p>お問い合わせをここに書く</p>`;
+                return `<p><a href="https://ambiesoft.github.io/webjumper/?target=bbs" target="_blank">BBS</a>または<a href="mailto:ambiesoft.trueff@gmail.com">メール</a>でお問い合わせください。</p>`;
             } else {
-                return `<p>Here Contact info</p>`;
+                return `<p>Please contact us via <a href="https://ambiesoft.github.io/webjumper/?target=bbs" target="_blank">BBS</a> or <a href="mailto:ambiesoft.trueff@gmail.com">email</a>.</p>`;
             }
         case 'str_settingsHtml':
             if (isJA) {
