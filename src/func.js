@@ -329,6 +329,7 @@ function appendTaskDom(task) {
     const template = document.getElementById("emptyTemplate");
     const emptyTask = template.content.querySelector(".emptyTask");
     document.getElementById('itemcontainer').appendChild(emptyTask.cloneNode(true));
+    setI18NLanguage("str_no_tasks");
   } else {
     console.error("Unkown task type")
   }

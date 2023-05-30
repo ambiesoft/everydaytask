@@ -1,4 +1,5 @@
 const APP_NAME = "EverydayTask";
+const SITE_URL = "https://ambiesoft.com/everydaytask/";
 
 const CLIENT_ID = '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
 // const API_KEY = 'AIzaSyBwo4I6oVCzFCW3X10Dch0AIJeTLR0VmK8';

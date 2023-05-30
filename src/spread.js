@@ -30,7 +30,7 @@ async function doCreateSpread() {
                                         // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
                                         "userEnteredValue": {
                                             // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": "AAAAAAAAA",
+                                            "stringValue": str_sheet_title,
                                         },
                                     },
                                 ],
@@ -42,7 +42,7 @@ async function doCreateSpread() {
                                         // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
                                         "userEnteredValue": {
                                             // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": "BBBBBBBBBBBBBBBB",
+                                            "stringValue": str_sheet_explanation,
                                         },
                                     },
                                 ],
@@ -505,7 +505,7 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
             }
         }
     }
-    return tasks;
+    return tasks.length != 0 ? tasks : [new ItemEmpty()];
 }
 
 function isTodaySheetReady(date) {

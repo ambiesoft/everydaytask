@@ -182,6 +182,14 @@ function getString(str) {
                           </ul>
                 `;
             }
+        case 'str_sheet_title':
+            return 'EverydayTask';
+        case 'str_sheet_explanation':
+            if (isJA) {
+                return `このスプレッドシートは ${SITE_URL} で自動で作成されました。アプリのデータはこのスプレッドシートで管理されます。`;
+            } else {
+                return `This spreadsheet was created automatically by ${SITE_URL}. The app data is managed in this spreadsheet.`;
+            }
 
         default:
             console.error(`No language resource for "${str}"`);
@@ -206,6 +214,9 @@ const str_settings = getString("str_settings");
 const str_delete_last_check = getString("str_delete_last_check");
 const str_change = getString("str_change");
 const str_delete = getString("str_delete");
+const str_sheet_title = getString("str_sheet_title");
+const str_sheet_explanation = getString("str_sheet_explanation");
+
 
 // strings for runtime
 const str_confirm_delete_task = getString("str_confirm_delete_task");
