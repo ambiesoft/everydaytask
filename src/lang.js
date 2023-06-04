@@ -1,5 +1,6 @@
 
 // https://stackoverflow.com/a/4673436
+// Create String.format function
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
     String.prototype.format = function () {
@@ -13,7 +14,37 @@ if (!String.prototype.format) {
     };
 }
 
-const isJA = navigator.language && navigator.language.substring(0, 2) == "ja";
+const langList = [
+    'default',
+    'en',
+    'ja',
+]
+function getLangIndex(lang) {
+    for (let i = 0; i < langList.length; ++i) {
+        if (lang == langList[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+function appendLangOption(langSelect, curLangIndex) {
+    for (let i = 0; i < langList.length; ++i) {
+        let option = document.createElement("option");
+        option.text = langList[i];
+        option.value = i;
+        if (i == curLangIndex) {
+            option.selected = true;
+        }
+        langSelect.appendChild(option);
+    }
+}
+
+const isJA = navigator.language &&
+    (
+        (Cookies.get(COOKIE_SETTING_LANG) == 2) ||
+        ((Cookies.get(COOKIE_SETTING_LANG) == 0) || (!Cookies.get(COOKIE_SETTING_LANG)) && navigator.language.substring(0, 2) == "ja")
+    );
+console.log("isJA", isJA);
 
 function getString(str) {
     switch (str) {
@@ -168,18 +199,20 @@ function getString(str) {
                   </li>
                   <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Faviconを表示</li>
                   <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">アクションのURLを開く順番を逆にする</li>
+                  <li><label id="settings_lang_label" for="settings_lang">言語：</label><select id="settings_lang" name="settings_lang"></select></li>
                 </ul>
                 `;
             } else {
                 return `<h2>Options</h2>
                 <ul class="settings_list">
-                            <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">Display Memo as tooltips</li>
-                            <li><input id="settings_autologin" type="checkbox"
-                                onchange="onSettingsChange_AutoLogin(this)">Automatic login (may require pop-up permission)
-                            </li>
-                            <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Display Favicon</li>
-                            <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">Reverse the order of opening URLs in the action</li>
-                          </ul>
+                    <li><input id="settings_showmemo" type="checkbox" onchange="onSettingsChange_ShowMemo(this)">Display Memo as tooltips</li>
+                    <li><input id="settings_autologin" type="checkbox"
+                      onchange="onSettingsChange_AutoLogin(this)">Automatic login (may require pop-up permission)
+                    </li>
+                    <li><input id="settings_showfavicon" type="checkbox" onchange="onSettingsChange_Favicon(this)">Display Favicon</li>
+                    <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">Reverse the order of opening URLs in the action</li>
+                    <li><label id="settings_lang_label" for="settings_lang">Language:</label><select id="settings_lang" name="settings_lang"></select></li>
+                </ul>
                 `;
             }
         case 'str_sheet_title':

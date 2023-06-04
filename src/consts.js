@@ -66,3 +66,5 @@ const SETID_TO_COOKIE = [
         cookie: COOKIE_SETTING_REVERSE_URLOPEN,
     },
 ]
+
+const COOKIE_SETTING_LANG = "Language";

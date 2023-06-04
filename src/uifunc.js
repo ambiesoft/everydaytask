@@ -62,6 +62,21 @@ function toggleFooter(button) {
                 document.getElementById(idcookie.id).checked =
                     Cookies.get(idcookie.cookie) == "true" ? true : false;
             }));
+
+            let curLangIndex = Cookies.get(COOKIE_SETTING_LANG);
+            if (curLangIndex < 0)
+                curLangIndex = 0;
+
+            // Create lang combo
+            let langSelect = document.getElementById("settings_lang");
+            appendLangOption(langSelect, curLangIndex);
+
+            // set current lang
+            // Create event handler
+            langSelect.addEventListener('change', event => {
+                console.log(langSelect.selectedIndex);
+                Cookies.set(COOKIE_SETTING_LANG, langSelect.selectedIndex);
+            });
         }
 
         currentFooterPage = button;
