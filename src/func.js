@@ -510,7 +510,8 @@ async function onTaskAction(el) {
   console.log(el.dataset);
 
   if (el.dataset.taskenabled != "true") {
-    alert(`このタスクの有効な時刻は${el.dataset.taskstarttime}から${el.dataset.taskendtime}です。`);
+    // alert(`このタスクの有効な時刻は${el.dataset.taskstarttime}から${el.dataset.taskendtime}です。`);
+    console.log('Task is disabled');
     return;
   }
   if (!userData.spreadID) {
