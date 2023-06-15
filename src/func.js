@@ -709,3 +709,10 @@ function onSettingsChange_Favicon(input) {
 function onSettingsChange_ReverseUrlOpen(input) {
   Cookies.set(COOKIE_SETTING_REVERSE_URLOPEN, input.checked, getCookieExpire());
 }
+
+function onScrollToTop() {
+  window.scroll({ top: 0, behavior: "smooth" });
+}
+function onScrollToBottom() {
+  window.scroll({ top: document.body.scrollHeight, behavior: "smooth" });
+}
