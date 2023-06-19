@@ -75,7 +75,7 @@ function toggleFooter(button) {
             // Create event handler
             langSelect.addEventListener('change', event => {
                 console.log(langSelect.selectedIndex);
-                Cookies.set(COOKIE_SETTING_LANG, langSelect.selectedIndex);
+                Cookies.set(COOKIE_SETTING_LANG, langSelect.selectedIndex, getCookieExpire());
             });
         }
 
