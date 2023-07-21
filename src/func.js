@@ -30,13 +30,13 @@ async function gisLoaded() {
           console.log("token compare", gapi.client.getToken(), access_token);
           if (gapi.client.getToken().access_token == access_token) {
             // the token expires
-            if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
-              // "Yes" がクリックされた場合の処理
-              location.reload();
-            } else {
-              // "No" がクリックされた場合の処理
-              gapi.client.setToken();
-            }
+            // if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
+            //   // "Yes" がクリックされた場合の処理
+            //   location.reload();
+            // } else {
+            //   // "No" がクリックされた場合の処理
+            //   gapi.client.setToken();
+            // }
           }
         },
           tokenResponce.expires_in * 1000, // timeout
