@@ -37,6 +37,7 @@ async function gisLoaded() {
             //   // "No" がクリックされた場合の処理
             //   gapi.client.setToken();
             // }
+            gapi.client.setToken();
           }
         },
           tokenResponce.expires_in * 1000, // timeout
