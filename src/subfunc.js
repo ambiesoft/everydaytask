@@ -18,6 +18,14 @@ function isPositiveInteger(num) {
     return Number(num) > 0;
 }
 
+function getDateFromInputDateValue(dateString) {
+    const dateParts = dateString.split("-");
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10);
+    const day = parseInt(dateParts[2], 10);
+    return new Date(year, month - 1, day);
+}
+
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

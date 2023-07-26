@@ -186,7 +186,10 @@ async function onGetTasks() {
         showError("Tasks must be not empty or null");
       }
     }
-  } finally {
+  } catch (err) {
+    showError(err);
+  }
+  finally {
     finishWaitUI(Array.from(document.querySelectorAll(`[btnType=getTask]`)));
   }
 }
@@ -663,7 +666,8 @@ function onDateChange(dateInput) {
   });
 
   const today = new Date();
-  const selectedDate = new Date(dateInput.value);
+  const selectedDate = getDateFromInputDateValue(dateInput.value);
+
   if (selectedDate.getFullYear() === today.getFullYear()
     && selectedDate.getMonth() === today.getMonth()
     && selectedDate.getDate() === today.getDate()) {
