@@ -70,8 +70,8 @@ class Task extends Item {
         this.checked = b;
     }
     getTimeRangeAsString() {
-        let s = this.starttime ? this.starttime : '0:00';
-        let e = this.endtime ? this.endtime : '24:00';
+        let s = this.starttime ?? '0:00';
+        let e = this.endtime ?? '24:00';
         return `${s} - ${e}`
     }
 }
