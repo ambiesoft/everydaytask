@@ -259,3 +259,13 @@ function getFaviconAsUrl(url) {
     const retUrl = `https://s2.googleusercontent.com/s2/favicons?domain_url=${encodeURIComponent(url)}`;
     return retUrl;
 }
+
+// 文字列か判定します。
+// https://www.paveway.info/entry/2021/08/18/javascript_isstring
+function isString(value) {
+    if (typeof value === "string" || value instanceof String) {
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -83,8 +83,15 @@ function toggleFooter(button) {
     }
 }
 
+function getStringFromObject(obj) {
+    if (isString(obj)) {
+        return obj;
+    }
+    return JSON.stringify(obj);
+}
 function showError(res) {
-    window.alert(res);
+    const str = getStringFromObject(res);
+    window.alert(str);
 }
 function showErrorWithCode(code) {
     let message;

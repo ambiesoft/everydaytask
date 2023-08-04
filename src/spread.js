@@ -807,7 +807,7 @@ async function doAddNewTask() {
 }
 
 async function doGetTaskHistory(task) {
-    const searchDate = new Date();
+    const searchDate = targetDate ? targetDate : new Date();
     let params = {
         spreadsheetId: userData.spreadID,
         ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],

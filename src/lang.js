@@ -108,8 +108,8 @@ function getString(str) {
             if (isJA) return "変更";
             else return "Change";
         case 'str_history_of_this_month':
-            if (isJA) return "今月のチェック履歴";
-            else return "Check History of this month";
+            if (isJA) return "当月のチェック履歴";
+            else return "Check History of the month";
         case 'str_no_history_of_this_month':
             if (isJA) return "なし";
             else return "None";
