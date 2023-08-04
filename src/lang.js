@@ -98,12 +98,21 @@ function getString(str) {
         case 'str_confirm_delete_lastcheck':
             if (isJA) return "タスク「{0}」の最後のチェックを削除しますか？";
             else return "Are you sure to delete the last check of task '{0}'?";
+        case 'str_show_item_history':
+            if (isJA) return "チェック履歴を表示";
+            else return "Show Check History";
         case 'str_delete_last_check':
             if (isJA) return "最後のチェックを削除";
             else return "Delete the last Check";
         case 'str_change':
             if (isJA) return "変更";
             else return "Change";
+        case 'str_history_of_this_month':
+            if (isJA) return "今月のチェック履歴";
+            else return "Check History of this month";
+        case 'str_no_history_of_this_month':
+            if (isJA) return "なし";
+            else return "None";
         case 'str_delete':
             if (isJA) return "削除";
             else return "Delete";
@@ -244,6 +253,7 @@ const str_how_to_use = getString("str_how_to_use");
 const str_privacy = getString("str_privacy");
 const str_contact = getString("str_contact");
 const str_settings = getString("str_settings");
+const str_show_item_history = getString("str_show_item_history");
 const str_delete_last_check = getString("str_delete_last_check");
 const str_change = getString("str_change");
 const str_delete = getString("str_delete");

@@ -805,3 +805,40 @@ async function doAddNewTask() {
     const row = getRowFromRanges(result.updates.updatedRange);
     return new Task(row, newID, newTaskName, null, null, null, null, true);
 }
+
+async function doGetTaskHistory(task) {
+    const searchDate = new Date();
+    let params = {
+        spreadsheetId: userData.spreadID,
+        ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
+    };
+    console.log("params", params);
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+    console.log("responce", response);
+
+    const rets = [];
+    // valueRanges[0][i] is data of today's sheet value
+    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
+        console.log("No check data found");
+        return rets;
+    }
+
+    const dc = response.result.valueRanges[0];
+    for (i = 0; i < dc.values.length; ++i) {
+        // dc.values[i][0] is DAY
+        // dc.values[i][1] is taskid
+        // dc.values[i][2] is TIME
+        // dc.values[i][3] is deleted or None
+        if (dc.values[i][1] == task.getId() && dc.values[i][3] != "deleted") {
+            rets.push({
+                year: searchDate.getFullYear(),
+                month: searchDate.getMonth() + 1,
+                day: dc.values[i][0],
+                time: dc.values[i][2],
+            });
+        }
+    }
+    return rets;
+}

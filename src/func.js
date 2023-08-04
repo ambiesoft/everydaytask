@@ -255,6 +255,8 @@ function appendTaskDom(task) {
     const taskeditbutton = template.content.querySelector(".taskeditbutton");
     const editbutton = template.content.querySelector(".editbutton");
     const deletebutton = template.content.querySelector(".deletebutton");
+    const showitemhistorybutton = template.content.querySelector(".showitemhistorybutton");
+    const historydiv = template.content.querySelector(".historydiv");
     const deletecheckbutton = template.content.querySelector(".deletecheckbutton");
     const itemedit = template.content.querySelector(".itemedit");
     const itemeditinputname = template.content.querySelector(".itemeditinputname");
@@ -275,6 +277,10 @@ function appendTaskDom(task) {
     editbutton.id = "editbutton" + task.getId();
     deletebutton.dataset.id = task.getId();
     deletebutton.id = "deletebutton" + task.getId();
+    showitemhistorybutton.dataset.id = task.getId();
+    showitemhistorybutton.id = "showitemhistorybutton" + task.getId();
+    historydiv.dataset.id = task.getId();
+    historydiv.id = "historydiv" + task.getId();
     deletecheckbutton.dataset.id = task.getId();
     deletecheckbutton.id = "deletecheckbutton" + task.getId();
     itemedit.id = "itemedit" + task.getId();
@@ -316,6 +322,7 @@ function appendTaskDom(task) {
     document.getElementById('itemcontainer').appendChild(node);
 
     // I18N
+    setI18NLanguage("str_show_item_history");
     setI18NLanguage("str_delete_last_check");
     setI18NLanguage("str_change");
     setI18NLanguage("str_delete");
@@ -402,7 +409,54 @@ async function onEditItem2(taskid) {
 
 
 
+async function onShowItemHistory(eb) {
+  const taskid = eb.dataset.id;
+  const taskname = gTasks.filter((task) => {
+    return task.getId() == taskid;
+  })[0].getName();
 
+  let historydiv = document.getElementById("historydiv" + taskid);
+  historydiv.innerHTML = "";
+  console.log(taskid, taskname, eb, historydiv);
+
+  if (!userData.spreadID) {
+    onGetSpread();
+    return;
+  }
+  if (!gapi.client.getToken()) {
+    ensureToken();
+    return;
+  }
+
+  try {
+    startWaitUI(eb);
+
+    // Add check on remote cell
+    const task = gTasks.filter((task) => { return task.getId() == taskid; })[0];
+    if (!task) {
+      showError(`No Task found for taskid ${taskid}`);
+      return;
+    }
+    let taskHistory = await doGetTaskHistory(task);
+    console.log("res", taskHistory);
+    let outHtml = getString('str_history_of_this_month');
+    let hasHistory = false;
+    for (his of taskHistory) {
+      hasHistory = true;
+      outHtml += `<p class="historyentry">${his.year}/${his.month}/${his.day} ${his.time}</p>`;
+    }
+    if (!hasHistory) {
+      outHtml += '<p class="historyentry">' + getString('str_no_history_of_this_month') + '</p>';
+    }
+    historydiv.innerHTML = outHtml;
+  } catch (err) {
+    console.error(err);
+    showErrorWithCode(err.result.error.code);
+  } finally {
+    finishWaitUI(eb);
+  }
+
+}
 
 async function onDeleteLastCheck(eb) {
   const taskid = eb.dataset.id;
