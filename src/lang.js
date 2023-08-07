@@ -99,8 +99,8 @@ function getString(str) {
             if (isJA) return "タスク「{0}」の最後のチェックを削除しますか？";
             else return "Are you sure to delete the last check of task '{0}'?";
         case 'str_show_item_history':
-            if (isJA) return "チェック履歴を表示";
-            else return "Show Check History";
+            if (isJA) return "チェック履歴";
+            else return "Checks History";
         case 'str_delete_last_check':
             if (isJA) return "最後のチェックを削除";
             else return "Delete the last Check";
