@@ -102,7 +102,7 @@ function getString(str) {
             if (isJA) return "チェック履歴";
             else return "Checks History";
         case 'str_delete_last_check':
-            if (isJA) return "最後のチェックを削除";
+            if (isJA) return "最後のチェック削除";
             else return "Delete the last Check";
         case 'str_change':
             if (isJA) return "変更";
