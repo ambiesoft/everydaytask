@@ -1,10 +1,9 @@
-
 async function gisLoaded() {
-  console.log("gisLoaded is called")
+  console.log('gisLoaded is called');
 
   google.accounts.id.initialize({
     client_id: CLIENT_ID, // Replace with your Google Client ID
-    "data-callback": "handleCredentialResponse",
+    'data-callback': 'handleCredentialResponse',
   });
   // // You can skip the next instruction if you don't want to show the "Sign-in" button
   // google.accounts.id.renderButton(
@@ -20,33 +19,35 @@ async function gisLoaded() {
     scope: SCOPES,
     callback: async (tokenResponce) => {
       // This will be called after 'requestToken'
-      console.log("tokenResponce called")
-      console.log("tokenResponce", tokenResponce);
+      console.log('tokenResponce called');
+      console.log('tokenResponce', tokenResponce);
       toggleLoginButton();
       if (tokenResponce.expires_in) {
         // set timer when token expires
-        setTimeout((access_token) => {
-          // check if the previous token == current token 
-          console.log("token compare", gapi.client.getToken(), access_token);
-          if (gapi.client.getToken().access_token == access_token) {
-            // the token expires
-            // if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
-            //   // "Yes" がクリックされた場合の処理
-            //   location.reload();
-            // } else {
-            //   // "No" がクリックされた場合の処理
-            //   gapi.client.setToken();
-            // }
-            gapi.client.setToken();
-          }
-        },
+        setTimeout(
+          (access_token) => {
+            // check if the previous token == current token
+            console.log('token compare', gapi.client.getToken(), access_token);
+            if (gapi.client.getToken().access_token == access_token) {
+              // the token expires
+              // if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
+              //   // "Yes" がクリックされた場合の処理
+              //   location.reload();
+              // } else {
+              //   // "No" がクリックされた場合の処理
+              //   gapi.client.setToken();
+              // }
+              gapi.client.setToken();
+            }
+          },
           tokenResponce.expires_in * 1000, // timeout
-          tokenResponce.access_token);
+          tokenResponce.access_token
+        );
         console.log(`Timer is set in ${tokenResponce.expires_in * 1000}`);
       }
       if (tokenResponce.access_token != null) {
         authFailed = false;
-        document.getElementById("id_please_login").innerText = "";
+        document.getElementById('id_please_login').innerText = '';
         try {
           if (!userData.spreadID) {
             await onGetSpread();
@@ -57,64 +58,71 @@ async function gisLoaded() {
         }
       } else {
         authFailed = true;
-        document.getElementById("id_please_login").innerText = str_please_login_again_to_authorize;
+        document.getElementById('id_please_login').innerText =
+          str_please_login_again_to_authorize;
       }
-    }
+    },
   });
-  console.log("tokenClient", tokenClient)
+  console.log('tokenClient', tokenClient);
   gisInited = true;
 }
 
 function gapiLoaded() {
-  console.log("gapiLoaded is called")
+  console.log('gapiLoaded is called');
   gapi.load('client', initializeGapiClient);
 }
 
 /**
-* Callback after the API client is loaded. Loads the
-* discovery doc to initialize the API.
-*/
+ * Callback after the API client is loaded. Loads the
+ * discovery doc to initialize the API.
+ */
 async function initializeGapiClient() {
-  console.log("initializeGapiClient is called")
+  console.log('initializeGapiClient is called');
   await gapi.client.init({
     // apiKey: API_KEY,
-    discoveryDocs: [DISCOVERY_DOC_SCRIPT, DISCOVERY_DOC_DRIVE, DISCOVERY_DOC_SHEETS],
+    discoveryDocs: [
+      DISCOVERY_DOC_SCRIPT,
+      DISCOVERY_DOC_DRIVE,
+      DISCOVERY_DOC_SHEETS,
+    ],
   });
   gapiInited = true;
   toggleLoginButton();
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
-  console.log("DOMContentLoaded");
-  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == "true") {
-    document.getElementById("id_please_login").innerText = str_please_login_loggingin;
+  console.log('DOMContentLoaded');
+  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == 'true') {
+    document.getElementById('id_please_login').innerText =
+      str_please_login_loggingin;
   }
 });
 window.onload = () => {
-  console.log("window.onload has been called");
-  console.log("gapi", gapi);
+  console.log('window.onload has been called');
+  console.log('gapi', gapi);
 
   let today = new Date();
   document.querySelectorAll('.id_target_date').forEach((e) => {
     e.value = getDateAsElementInput(today);
   });
 
-  console.log(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP));
+  console.log(
+    COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP,
+    Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP)
+  );
   toggleLoginButton();
 
-  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == "true") {
+  if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == 'true') {
     onLogin();
   }
-}
-
+};
 
 function handleCredentialResponse(response) {
   // Here we can do whatever process with the response we want
   // Note that response.credential is a JWT ID token
-  console.log("Encoded JWT ID token: ", response);
+  console.log('Encoded JWT ID token: ', response);
   const parsed = parseJwt(response.credential);
-  console.log("parsed", parsed);
+  console.log('parsed', parsed);
   cred = response.credential;
 }
 
@@ -126,18 +134,18 @@ function isLoggedIn() {
   let loggedin = gapi.client.getToken() != null;
   loggedin &= gisInited;
   loggedin &= gapiInited;
-  console.log("loggedin", loggedin);
+  console.log('loggedin', loggedin);
   return loggedin;
 }
 function ensureToken() {
-  console.log("ensureToken", gapi.client.getToken());
-  console.log("ensureToken", tokenClient);
+  console.log('ensureToken', gapi.client.getToken());
+  console.log('ensureToken', tokenClient);
   if (gapi.client.getToken() === null) {
     // Prompt the user to select a Google Account and ask for consent to share their data
     // when establishing a new session.
     // https://developers.google.com/identity/protocols/oauth2/web-server#httprest_1
     tokenClient.requestAccessToken({
-      prompt: !authFailed ? "none" : "",
+      prompt: !authFailed ? 'none' : '',
     });
     return false;
   } else {
@@ -183,13 +191,12 @@ async function onGetTasks() {
       gTasks = tasks;
     } else {
       if (tasks !== null) {
-        showError("Tasks must be not empty or null");
+        showError('Tasks must be not empty or null');
       }
     }
   } catch (err) {
     showError(err);
-  }
-  finally {
+  } finally {
     finishWaitUI(Array.from(document.querySelectorAll(`[btnType=getTask]`)));
   }
 }
@@ -224,10 +231,12 @@ async function onAddNewTask() {
     await onEditItem2(newTask.id);
 
     // select all text of itemeditname element
-    document.getElementById("itemeditinputname" + newTask.id).select();
+    document.getElementById('itemeditinputname' + newTask.id).select();
 
     // scroll to editting element
-    scrollToElement(document.getElementById("itemeditinputaction" + newTask.id));
+    scrollToElement(
+      document.getElementById('itemeditinputaction' + newTask.id)
+    );
 
     updateTitle(gTasks);
   } catch (err) {
@@ -244,23 +253,29 @@ function clearTasksDom() {
 function appendTaskDom(task) {
   if (task instanceof Task) {
     // テンプレートから要素を取得する
-    const template = document.getElementById("taskTemplate");
-    const itemwrapper = template.content.querySelector(".itemwrapper");
-    const imgfavicon = template.content.querySelector(".img_favicon");
-    const itemtext = template.content.querySelector(".itemtext");
-    const text = template.content.querySelector(".text");
-    const timetext = template.content.querySelector(".timetext");
-    const tooltip = template.content.querySelector(".tooltip");
-    const taskbutton = template.content.querySelector(".taskbutton");
-    const taskeditbutton = template.content.querySelector(".taskeditbutton");
-    const editbutton = template.content.querySelector(".editbutton");
-    const deletebutton = template.content.querySelector(".deletebutton");
-    const showitemhistorybutton = template.content.querySelector(".showitemhistorybutton");
-    const historydiv = template.content.querySelector(".historydiv");
-    const deletecheckbutton = template.content.querySelector(".deletecheckbutton");
-    const itemedit = template.content.querySelector(".itemedit");
-    const itemeditinputname = template.content.querySelector(".itemeditinputname");
-    const itemeditinputaction = template.content.querySelector(".itemeditinputaction");
+    const template = document.getElementById('taskTemplate');
+    const itemwrapper = template.content.querySelector('.itemwrapper');
+    const imgfavicon = template.content.querySelector('.img_favicon');
+    const itemtext = template.content.querySelector('.itemtext');
+    const text = template.content.querySelector('.text');
+    const timetext = template.content.querySelector('.timetext');
+    const tooltip = template.content.querySelector('.tooltip');
+    const taskbutton = template.content.querySelector('.taskbutton');
+    const taskeditbutton = template.content.querySelector('.taskeditbutton');
+    const editbutton = template.content.querySelector('.editbutton');
+    const deletebutton = template.content.querySelector('.deletebutton');
+    const showitemhistorybutton = template.content.querySelector(
+      '.showitemhistorybutton'
+    );
+    const historydiv = template.content.querySelector('.historydiv');
+    const deletecheckbutton =
+      template.content.querySelector('.deletecheckbutton');
+    const itemedit = template.content.querySelector('.itemedit');
+    const itemeditinputname =
+      template.content.querySelector('.itemeditinputname');
+    const itemeditinputaction = template.content.querySelector(
+      '.itemeditinputaction'
+    );
 
     taskbutton.dataset.taskrow = task.getRow();
     taskbutton.dataset.taskid = task.getId();
@@ -274,84 +289,92 @@ function appendTaskDom(task) {
 
     taskeditbutton.dataset.id = task.getId();
     editbutton.dataset.id = task.getId();
-    editbutton.id = "editbutton" + task.getId();
+    editbutton.id = 'editbutton' + task.getId();
     deletebutton.dataset.id = task.getId();
-    deletebutton.id = "deletebutton" + task.getId();
+    deletebutton.id = 'deletebutton' + task.getId();
     showitemhistorybutton.dataset.id = task.getId();
-    showitemhistorybutton.id = "showitemhistorybutton" + task.getId();
+    showitemhistorybutton.id = 'showitemhistorybutton' + task.getId();
     historydiv.dataset.id = task.getId();
-    historydiv.id = "historydiv" + task.getId();
+    historydiv.id = 'historydiv' + task.getId();
     deletecheckbutton.dataset.id = task.getId();
-    deletecheckbutton.id = "deletecheckbutton" + task.getId();
-    itemedit.id = "itemedit" + task.getId();
+    deletecheckbutton.id = 'deletecheckbutton' + task.getId();
+    itemedit.id = 'itemedit' + task.getId();
 
-    imgfavicon.src = "";
-    if (Cookies.get(COOKIE_SETTING_DISPLAY_FAVICON) == "true") {
+    imgfavicon.src = '';
+    if (Cookies.get(COOKIE_SETTING_DISPLAY_FAVICON) == 'true') {
       const firstUrl = task.getFirstUrlAction();
       if (firstUrl) {
         imgfavicon.src = getFaviconAsUrl(firstUrl);
       }
     }
 
-    itemtext.id = "itemtext" + task.getId();
+    itemtext.id = 'itemtext' + task.getId();
     itemtext.dataset.id = task.getId();
 
-    tooltip.id = "tooltip" + task.getId();
+    tooltip.id = 'tooltip' + task.getId();
     tooltip.dataset.id = task.getId();
-    tooltip.setAttribute("data-wenk",
-      Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP) == "true" ? task.getMemo() : "");
+    tooltip.setAttribute(
+      'data-wenk',
+      Cookies.get(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP) == 'true'
+        ? task.getMemo()
+        : ''
+    );
 
     text.textContent = task.getName();
-    text.id = "tasktext" + task.getId();
+    text.id = 'tasktext' + task.getId();
 
     timetext.textContent = task.getTimeRangeAsString();
 
-    itemeditinputname.id = "itemeditinputname" + task.getId();
+    itemeditinputname.id = 'itemeditinputname' + task.getId();
     itemeditinputname.value = task.getName();
 
-    itemeditinputaction.id = "itemeditinputaction" + task.getId();
-    itemeditinputaction.value = task.getAction() ? task.getAction() : "";
+    itemeditinputaction.id = 'itemeditinputaction' + task.getId();
+    itemeditinputaction.value = task.getAction() ? task.getAction() : '';
 
-    taskbutton.textContent = (task.isChecked() ? CHECKMARK : UNCHECKMARK);
-    taskbutton.setAttribute("origText", taskbutton.textContent);
-    editbutton.setAttribute("origText", editbutton.textContent);
-    deletebutton.setAttribute("origText", deletebutton.textContent);
-    deletecheckbutton.setAttribute("origText", deletecheckbutton.textContent);
+    taskbutton.textContent = task.isChecked() ? CHECKMARK : UNCHECKMARK;
+    taskbutton.setAttribute('origText', taskbutton.textContent);
+    editbutton.setAttribute('origText', editbutton.textContent);
+    deletebutton.setAttribute('origText', deletebutton.textContent);
+    deletecheckbutton.setAttribute('origText', deletecheckbutton.textContent);
 
     let node = itemwrapper.cloneNode(true);
     document.getElementById('itemcontainer').appendChild(node);
 
     // I18N
-    setI18NLanguage("str_show_item_history");
-    setI18NLanguage("str_delete_last_check");
-    setI18NLanguage("str_change");
-    setI18NLanguage("str_delete");
+    setI18NLanguage('str_show_item_history');
+    setI18NLanguage('str_delete_last_check');
+    setI18NLanguage('str_change');
+    setI18NLanguage('str_delete');
 
     if (!task.isEnabled()) {
-      document.getElementById(task.getId()).className = "taskbutton-disabled";
+      document.getElementById(task.getId()).className = 'taskbutton-disabled';
     }
   } else if (task instanceof Separator) {
-    const template = document.getElementById("separatorTemplate");
-    const itemseparator = template.content.querySelector(".itemseparator");
-    const itemsep_h2 = template.content.querySelector(".itemsep_h2");
+    const template = document.getElementById('separatorTemplate');
+    const itemseparator = template.content.querySelector('.itemseparator');
+    const itemsep_h2 = template.content.querySelector('.itemsep_h2');
     itemsep_h2.innerText = task.getHeadText();
-    document.getElementById('itemcontainer').appendChild(itemseparator.cloneNode(true));
+    document
+      .getElementById('itemcontainer')
+      .appendChild(itemseparator.cloneNode(true));
   } else if (task instanceof ItemEmpty) {
-    const template = document.getElementById("emptyTemplate");
-    const emptyTask = template.content.querySelector(".emptyTask");
-    document.getElementById('itemcontainer').appendChild(emptyTask.cloneNode(true));
-    setI18NLanguage("str_no_tasks");
+    const template = document.getElementById('emptyTemplate');
+    const emptyTask = template.content.querySelector('.emptyTask');
+    document
+      .getElementById('itemcontainer')
+      .appendChild(emptyTask.cloneNode(true));
+    setI18NLanguage('str_no_tasks');
   } else {
-    console.error("Unkown task type")
+    console.error('Unkown task type');
   }
 }
 
 function toggleEdit(taskid) {
-  let itemedit = document.getElementById("itemedit" + taskid);
-  if (itemedit.style.display == "block") {
-    itemedit.style.display = "none";
+  let itemedit = document.getElementById('itemedit' + taskid);
+  if (itemedit.style.display == 'block') {
+    itemedit.style.display = 'none';
   } else {
-    itemedit.style.display = "block";
+    itemedit.style.display = 'block';
   }
 }
 function onShowEdit(taskbutton) {
@@ -364,19 +387,21 @@ async function onEditItem(eb) {
 }
 async function onEditItem2(taskid) {
   let taskbutton = document.getElementById(taskid);
-  let taskeditbutton = document.getElementById("editbutton" + taskid);
+  let taskeditbutton = document.getElementById('editbutton' + taskid);
 
   console.log(taskbutton.dataset);
-  console.log("taskbutton", taskbutton);
+  console.log('taskbutton', taskbutton);
 
   // input element
-  let itemeditinputname = document.getElementById("itemeditinputname" + taskid);
-  let itemeditinputaction = document.getElementById("itemeditinputaction" + taskid);
+  let itemeditinputname = document.getElementById('itemeditinputname' + taskid);
+  let itemeditinputaction = document.getElementById(
+    'itemeditinputaction' + taskid
+  );
   let inputtext = itemeditinputname.value;
   let inputaction = itemeditinputaction.value;
 
   // output element is taskbutton
-  tasktext = document.getElementById("tasktext" + taskid);
+  tasktext = document.getElementById('tasktext' + taskid);
 
   if (!userData.spreadID) {
     onGetSpread();
@@ -392,7 +417,7 @@ async function onEditItem2(taskid) {
 
     // Add check on remote cell
     let resUnused = await doTaskEditItem(taskid, inputtext, inputaction);
-    console.log("res", resUnused);
+    console.log('res', resUnused);
     taskbutton.dataset.taskname = inputtext;
     taskbutton.dataset.taskaction = inputaction;
     tasktext.textContent = inputtext;
@@ -404,19 +429,18 @@ async function onEditItem2(taskid) {
   } finally {
     finishWaitUI(taskeditbutton);
   }
-
 }
-
-
 
 async function onShowItemHistory(eb) {
   const taskid = eb.dataset.id;
-  const taskname = gTasks.filter((task) => {
-    return task.getId() == taskid;
-  })[0].getName();
+  const taskname = gTasks
+    .filter((task) => {
+      return task.getId() == taskid;
+    })[0]
+    .getName();
 
-  let historydiv = document.getElementById("historydiv" + taskid);
-  historydiv.innerHTML = "";
+  let historydiv = document.getElementById('historydiv' + taskid);
+  historydiv.innerHTML = '';
   console.log(taskid, taskname, eb, historydiv);
 
   if (!userData.spreadID) {
@@ -432,13 +456,15 @@ async function onShowItemHistory(eb) {
     startWaitUI(eb);
 
     // Add check on remote cell
-    const task = gTasks.filter((task) => { return task.getId() == taskid; })[0];
+    const task = gTasks.filter((task) => {
+      return task.getId() == taskid;
+    })[0];
     if (!task) {
       showError(`No Task found for taskid ${taskid}`);
       return;
     }
     let taskHistory = await doGetTaskHistory(task);
-    console.log("res", taskHistory);
+    console.log('res', taskHistory);
     let outHtml = getString('str_history_of_this_month');
     let hasHistory = false;
     for (his of taskHistory) {
@@ -446,7 +472,10 @@ async function onShowItemHistory(eb) {
       outHtml += `<p class="historyentry">${his.year}/${his.month}/${his.day} ${his.time}</p>`;
     }
     if (!hasHistory) {
-      outHtml += '<p class="historyentry">' + getString('str_no_history_of_this_month') + '</p>';
+      outHtml +=
+        '<p class="historyentry">' +
+        getString('str_no_history_of_this_month') +
+        '</p>';
     }
     historydiv.innerHTML = outHtml;
   } catch (err) {
@@ -455,14 +484,15 @@ async function onShowItemHistory(eb) {
   } finally {
     finishWaitUI(eb);
   }
-
 }
 
 async function onDeleteLastCheck(eb) {
   const taskid = eb.dataset.id;
-  const taskname = gTasks.filter((task) => {
-    return task.getId() == taskid;
-  })[0].getName();
+  const taskname = gTasks
+    .filter((task) => {
+      return task.getId() == taskid;
+    })[0]
+    .getName();
   if (!confirm(str_confirm_delete_lastcheck.format(taskname))) {
     return;
   }
@@ -470,8 +500,7 @@ async function onDeleteLastCheck(eb) {
   onDeleteLastCheck2(taskid);
 }
 async function onDeleteLastCheck2(taskid) {
-
-  let deletecheckbutton = document.getElementById("deletecheckbutton" + taskid);
+  let deletecheckbutton = document.getElementById('deletecheckbutton' + taskid);
 
   if (!userData.spreadID) {
     onGetSpread();
@@ -486,34 +515,33 @@ async function onDeleteLastCheck2(taskid) {
     startWaitUI(deletecheckbutton);
 
     // Add check on remote cell
-    const task = gTasks.filter((task) => { return task.getId() == taskid; })[0];
+    const task = gTasks.filter((task) => {
+      return task.getId() == taskid;
+    })[0];
     if (!task) {
       showError(`No Task found for taskid ${taskid}`);
       return;
     }
     let resUnused = await doTaskDeleteLastCheck(task);
-    console.log("res", resUnused);
+    console.log('res', resUnused);
 
     // refresh tasks
-    onGetTasks()
+    onGetTasks();
   } catch (err) {
     console.error(err);
     showErrorWithCode(err.result.error.code);
   } finally {
     finishWaitUI(deletecheckbutton);
   }
-
 }
-
-
-
-
 
 async function onDeleteItem(eb) {
   const taskid = eb.dataset.id;
-  const taskname = gTasks.filter((task) => {
-    return task.getId() == taskid;
-  })[0].getName();
+  const taskname = gTasks
+    .filter((task) => {
+      return task.getId() == taskid;
+    })[0]
+    .getName();
   if (!confirm(str_confirm_delete_task.format(taskname))) {
     return;
   }
@@ -521,8 +549,7 @@ async function onDeleteItem(eb) {
   onDeleteItem2(taskid);
 }
 async function onDeleteItem2(taskid) {
-
-  let taskdeletebutton = document.getElementById("deletebutton" + taskid);
+  let taskdeletebutton = document.getElementById('deletebutton' + taskid);
 
   if (!userData.spreadID) {
     onGetSpread();
@@ -538,36 +565,27 @@ async function onDeleteItem2(taskid) {
 
     // Add check on remote cell
     let resUnused = await doTaskDeleteItem(taskid);
-    console.log("res", resUnused);
+    console.log('res', resUnused);
 
     // refresh tasks
-    onGetTasks()
+    onGetTasks();
   } catch (err) {
     console.error(err);
     showErrorWithCode(err.result.error.code);
   } finally {
     finishWaitUI(taskdeletebutton);
   }
-
 }
 
-
-
-
-
-
-
-
-
 /**
-* Called when user clicks a checkbox of the task
-* @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
-*/
+ * Called when user clicks a checkbox of the task
+ * @param {element} el - button element of the checkbox, it has dataset of taskname, taskid and taskaction
+ */
 async function onTaskAction(el) {
   console.log(el);
   console.log(el.dataset);
 
-  if (el.dataset.taskenabled != "true") {
+  if (el.dataset.taskenabled != 'true') {
     // alert(`このタスクの有効な時刻は${el.dataset.taskstarttime}から${el.dataset.taskendtime}です。`);
     console.log('Task is disabled');
     return;
@@ -585,7 +603,7 @@ async function onTaskAction(el) {
     startWaitUI(el);
 
     // Add check on remote cell
-    if (!await doTaskAction(el.dataset.taskid)) {
+    if (!(await doTaskAction(el.dataset.taskid))) {
       return;
     }
 
@@ -599,20 +617,20 @@ async function onTaskAction(el) {
     // open URL action if any
     if (el.dataset.taskaction) {
       let urls = el.dataset.taskaction.split(/\s+/);
-      if (Cookies.get(COOKIE_SETTING_REVERSE_URLOPEN) == "true") {
+      if (Cookies.get(COOKIE_SETTING_REVERSE_URLOPEN) == 'true') {
         urls = urls.reverse();
       }
       for (let url of urls) {
         if (isValidURL(url)) {
-          console.log("Opening", url);
-          window.open(url, "_blank");
+          console.log('Opening', url);
+          window.open(url, '_blank');
         } else {
           console.error(`${url} is not a valid url`);
         }
       }
     }
     el.textContent = CHECKMARK;
-    el.setAttribute("origText", el.textContent);
+    el.setAttribute('origText', el.textContent);
 
     updateTitle(gTasks);
   } catch (err) {
@@ -625,11 +643,11 @@ async function onTaskAction(el) {
 
 function getFile() {
   const request = gapi.client.drive.files.get({
-    fileId: FILEID
+    fileId: FILEID,
   });
   request.execute((data) => {
     console.log(data);
-  })
+  });
 }
 
 async function onGetSpread() {
@@ -660,14 +678,14 @@ async function onGetSpread3() {
       spread = await doCreateSpread();
     }
     if (!spread) {
-      throw new Error("Failed to get Google Sheet");
+      throw new Error('Failed to get Google Sheet');
     }
 
-    console.log("spread", spread);
+    console.log('spread', spread);
     userData.spreadID = spread.result.spreadsheetId;
     userData.spreadURL = spread.result.spreadsheetUrl;
     userData.taskSheetID = spread.result.sheets[1].properties.sheetId;
-    console.log("spread id is set", userData.spreadID);
+    console.log('spread id is set', userData.spreadID);
 
     // find log sheet
     userData.todaySheetID = null;
@@ -675,7 +693,7 @@ async function onGetSpread3() {
     userData.todaySheetMonth = null;
     for (i = 2; i < spread.result.sheets.length; ++i) {
       let title = spread.result.sheets[i].properties.title;
-      const matchResult = title.match(/^(\d{4})\/(\d{1,2})$/);  // 2023/4
+      const matchResult = title.match(/^(\d{4})\/(\d{1,2})$/); // 2023/4
       if (matchResult) {
         const year = matchResult[1];
         const month = matchResult[2];
@@ -693,7 +711,7 @@ async function onGetSpread3() {
       userData.todaySheetID = res.result.replies[0].addSheet.properties.sheetId;
       userData.todaySheetYear = STARTYEAR;
       userData.todaySheetMonth = STARTMONTH;
-      console.log("logsheetid", userData.todaySheetID);
+      console.log('logsheetid', userData.todaySheetID);
     }
   } catch (e) {
     console.error(e);
@@ -722,38 +740,44 @@ function onDateChange(dateInput) {
   const today = new Date();
   const selectedDate = getDateFromInputDateValue(dateInput.value);
 
-  if (selectedDate.getFullYear() === today.getFullYear()
-    && selectedDate.getMonth() === today.getMonth()
-    && selectedDate.getDate() === today.getDate()) {
+  if (
+    selectedDate.getFullYear() === today.getFullYear() &&
+    selectedDate.getMonth() === today.getMonth() &&
+    selectedDate.getDate() === today.getDate()
+  ) {
     console.log('選択された日付は今日です');
     targetDate = null;
   } else {
     console.log('選択された日付は今日ではありません');
     if (today < selectedDate) {
-      alert("未来は設定できません");
+      alert('未来は設定できません');
       resetDate(dateInput, targetDate);
       return;
     }
     targetDate = selectedDate;
   }
 
-  console.log("targetDate", targetDate);
+  console.log('targetDate', targetDate);
   onGetTasks();
 }
 
 function onSettingsChange_ShowMemo(input) {
-  Cookies.set(COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP, input.checked, getCookieExpire());
+  Cookies.set(
+    COOKIE_SETTING_SHOWMEMO_AS_TOOLTIP,
+    input.checked,
+    getCookieExpire()
+  );
 
-  document.querySelectorAll(".tooltip").forEach((wenk) => {
+  document.querySelectorAll('.tooltip').forEach((wenk) => {
     const taskid = wenk.dataset.id;
     if (input.checked) {
       gTasks.forEach((task) => {
         if (task.getId() == taskid) {
-          wenk.setAttribute("data-wenk", task.getMemo());
+          wenk.setAttribute('data-wenk', task.getMemo());
         }
       });
     } else {
-      wenk.setAttribute("data-wenk", "");
+      wenk.setAttribute('data-wenk', '');
     }
   });
 }
@@ -770,8 +794,8 @@ function onSettingsChange_ReverseUrlOpen(input) {
 }
 
 function onScrollToTop() {
-  window.scroll({ top: 0, behavior: "smooth" });
+  window.scroll({ top: 0, behavior: 'smooth' });
 }
 function onScrollToBottom() {
-  window.scroll({ top: document.body.scrollHeight, behavior: "smooth" });
+  window.scroll({ top: document.body.scrollHeight, behavior: 'smooth' });
 }

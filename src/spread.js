@@ -1,100 +1,99 @@
 // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/create
 async function doCreateSpread() {
-    var spreadsheetBody = {
+  var spreadsheetBody = {
+    properties: {
+      title: `${SPREAD_NAME}`,
+    },
+    sheets: [
+      // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#Sheet
+      {
+        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#SheetProperties
         properties: {
-            "title": `${SPREAD_NAME}`,
+          title: 'README',
+          index: 0,
+          sheetType: 'GRID',
+          gridProperties: {
+            rowCount: 10,
+            columnCount: 26,
+          },
         },
-        "sheets": [
-            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#Sheet
-            {
-                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#SheetProperties
-                "properties": {
-                    "title": "README",
-                    "index": 0,
-                    "sheetType": "GRID",
-                    "gridProperties": {
-                        "rowCount": 10,
-                        "columnCount": 26
-                    }
-                },
-                "data": [
-                    {
-                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#GridData
-                        "startRow": 0,
-                        "startColumn": 0,
-                        "rowData": [
-                            {
-                                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
-                                "values": [
-                                    {
-                                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-                                        "userEnteredValue": {
-                                            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": str_sheet_title,
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
-                                "values": [
-                                    {
-                                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-                                        "userEnteredValue": {
-                                            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                                            "stringValue": str_sheet_explanation,
-                                        },
-                                    },
-                                ],
-                            },
-                        ],
+        data: [
+          {
+            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#GridData
+            startRow: 0,
+            startColumn: 0,
+            rowData: [
+              {
+                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
+                values: [
+                  {
+                    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
+                    userEnteredValue: {
+                      // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
+                      stringValue: str_sheet_title,
                     },
+                  },
                 ],
-            },
-            {
-                "properties": {
-                    "title": "Tasks",
-                    "index": 1,
-                    "sheetType": "GRID",
-                    "gridProperties": {
-                        "rowCount": 1,
-                        "columnCount": 26
+              },
+              {
+                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
+                values: [
+                  {
+                    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
+                    userEnteredValue: {
+                      // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
+                      stringValue: str_sheet_explanation,
                     },
-                },
-                "data": [
-                    {
-                        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#GridData
-                        "startRow": 0,
-                        "startColumn": 0,
-                        "rowData": [
-                            {
-                                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
-                                "values": [
-                                    // filled by following lines
-                                ],
-                            },
-                        ],
-                    },
+                  },
                 ],
-            },
+              },
+            ],
+          },
         ],
-    };
+      },
+      {
+        properties: {
+          title: 'Tasks',
+          index: 1,
+          sheetType: 'GRID',
+          gridProperties: {
+            rowCount: 1,
+            columnCount: 26,
+          },
+        },
+        data: [
+          {
+            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#GridData
+            startRow: 0,
+            startColumn: 0,
+            rowData: [
+              {
+                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets#RowData
+                values: [
+                  // filled by following lines
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
 
-    for (column of TASK_COLUMNS) {
-        spreadsheetBody.sheets[1].data[0].rowData[0].values.push({
-            // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
-            "userEnteredValue": {
-                // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
-                "stringValue": column,
-            },
-        });
-    }
-    console.log(spreadsheetBody);
+  for (column of TASK_COLUMNS) {
+    spreadsheetBody.sheets[1].data[0].rowData[0].values.push({
+      // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellData
+      userEnteredValue: {
+        // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue
+        stringValue: column,
+      },
+    });
+  }
+  console.log(spreadsheetBody);
 
+  const res = await gapi.client.sheets.spreadsheets.create({}, spreadsheetBody);
 
-    const res = await gapi.client.sheets.spreadsheets.create({}, spreadsheetBody);
-
-    /*
+  /*
     {
         "result": {
             "spreadsheetId": "1crN_IU_k2m-oEDiPIIrjKpeshVCrV7J7d6pe5DLBHDY",
@@ -249,19 +248,19 @@ async function doCreateSpread() {
         "statusText": null
     }
     */
-    console.log(res);
-    return res;
+  console.log(res);
+  return res;
 }
 
 // https://developers.google.com/drive/api/v3/reference/files/list
 async function doGetSpread(spreadid) {
-    if (!spreadid) {
-        let res = await gapi.client.drive.files.list({
-            q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}' and trashed = false`,
-            // fields: 'nextPageToken, files(id, name)',
-            // spaces: 'appDataFolder',
-        });
-        /*
+  if (!spreadid) {
+    let res = await gapi.client.drive.files.list({
+      q: `mimeType='application/vnd.google-apps.spreadsheet' and name='${SPREAD_NAME}' and trashed = false`,
+      // fields: 'nextPageToken, files(id, name)',
+      // spaces: 'appDataFolder',
+    });
+    /*
       {
           "result": {
               "kind": "drive#fileList",
@@ -291,554 +290,608 @@ async function doGetSpread(spreadid) {
           "statusText": null
       }  
         */
-        console.log("drive > list", res);
-        if (res.result.files.length == 0) {
-            return null;
-        }
-        spreadid = res.result.files[0].id;
+    console.log('drive > list', res);
+    if (res.result.files.length == 0) {
+      return null;
     }
+    spreadid = res.result.files[0].id;
+  }
 
-    var params = {
-        // The spreadsheet to request.
-        spreadsheetId: spreadid,  // TODO: Update placeholder value.
+  var params = {
+    // The spreadsheet to request.
+    spreadsheetId: spreadid, // TODO: Update placeholder value.
 
-        // The ranges to retrieve from the spreadsheet.
-        ranges: [],  // TODO: Update placeholder value.
+    // The ranges to retrieve from the spreadsheet.
+    ranges: [], // TODO: Update placeholder value.
 
-        // True if grid data should be returned.
-        // This parameter is ignored if a field mask was set in the request.
-        includeGridData: false,  // TODO: Update placeholder value.
-    };
+    // True if grid data should be returned.
+    // This parameter is ignored if a field mask was set in the request.
+    includeGridData: false, // TODO: Update placeholder value.
+  };
 
-    return await gapi.client.sheets.spreadsheets.get(params);
+  return await gapi.client.sheets.spreadsheets.get(params);
 }
 
 async function doGetMonthSheet(year, month) {
-    // If not the sheet, create it
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddSheetRequest
-    let param = {
-        spreadsheetId: userData.spreadID,
-        resource: {
-            requests: [
-                {
-                    'addSheet': {
-                        'properties': {
-                            'title': `${year}/${month}`,
-                        }
-                    }
-                }
-            ],
-        }
-    };
-    console.log("param", param);
-    let res = await gapi.client.sheets.spreadsheets.batchUpdate(param);
-    console.log(res);
-    return res;
+  // If not the sheet, create it
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddSheetRequest
+  let param = {
+    spreadsheetId: userData.spreadID,
+    resource: {
+      requests: [
+        {
+          addSheet: {
+            properties: {
+              title: `${year}/${month}`,
+            },
+          },
+        },
+      ],
+    },
+  };
+  console.log('param', param);
+  let res = await gapi.client.sheets.spreadsheets.batchUpdate(param);
+  console.log(res);
+  return res;
 }
 
 function getTaskColumnRange() {
-    let endColumn = TASK_COLUMNS.length;
-    return `A:${getAlpahFromColumnIndex(endColumn - 1)}`;
-
+  let endColumn = TASK_COLUMNS.length;
+  return `A:${getAlpahFromColumnIndex(endColumn - 1)}`;
 }
 async function doGetTasks(colIndexes, bIncludesDeleted) {
-    const searchDate = targetDate ? targetDate : new Date();
+  const searchDate = targetDate ? targetDate : new Date();
 
-    let params = {
-        spreadsheetId: userData.spreadID,
-        // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
-        ranges: [`Tasks!${getTaskColumnRange()}`, `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
-    };
-    console.log("params", params);
+  let params = {
+    spreadsheetId: userData.spreadID,
+    // ranges: ['Tasks!A:E', `${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
+    ranges: [
+      `Tasks!${getTaskColumnRange()}`,
+      `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`,
+    ],
+  };
+  console.log('params', params);
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-    console.log("responce", response);
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+  console.log('responce', response);
 
-    // valueRange[0] is a set of "ID", "Task", "Action", ...
-    // valueRanges[0][0] is a row of column names
-    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
-        console.log("No tasks found");
-        return [new ItemEmpty()];
-    }
+  // valueRange[0] is a set of "ID", "Task", "Action", ...
+  // valueRanges[0][0] is a row of column names
+  if (
+    !response.result.valueRanges ||
+    response.result.valueRanges[0].values.length <= 1
+  ) {
+    console.log('No tasks found');
+    return [new ItemEmpty()];
+  }
 
-    // response.result.valueRanges[0].values[0][0]==="ID"
-    const retRows = response.result.valueRanges[0].values;
-    const missingRows = getMissingRows(retRows[0]);
-    if (missingRows.length > 0) {
-        const message = `以下のTaskシートのコラムがありません\n${missingRows}`;
-        showError(message);
-        throw new Error(message);
-    }
+  // response.result.valueRanges[0].values[0][0]==="ID"
+  const retRows = response.result.valueRanges[0].values;
+  const missingRows = getMissingRows(retRows[0]);
+  if (missingRows.length > 0) {
+    const message = `以下のTaskシートのコラムがありません\n${missingRows}`;
+    showError(message);
+    throw new Error(message);
+  }
 
-    if (!colIndexes) {
-        colIndexes = {};
-    }
+  if (!colIndexes) {
+    colIndexes = {};
+  }
 
-    colIndexes.iDColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ID);
-    colIndexes.taskColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_TASK);
-    colIndexes.actionColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ACTION);
-    colIndexes.stateColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STATE);
-    colIndexes.memoColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_MEMO);
-    colIndexes.createdColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_CREATED);
-    colIndexes.startTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_STARTTIME);
-    colIndexes.endTimeColumnIndex = getColumnIndexFromColumnName(retRows[0], TASK_COLUMN_ENDTIME);
+  colIndexes.iDColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_ID
+  );
+  colIndexes.taskColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_TASK
+  );
+  colIndexes.actionColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_ACTION
+  );
+  colIndexes.stateColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_STATE
+  );
+  colIndexes.memoColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_MEMO
+  );
+  colIndexes.createdColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_CREATED
+  );
+  colIndexes.startTimeColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_STARTTIME
+  );
+  colIndexes.endTimeColumnIndex = getColumnIndexFromColumnName(
+    retRows[0],
+    TASK_COLUMN_ENDTIME
+  );
 
+  // check Duplicated id
+  let idsForDupCheck = [];
+  for (i = 1; i < retRows.length; ++i) {
+    let rowdata = retRows[i];
+    if (
+      !rowdata[colIndexes.iDColumnIndex] ||
+      !isPositiveInteger(rowdata[colIndexes.iDColumnIndex])
+    )
+      continue;
+    idsForDupCheck.push(rowdata[colIndexes.iDColumnIndex]);
+  }
+  const dupIDs = getDuplicateValues(idsForDupCheck);
+  if (dupIDs.length != 0) {
+    showError(
+      `TaskID ${dupIDs.join(
+        ','
+      )} are duplicated. Please fix them by editting the tasks.`
+    );
+    return null;
+  }
+  // start of log sheet
 
-    // check Duplicated id
-    let idsForDupCheck = [];
-    for (i = 1; i < retRows.length; ++i) {
-        let rowdata = retRows[i];
-        if (!rowdata[colIndexes.iDColumnIndex] || !isPositiveInteger(rowdata[colIndexes.iDColumnIndex]))
-            continue;
-        idsForDupCheck.push(rowdata[colIndexes.iDColumnIndex]);
-    }
-    const dupIDs = getDuplicateValues(idsForDupCheck);
-    if (dupIDs.length != 0) {
-        showError(`TaskID ${dupIDs.join(",")} are duplicated. Please fix them by editting the tasks.`);
-        return null;
-    }
-    // start of log sheet
+  let tasks = [];
+  for (i = 1; i < retRows.length; ++i) {
+    let rowdata = retRows[i];
+    if (!rowdata[colIndexes.iDColumnIndex]) continue;
+    if (!bIncludesDeleted && rowdata[colIndexes.stateColumnIndex] == 'deleted')
+      continue;
 
-    let tasks = [];
-    for (i = 1; i < retRows.length; ++i) {
-        let rowdata = retRows[i];
-        if (!rowdata[colIndexes.iDColumnIndex])
-            continue;
-        if (!bIncludesDeleted && rowdata[colIndexes.stateColumnIndex] == "deleted")
-            continue;
-
-        // if searchDate < Created , skip it
-        if (rowdata[colIndexes.createdColumnIndex]) {
-            try {
-                const createdDate = new Date(rowdata[colIndexes.createdColumnIndex]);
-                console.log("searchDate", searchDate);
-                console.log("createdDate", createdDate);
-                if (searchDate < createdDate) {
-                    console.log("Skipping task that was created before target date");
-                    continue;
-                }
-            } catch {
-                // run through if illegal date
-            }
+    // if searchDate < Created , skip it
+    if (rowdata[colIndexes.createdColumnIndex]) {
+      try {
+        const createdDate = new Date(rowdata[colIndexes.createdColumnIndex]);
+        console.log('searchDate', searchDate);
+        console.log('createdDate', createdDate);
+        if (searchDate < createdDate) {
+          console.log('Skipping task that was created before target date');
+          continue;
         }
-
-        if (!isPositiveInteger(rowdata[colIndexes.iDColumnIndex])) {
-            // Specail Item
-            switch (rowdata[colIndexes.iDColumnIndex]) {
-                case "separator":
-                    tasks.push(new Separator(rowdata[colIndexes.taskColumnIndex]));
-                    break;
-            }
-        } else {
-            // Normal Task
-            tasks.push(new Task(
-                i + 1, // first row is header
-                rowdata[colIndexes.iDColumnIndex],
-                rowdata[colIndexes.taskColumnIndex],
-                rowdata[colIndexes.actionColumnIndex],
-                rowdata[colIndexes.memoColumnIndex],
-                rowdata[colIndexes.startTimeColumnIndex],
-                rowdata[colIndexes.endTimeColumnIndex],
-                false));
-        }
+      } catch {
+        // run through if illegal date
+      }
     }
-    for (let task of tasks) {
-        if (task instanceof Task) {
-            if (!checkTaskTime(task)) {
-                showError(`TaskID ${task.getId()} has invalid time value(s)` + "\n" + getLastError());
-                return null;
-            }
-        }
-    }
-    // end of 'tasks' sheet
 
-
-
-    // valueRange[1] is a set of "Date" and "Check"
-    const dc = response.result.valueRanges[1];
-    let dcLen = 0;
-    if (!dc.values || dc.values.length <= 0) {
-        dcLen = 0;
+    if (!isPositiveInteger(rowdata[colIndexes.iDColumnIndex])) {
+      // Specail Item
+      switch (rowdata[colIndexes.iDColumnIndex]) {
+        case 'separator':
+          tasks.push(new Separator(rowdata[colIndexes.taskColumnIndex]));
+          break;
+      }
     } else {
-        dcLen = dc.values.length;
+      // Normal Task
+      tasks.push(
+        new Task(
+          i + 1, // first row is header
+          rowdata[colIndexes.iDColumnIndex],
+          rowdata[colIndexes.taskColumnIndex],
+          rowdata[colIndexes.actionColumnIndex],
+          rowdata[colIndexes.memoColumnIndex],
+          rowdata[colIndexes.startTimeColumnIndex],
+          rowdata[colIndexes.endTimeColumnIndex],
+          false
+        )
+      );
     }
-    for (let task of tasks) {
-        if (!(task instanceof Task)) {
-            continue;
-        }
-        const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(searchDate, task);
-        const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
-
-        if (searchDate != targetDate) {
-            // searchDate is now
-            if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
-                task.setEnabled(true);
-            } else if (taskTodayStart <= searchDate && searchDate < taskTodayEnd) {
-                task.setEnabled(true);
-            }
-        } else {
-            // searching specific date
-            task.setEnabled(false);
-        }
-
-        for (i = 0; i < dcLen; ++i) {
-            if (dc.values[i][3] == "deleted") {
-                continue;
-            }
-            if (dc.values[i][1] != task.getId()) {
-                continue;
-            }
-
-            const logDate = getLogDate(
-                searchDate.getFullYear(),
-                searchDate.getMonth() + 1,
-                dc.values[i][0],
-                dc.values[i][2]);
-
-            if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
-                if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
-                    task.setChecked(true);
-                }
-            } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
-                task.setChecked(true);
-            }
-        }
+  }
+  for (let task of tasks) {
+    if (task instanceof Task) {
+      if (!checkTaskTime(task)) {
+        showError(
+          `TaskID ${task.getId()} has invalid time value(s)` +
+            '\n' +
+            getLastError()
+        );
+        return null;
+      }
     }
-    return tasks.length != 0 ? tasks : [new ItemEmpty()];
+  }
+  // end of 'tasks' sheet
+
+  // valueRange[1] is a set of "Date" and "Check"
+  const dc = response.result.valueRanges[1];
+  let dcLen = 0;
+  if (!dc.values || dc.values.length <= 0) {
+    dcLen = 0;
+  } else {
+    dcLen = dc.values.length;
+  }
+  for (let task of tasks) {
+    if (!(task instanceof Task)) {
+      continue;
+    }
+    const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(
+      searchDate,
+      task
+    );
+    const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
+
+    if (searchDate != targetDate) {
+      // searchDate is now
+      if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
+        task.setEnabled(true);
+      } else if (taskTodayStart <= searchDate && searchDate < taskTodayEnd) {
+        task.setEnabled(true);
+      }
+    } else {
+      // searching specific date
+      task.setEnabled(false);
+    }
+
+    for (i = 0; i < dcLen; ++i) {
+      if (dc.values[i][3] == 'deleted') {
+        continue;
+      }
+      if (dc.values[i][1] != task.getId()) {
+        continue;
+      }
+
+      const logDate = getLogDate(
+        searchDate.getFullYear(),
+        searchDate.getMonth() + 1,
+        dc.values[i][0],
+        dc.values[i][2]
+      );
+
+      if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
+        if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
+          task.setChecked(true);
+        }
+      } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+        task.setChecked(true);
+      }
+    }
+  }
+  return tasks.length != 0 ? tasks : [new ItemEmpty()];
 }
 
 function isTodaySheetReady(date) {
-    if (!userData.spreadID) {
-        showError("No spread id");
-        return false;
-    }
-    // Get the sheet of current month
-    if (!userData.todaySheetID) {
-        showError("No todaySheetID");
-        return false;
-    }
+  if (!userData.spreadID) {
+    showError('No spread id');
+    return false;
+  }
+  // Get the sheet of current month
+  if (!userData.todaySheetID) {
+    showError('No todaySheetID');
+    return false;
+  }
 
-    if (!isCorrectDate(date)) {
-        showError("The date has been changed. Please refresh the page.");
-        return false;
-    }
-    return true;
+  if (!isCorrectDate(date)) {
+    showError('The date has been changed. Please refresh the page.');
+    return false;
+  }
+  return true;
 }
 
 async function doTaskAction(taskid) {
-    const date = new Date();
-    if (!isTodaySheetReady(date)) {
-        return false;
-    }
+  const date = new Date();
+  if (!isTodaySheetReady(date)) {
+    return false;
+  }
 
-    const currentHOURS = date.getHours().toString().padStart(2, '0');
-    const currentMINUTES = date.getMinutes().toString().padStart(2, '0');
-    const currentSECONDS = date.getSeconds().toString().padStart(2, '0');
+  const currentHOURS = date.getHours().toString().padStart(2, '0');
+  const currentMINUTES = date.getMinutes().toString().padStart(2, '0');
+  const currentSECONDS = date.getSeconds().toString().padStart(2, '0');
 
-    // Append Check to log sheet
-    let values = [
-        [
-            `${STARTDATE}`, taskid, `${currentHOURS}:${currentMINUTES}:${currentSECONDS}`, // Cell values ...
-        ],
-        // Additional rows ...
-    ];
+  // Append Check to log sheet
+  let values = [
+    [
+      `${STARTDATE}`,
+      taskid,
+      `${currentHOURS}:${currentMINUTES}:${currentSECONDS}`, // Cell values ...
+    ],
+    // Additional rows ...
+  ];
 
-    const body = {
-        values: values,
-    };
+  const body = {
+    values: values,
+  };
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
-    let res = await gapi.client.sheets.spreadsheets.values.append({
-        spreadsheetId: userData.spreadID,
-        range: [`${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
-        valueInputOption: 'USER_ENTERED',
-        resource: body,
-    });
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
+  let res = await gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: userData.spreadID,
+    range: [`${userData.todaySheetYear}/${userData.todaySheetMonth}!A:C`],
+    valueInputOption: 'USER_ENTERED',
+    resource: body,
+  });
 
-    const result = res.result;
-    console.log(`${result.updatedCells} cells updated.`);
+  const result = res.result;
+  console.log(`${result.updatedCells} cells updated.`);
 
-    return true;
+  return true;
 }
 
 async function doTaskEditItem(taskid, taskname, taskaction) {
-    if (!userData.spreadID) {
-        showError("No spread id");
-        return;
-    }
-    // Get the sheet of current month
-    if (!userData.todaySheetID) {
-        showError("No todaySheetID");
-        return;
-    }
+  if (!userData.spreadID) {
+    showError('No spread id');
+    return;
+  }
+  // Get the sheet of current month
+  if (!userData.todaySheetID) {
+    showError('No todaySheetID');
+    return;
+  }
 
-    // First, find the row of the task
-    let colIndexes = {};
-    let tasks = await doGetTasks(colIndexes);
-    let row = -1;
-    for (let task of tasks) {
-        if (task.getId() == taskid) {
-            row = task.getRow();
-            break;
-        }
+  // First, find the row of the task
+  let colIndexes = {};
+  let tasks = await doGetTasks(colIndexes);
+  let row = -1;
+  for (let task of tasks) {
+    if (task.getId() == taskid) {
+      row = task.getRow();
+      break;
     }
-    if (row <= 0) {
-        showError(`Illegal row ${row}`);
-        throw new Error(`Illegal row ${row}`);
-    }
+  }
+  if (row <= 0) {
+    showError(`Illegal row ${row}`);
+    throw new Error(`Illegal row ${row}`);
+  }
 
-    const data = [
-        {
-            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.taskColumnIndex)}${row}`,
-            values: [
-                [taskname]
-            ]
-        },
-        {
-            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.actionColumnIndex)}${row}`,
-            values: [
-                [taskaction]
-            ]
-        },
-    ];
-    let params = {
-        spreadsheetId: userData.spreadID,
-        resource: {
-            data: data,
-            valueInputOption: "USER_ENTERED"
-        }
-    };
-    console.log("params", params);
+  const data = [
+    {
+      range: `Tasks!${getAlpahFromColumnIndex(
+        colIndexes.taskColumnIndex
+      )}${row}`,
+      values: [[taskname]],
+    },
+    {
+      range: `Tasks!${getAlpahFromColumnIndex(
+        colIndexes.actionColumnIndex
+      )}${row}`,
+      values: [[taskaction]],
+    },
+  ];
+  let params = {
+    spreadsheetId: userData.spreadID,
+    resource: {
+      data: data,
+      valueInputOption: 'USER_ENTERED',
+    },
+  };
+  console.log('params', params);
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
 
-    console.log(res);
-    return res;
+  console.log(res);
+  return res;
 }
 
 async function doTaskDeleteLastCheck(task) {
-    const date = new Date();
-    if (!isTodaySheetReady(date)) {
-        return false;
+  const date = new Date();
+  if (!isTodaySheetReady(date)) {
+    return false;
+  }
+
+  const searchDate = date;
+  let params = {
+    spreadsheetId: userData.spreadID,
+    ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
+  };
+  console.log('params', params);
+
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+  console.log('responce', response);
+
+  // valueRanges[0][i] is data of today's sheet value
+  if (
+    !response.result.valueRanges ||
+    response.result.valueRanges[0].values.length <= 1
+  ) {
+    console.log('No check data found');
+    return false;
+  }
+
+  // find the range of deleting cell
+  const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(
+    searchDate,
+    task
+  );
+  const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
+
+  let rowDeleting = -1;
+  const dc = response.result.valueRanges[0];
+  for (i = 0; i < dc.values.length; ++i) {
+    if (dc.values[i][1] == task.getId() && dc.values[i][3] != 'deleted') {
+      rowDeleting = i;
     }
+  }
+  if (rowDeleting == -1) {
+    showError(`No checks found for task '${task.getName()}'`);
+    return false;
+  }
 
-    const searchDate = date;
-    let params = {
-        spreadsheetId: userData.spreadID,
-        ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
-    };
-    console.log("params", params);
+  // Check rowDeleting can be deleted
+  const logDate = getLogDate(
+    searchDate.getFullYear(),
+    searchDate.getMonth() + 1,
+    dc.values[rowDeleting][0],
+    dc.values[rowDeleting][2]
+  );
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-    console.log("responce", response);
-
-    // valueRanges[0][i] is data of today's sheet value
-    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
-        console.log("No check data found");
-        return false;
+  let okToDelete = false;
+  if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
+    if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
+      okToDelete = true;
     }
+  } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
+    okToDelete = true;
+  }
 
-    // find the range of deleting cell
-    const [taskYesterdayStart, taskYesterdayEnd] = getTaskYesterday(searchDate, task);
-    const [taskTodayStart, taskTodayEnd] = getTaskToday(searchDate, task);
+  if (!okToDelete) {
+    showError(`No checks found for task '${task.getName()}' in today.`);
+    return false;
+  }
 
-    let rowDeleting = -1;
-    const dc = response.result.valueRanges[0];
-    for (i = 0; i < dc.values.length; ++i) {
-        if (dc.values[i][1] == task.getId() &&
-            dc.values[i][3] != "deleted") {
-            rowDeleting = i;
-        }
-    }
-    if (rowDeleting == -1) {
-        showError(`No checks found for task '${task.getName()}'`);
-        return false;
-    }
+  // Add 'deleted' on the today' sheet
+  const data = [
+    {
+      range: `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!D${
+        rowDeleting + 1
+      }`,
+      values: [['deleted']],
+    },
+  ];
+  params = {
+    spreadsheetId: userData.spreadID,
+    resource: {
+      data: data,
+      valueInputOption: 'USER_ENTERED',
+    },
+  };
+  console.log('params', params);
 
-    // Check rowDeleting can be deleted
-    const logDate = getLogDate(
-        searchDate.getFullYear(),
-        searchDate.getMonth() + 1,
-        dc.values[rowDeleting][0],
-        dc.values[rowDeleting][2]);
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
 
-    let okToDelete = false;
-    if (taskYesterdayStart <= searchDate && searchDate < taskYesterdayEnd) {
-        if (taskYesterdayStart <= logDate && logDate < taskYesterdayEnd) {
-            okToDelete = true;
-        }
-    } else if (taskTodayStart <= logDate && logDate < taskTodayEnd) {
-        okToDelete = true;
-    }
-
-    if (!okToDelete) {
-        showError(`No checks found for task '${task.getName()}' in today.`);
-        return false;
-    }
-
-    // Add 'deleted' on the today' sheet
-    const data = [
-        {
-            range: `${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!D${rowDeleting + 1}`,
-            values: [
-                ["deleted"]
-            ]
-        },
-    ];
-    params = {
-        spreadsheetId: userData.spreadID,
-        resource: {
-            data: data,
-            valueInputOption: "USER_ENTERED"
-        }
-    };
-    console.log("params", params);
-
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
-
-    console.log(res);
-    return res;
+  console.log(res);
+  return res;
 }
 async function doTaskDeleteItem(taskid) {
-    if (!userData.spreadID) {
-        showError("No spread id");
-        return;
-    }
-    // Get the sheet of current month
-    if (!userData.todaySheetID) {
-        showError("No todaySheetID");
-        return;
-    }
+  if (!userData.spreadID) {
+    showError('No spread id');
+    return;
+  }
+  // Get the sheet of current month
+  if (!userData.todaySheetID) {
+    showError('No todaySheetID');
+    return;
+  }
 
-    // First, find the row of the task
-    let colIndexes = {}
-    let tasks = await doGetTasks(colIndexes);
-    let row = -1;
-    for (let task of tasks) {
-        if (task.getId() == taskid) {
-            row = task.getRow();
-            break;
-        }
+  // First, find the row of the task
+  let colIndexes = {};
+  let tasks = await doGetTasks(colIndexes);
+  let row = -1;
+  for (let task of tasks) {
+    if (task.getId() == taskid) {
+      row = task.getRow();
+      break;
     }
-    if (row <= 0) {
-        showError(`Illegal row ${row}`);
-        throw new Error(`Illegal row ${row}`);
-    }
+  }
+  if (row <= 0) {
+    showError(`Illegal row ${row}`);
+    throw new Error(`Illegal row ${row}`);
+  }
 
-    const data = [
-        {
-            range: `Tasks!${getAlpahFromColumnIndex(colIndexes.stateColumnIndex)}${row}`,
-            values: [
-                ["deleted"]
-            ]
-        },
-    ];
-    let params = {
-        spreadsheetId: userData.spreadID,
-        resource: {
-            data: data,
-            valueInputOption: "USER_ENTERED"
-        }
-    };
-    console.log("params", params);
+  const data = [
+    {
+      range: `Tasks!${getAlpahFromColumnIndex(
+        colIndexes.stateColumnIndex
+      )}${row}`,
+      values: [['deleted']],
+    },
+  ];
+  let params = {
+    spreadsheetId: userData.spreadID,
+    resource: {
+      data: data,
+      valueInputOption: 'USER_ENTERED',
+    },
+  };
+  console.log('params', params);
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  res = await gapi.client.sheets.spreadsheets.values.batchUpdate(params);
 
-    console.log(res);
-    return res;
+  console.log(res);
+  return res;
 }
 
 function getRowFromRanges(str) {
-    const regex = /^Tasks!A(\d+):B(\d+)$/;
-    const match = str.match(regex);
-    if (match && match[1] === match[2]) {
-        return parseInt(match[1], 10);
-    }
-    return null;
+  const regex = /^Tasks!A(\d+):B(\d+)$/;
+  const match = str.match(regex);
+  if (match && match[1] === match[2]) {
+    return parseInt(match[1], 10);
+  }
+  return null;
 }
 async function doAddNewTask() {
-    if (!userData.spreadID) {
-        showError("No spread id");
-        return;
-    }
+  if (!userData.spreadID) {
+    showError('No spread id');
+    return;
+  }
 
-    // First, determine new ID = (max value of IDs) + 1
-    let tasks = await doGetTasks({}, true);
-    let maxid = 0;
-    for (const task of tasks) {
-        maxid = Math.max(maxid, task.getId());
-    }
-    const newID = maxid + 1;
-    const newTaskName = "新しいタスク";
-    // Appen new task with newID and default name
-    let values = [
-        [
-            newID,
-            newTaskName,
-            "", // Action
-            "", // State
-            "", // Memo
-            (new Date()).toDateString(), // created
-        ],
-        // Additional rows ...
-    ];
+  // First, determine new ID = (max value of IDs) + 1
+  let tasks = await doGetTasks({}, true);
+  let maxid = 0;
+  for (const task of tasks) {
+    maxid = Math.max(maxid, task.getId());
+  }
+  const newID = maxid + 1;
+  const newTaskName = '新しいタスク';
+  // Appen new task with newID and default name
+  let values = [
+    [
+      newID,
+      newTaskName,
+      '', // Action
+      '', // State
+      '', // Memo
+      new Date().toDateString(), // created
+    ],
+    // Additional rows ...
+  ];
 
-    const body = {
-        values: values,
-    };
+  const body = {
+    values: values,
+  };
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
-    let res = await gapi.client.sheets.spreadsheets.values.append({
-        spreadsheetId: userData.spreadID,
-        range: [`Tasks!A:B`],
-        valueInputOption: 'USER_ENTERED',
-        resource: body,
-    });
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
+  let res = await gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: userData.spreadID,
+    range: [`Tasks!A:B`],
+    valueInputOption: 'USER_ENTERED',
+    resource: body,
+  });
 
-    const result = res.result;
-    console.log(`${result.updatedCells} cells updated.`);
-    const row = getRowFromRanges(result.updates.updatedRange);
-    return new Task(row, newID, newTaskName, null, null, null, null, true);
+  const result = res.result;
+  console.log(`${result.updatedCells} cells updated.`);
+  const row = getRowFromRanges(result.updates.updatedRange);
+  return new Task(row, newID, newTaskName, null, null, null, null, true);
 }
 
 async function doGetTaskHistory(task) {
-    const searchDate = targetDate ? targetDate : new Date();
-    let params = {
-        spreadsheetId: userData.spreadID,
-        ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
-    };
-    console.log("params", params);
+  const searchDate = targetDate ? targetDate : new Date();
+  let params = {
+    spreadsheetId: userData.spreadID,
+    ranges: [`${searchDate.getFullYear()}/${searchDate.getMonth() + 1}!A:D`],
+  };
+  console.log('params', params);
 
-    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
-    console.log("responce", response);
+  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+  response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+  console.log('responce', response);
 
-    const rets = [];
-    // valueRanges[0][i] is data of today's sheet value
-    if (!response.result.valueRanges || response.result.valueRanges[0].values.length <= 1) {
-        console.log("No check data found");
-        return rets;
-    }
-
-    const dc = response.result.valueRanges[0];
-    for (i = 0; i < dc.values.length; ++i) {
-        // dc.values[i][0] is DAY
-        // dc.values[i][1] is taskid
-        // dc.values[i][2] is TIME
-        // dc.values[i][3] is deleted or None
-        if (dc.values[i][1] == task.getId() && dc.values[i][3] != "deleted") {
-            rets.push({
-                year: searchDate.getFullYear(),
-                month: searchDate.getMonth() + 1,
-                day: dc.values[i][0],
-                time: dc.values[i][2],
-            });
-        }
-    }
+  const rets = [];
+  // valueRanges[0][i] is data of today's sheet value
+  if (
+    !response.result.valueRanges ||
+    response.result.valueRanges[0].values.length <= 1
+  ) {
+    console.log('No check data found');
     return rets;
+  }
+
+  const dc = response.result.valueRanges[0];
+  for (i = 0; i < dc.values.length; ++i) {
+    // dc.values[i][0] is DAY
+    // dc.values[i][1] is taskid
+    // dc.values[i][2] is TIME
+    // dc.values[i][3] is deleted or None
+    if (dc.values[i][1] == task.getId() && dc.values[i][3] != 'deleted') {
+      rets.push({
+        year: searchDate.getFullYear(),
+        month: searchDate.getMonth() + 1,
+        day: dc.values[i][0],
+        time: dc.values[i][2],
+      });
+    }
+  }
+  return rets;
 }
