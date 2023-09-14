@@ -26,7 +26,7 @@ const STARTSECONDS = STARTDATEOBJ.getSeconds().toString().padStart(2, '0');
 
 const SPREAD_NAME = 'EverydayTask - Ambiesoft.com';
 const UNCHECKMARK = '☐';
-const CHECKMARK = '☑️';
+const CHECKMARK = '✔';
 
 const TASK_COLUMN_ID = 'ID';
 const TASK_COLUMN_TASK = 'Task';
