@@ -4,11 +4,14 @@ function getLastError() {
 function setLastError(err) {
   lastError = err;
 }
-function isValidURL(url) {
-  const urlRegExp = /^(?:http(?:s)?:\/\/(?:www\.)?)?[^\s.]+\.[^\s]{2,}$/i;
-  return urlRegExp.test(url);
+function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (err) {
+    return false;
+  }
 }
-
 function isPositiveInteger(num) {
   if (Array.isArray(num)) return false;
   if (!/^[0-9]+$/.test(num)) return false;
