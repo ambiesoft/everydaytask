@@ -30,11 +30,11 @@ async function gisLoaded() {
             console.log('token compare', gapi.client.getToken(), access_token);
             if (gapi.client.getToken().access_token == access_token) {
               // the token expires
-              // if (confirm("セッションの有効期限が切れました。ページをリロードする必要があります。今リロードしますか？")) {
-              //   // "Yes" がクリックされた場合の処理
+              // if (confirm("Your session has expired. You need to reload the page. Do you want to reload now?")) {
+              //   // "Yes"
               //   location.reload();
               // } else {
-              //   // "No" がクリックされた場合の処理
+              //   // "No"
               //   gapi.client.setToken();
               // }
               gapi.client.setToken();
@@ -252,7 +252,7 @@ function clearTasksDom() {
 
 function appendTaskDom(task) {
   if (task instanceof Task) {
-    // テンプレートから要素を取得する
+    // Retrieving elements from a template
     const template = document.getElementById('taskTemplate');
     const itemwrapper = template.content.querySelector('.itemwrapper');
     const imgfavicon = template.content.querySelector('.img_favicon');
@@ -343,6 +343,7 @@ function appendTaskDom(task) {
     // I18N
     setI18NLanguage('str_show_item_history');
     setI18NLanguage('str_delete_last_check');
+    setI18NLanguage('str_edit_pencil');
     setI18NLanguage('str_change');
     setI18NLanguage('str_delete');
 
@@ -586,7 +587,7 @@ async function onTaskAction(el) {
   console.log(el.dataset);
 
   if (el.dataset.taskenabled != 'true') {
-    // alert(`このタスクの有効な時刻は${el.dataset.taskstarttime}から${el.dataset.taskendtime}です。`);
+    // alert(`Valid times for this task are ${el.dataset.taskstarttime} to ${el.dataset.taskendtime}.`);
     console.log('Task is disabled');
     return;
   }
@@ -745,12 +746,12 @@ function onDateChange(dateInput) {
     selectedDate.getMonth() === today.getMonth() &&
     selectedDate.getDate() === today.getDate()
   ) {
-    console.log('選択された日付は今日です');
+    console.log('Selected date is today');
     targetDate = null;
   } else {
-    console.log('選択された日付は今日ではありません');
+    console.log('Selected date is not today');
     if (today < selectedDate) {
-      alert('未来は設定できません');
+      alert(str_alert_future_date_is_invalid);
       resetDate(dateInput, targetDate);
       return;
     }

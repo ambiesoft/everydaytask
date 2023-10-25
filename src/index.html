@@ -48,7 +48,7 @@
       <button class="button" btnType="getTask" str="str_get_tasks" onclick="onGetTasks()"></button>
       <button class="button" btnType="addTask" str="str_add_task" onclick="onAddNewTask()"></button>
       <button class="button" btnType="editTask" str="str_edit_task" onclick="onShowSpread()"></button>
-      <button class="button" onclick='onScrollToBottom()'>🔽</button>
+      <button class="button" onclick='onScrollToBottom()' str="str_goto_bottom"></button>
     </div>
 
     <div class="dateWrapper">
@@ -70,7 +70,7 @@
             </div>
 
             <button class=" taskbutton" onclick="onTaskAction(this)"></button>
-            <button class="taskeditbutton" onclick="onShowEdit(this)">✎</button>
+            <button class="taskeditbutton" onclick="onShowEdit(this)" str="str_edit_pencil"></button>
           </div>
           <div class="itemedit" style="display: none;">
             <div>
@@ -118,7 +118,7 @@
         <button class="button" btnType="getTask" str="str_get_tasks" onclick="onGetTasks()"></button>
         <button class="button" btnType="addTask" str="str_add_task" onclick="onAddNewTask()"></button>
         <button class="button" btnType="editTask" str="str_edit_task" onclick="onShowSpread()"></button>
-        <button class="button" onclick='onScrollToTop()'>🔼</button>
+        <button class="button" onclick='onScrollToTop()' str="str_goto_top"></button>
       </div>
     </div>
   </div>

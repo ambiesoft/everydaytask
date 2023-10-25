@@ -11,8 +11,8 @@ function getTaskSheetUrl() {
 }
 function isCorrectDate(date) {
   const currentYear = date.getFullYear();
-  const currentMonth = date.getMonth() + 1; // 月を取得（0-11の範囲で返されるため、1を加算）
-  const currentDate = date.getDate(); // 日を取得
+  const currentMonth = date.getMonth() + 1;
+  const currentDate = date.getDate();
   return (
     currentYear == STARTYEAR &&
     currentMonth == STARTMONTH &&

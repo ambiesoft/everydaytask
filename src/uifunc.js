@@ -99,11 +99,10 @@ function showErrorWithCode(code) {
   let message;
   switch (code) {
     case 401:
-      message =
-        '認証に失敗しました。ページをリロードしてログインし直してください';
+      message = str_http_401;
       break;
     default:
-      message = '未知のエラーです';
+      message = str_unknown_error;
   }
   showError(message);
 }
@@ -113,7 +112,7 @@ function startfinish_common2(node, start) {
   if (!origText) {
     origText = eval(node.getAttribute('str'));
   }
-  node.innerText = start ? '🌐' : origText;
+  node.innerText = start ? str_networking : origText;
 }
 function startfinish_common(els, start) {
   if (!els) {
@@ -121,7 +120,6 @@ function startfinish_common(els, start) {
   }
   if (Array.isArray(els)) {
     els.forEach((node) => {
-      // node.innerText = "🌐 > > > 💻";
       startfinish_common2(node, start);
     });
   } else {
@@ -136,12 +134,12 @@ function finishWaitUI(els) {
 }
 
 function scrollToElement(element) {
-  var elementTop = element.getBoundingClientRect().top; // 要素の画面上部の位置を取得
+  var elementTop = element.getBoundingClientRect().top;
   var bodyRect = document.body.getBoundingClientRect();
-  var offset = elementTop - bodyRect.top; // 要素の位置とbody要素の位置の差分を取得
+  var offset = elementTop - bodyRect.top;
 
   console.log('scroll to', offset);
-  window.scrollTo(0, offset); // スクロールを移動
+  window.scrollTo(0, offset);
 }
 function showBottomTaskButtons(show) {
   document.getElementById('taskbuttons_only5moreitems').style.display = show

@@ -41,6 +41,12 @@ console.log('isJA', isJA);
 
 function getString(str) {
   switch (str) {
+    case 'str_goto_top':
+      return '🔼';
+    case 'str_goto_bottom':
+      return '🔽';
+    case 'str_edit_pencil':
+      return '✎';
     case 'str_check_everyday_task':
       if (isJA) return '毎日のタスクをチェック';
       else return "Manage everyday's tasks";
@@ -91,6 +97,9 @@ function getString(str) {
     case 'str_confirm_delete_lastcheck':
       if (isJA) return 'タスク「{0}」の最後のチェックを削除しますか？';
       else return "Are you sure to delete the last check of task '{0}'?";
+    case 'str_alert_future_date_is_invalid':
+      if (isJA) return '未来は設定できません。';
+      else return 'The future cannot be set.';
     case 'str_show_item_history':
       if (isJA) return 'チェック履歴';
       else return 'Checks History';
@@ -109,6 +118,19 @@ function getString(str) {
     case 'str_delete':
       if (isJA) return '削除';
       else return 'Delete';
+    case 'str_new_task':
+      if (isJA) return '新しいタスク';
+      else return 'New Task';
+    case 'str_http_401':
+      if (isJA)
+        return '認証に失敗しました。ページをリロードしてログインし直してください';
+      else
+        return 'Authentication failed. Please reload the page and login again.';
+    case 'str_networking':
+      return '🌐';
+    case 'str_unknown_error':
+      if (isJA) return '未知のエラーです';
+      else return 'Unknown error';
     case 'str_howtoHtml':
       if (isJA) {
         return `<h2>概要</h2>
@@ -232,6 +254,9 @@ function getString(str) {
 }
 
 // strings for elements
+const str_goto_top = getString('str_goto_top');
+const str_goto_bottom = getString('str_goto_bottom');
+const str_edit_pencil = getString('str_edit_pencil');
 const str_check_everyday_task = getString('str_check_everyday_task');
 const str_login_by_google = getString('str_login_by_google');
 const str_please_login = getString('str_please_login');
@@ -252,15 +277,25 @@ const str_show_item_history = getString('str_show_item_history');
 const str_delete_last_check = getString('str_delete_last_check');
 const str_change = getString('str_change');
 const str_delete = getString('str_delete');
+const str_new_task = getString('str_new_task');
+const str_http_401 = getString('str_http_401');
+const str_networking = getString('str_networking');
+const str_unknown_error = getString('str_unknown_error');
 const str_sheet_title = getString('str_sheet_title');
 const str_sheet_explanation = getString('str_sheet_explanation');
 
 // strings for runtime
 const str_confirm_delete_task = getString('str_confirm_delete_task');
 const str_confirm_delete_lastcheck = getString('str_confirm_delete_lastcheck');
+const str_alert_future_date_is_invalid = getString(
+  'str_alert_future_date_is_invalid'
+);
 
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOMContentLoaded');
+  setI18NLanguage('str_goto_top');
+  setI18NLanguage('str_goto_bottom');
+  setI18NLanguage('str_edit_pencil');
   setI18NLanguage('str_check_everyday_task');
   setI18NLanguage('str_login_by_google');
   setI18NLanguage('str_please_login');

@@ -267,7 +267,6 @@ function getFaviconAsUrl(url) {
   return retUrl;
 }
 
-// 文字列か判定します。
 // https://www.paveway.info/entry/2021/08/18/javascript_isstring
 function isString(value) {
   if (typeof value === 'string' || value instanceof String) {

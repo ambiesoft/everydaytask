@@ -1,3 +1,7 @@
 info.txt
 src/consts.js
+src/lang.js
+src/style.css
+src/tests/tests.html
+
 *.ico

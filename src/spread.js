@@ -232,7 +232,7 @@ async function doCreateSpread() {
                 {
                     "properties": {
                         "sheetId": 0,
-                        "title": "シート1",
+                        "title": "sheet1",
                         "index": 0,
                         "sheetType": "GRID",
                         "gridProperties": {
@@ -370,7 +370,8 @@ async function doGetTasks(colIndexes, bIncludesDeleted) {
   const retRows = response.result.valueRanges[0].values;
   const missingRows = getMissingRows(retRows[0]);
   if (missingRows.length > 0) {
-    const message = `以下のTaskシートのコラムがありません\n${missingRows}`;
+    // TODO:I18N
+    const message = `The following Task sheet columns are missing\n${missingRows}`;
     showError(message);
     throw new Error(message);
   }
@@ -824,7 +825,7 @@ async function doAddNewTask() {
     maxid = Math.max(maxid, task.getId());
   }
   const newID = maxid + 1;
-  const newTaskName = '新しいタスク';
+  const newTaskName = str_new_task;
   // Appen new task with newID and default name
   let values = [
     [
