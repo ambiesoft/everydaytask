@@ -68,14 +68,14 @@ function getString(str) {
       if (isJA) return 'ログオフ';
       else return 'Logoff';
     case 'str_get_tasks':
-      if (isJA) return 'タスク取得';
-      else return 'Get Tasks';
+      if (isJA) return isPhone() ? '更新' : 'タスク更新';
+      else return isPhone() ? 'Refresh' : 'Refresh Tasks';
     case 'str_add_task':
-      if (isJA) return 'タスク追加';
-      else return 'Add Task';
+      if (isJA) return isPhone() ? '追加' : 'タスク追加';
+      else return isPhone() ? 'Add' : 'Add Task';
     case 'str_edit_task':
-      if (isJA) return 'タスク編集';
-      else return 'Edit Tasks';
+      if (isJA) return isPhone() ? '編集' : 'タスク編集';
+      else return isPhone() ? 'Edit' : 'Edit Tasks';
     case 'str_no_tasks':
       if (isJA) return 'タスクがありません';
       else return 'No Tasks';
