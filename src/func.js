@@ -330,6 +330,7 @@ function appendTaskDom(task) {
 
     itemeditinputaction.id = 'itemeditinputaction' + task.getId();
     itemeditinputaction.value = task.getAction() ? task.getAction() : '';
+    itemeditinputaction.placeholder = str_placeholder_action;
 
     taskbutton.textContent = task.isChecked() ? CHECKMARK : UNCHECKMARK;
     taskbutton.setAttribute('origText', taskbutton.textContent);

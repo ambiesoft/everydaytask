@@ -131,6 +131,9 @@ function getString(str) {
     case 'str_unknown_error':
       if (isJA) return '未知のエラーです';
       else return 'Unknown error';
+    case 'str_placeholder_action':
+      if (isJA) return 'アクションを入力';
+      else return 'Enter Actions';
     case 'str_howtoHtml':
       if (isJA) {
         return `<h2>概要</h2>
@@ -283,6 +286,7 @@ const str_networking = getString('str_networking');
 const str_unknown_error = getString('str_unknown_error');
 const str_sheet_title = getString('str_sheet_title');
 const str_sheet_explanation = getString('str_sheet_explanation');
+const str_placeholder_action = getString('str_placeholder_action');
 
 // strings for runtime
 const str_confirm_delete_task = getString('str_confirm_delete_task');
