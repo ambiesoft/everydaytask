@@ -101,8 +101,8 @@ function getString(str) {
       if (isJA) return '未来は設定できません。';
       else return 'The future cannot be set.';
     case 'str_show_item_history':
-      if (isJA) return 'チェック履歴';
-      else return 'Checks History';
+      if (isJA) return '履歴';
+      else return 'History';
     case 'str_delete_last_check':
       if (isJA) return '最後のチェック削除';
       else return 'Delete the last Check';
