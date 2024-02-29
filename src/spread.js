@@ -865,15 +865,27 @@ async function doGetTaskHistory(task) {
   };
   console.log('params', params);
 
-  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
-  response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+  let responce;
+  try {
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+    response = await gapi.client.sheets.spreadsheets.values.batchGet(params);
+  } catch (err) {
+    // if the sheet is not found, it maybe comes here.
+    if (err.status == 400) {
+      console.log('No check data found');
+      return rets;
+    }
+    throw err;
+  }
   console.log('responce', response);
 
   const rets = [];
   // valueRanges[0][i] is data of today's sheet value
   if (
     !response.result.valueRanges ||
-    response.result.valueRanges[0].values.length <= 1
+    // if the sheet not present, there is no 'values' property.
+    !('values' in response.result.valueRanges[0]) ||
+    response.result.valueRanges[0].values.length < 1
   ) {
     console.log('No check data found');
     return rets;
