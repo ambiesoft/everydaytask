@@ -306,6 +306,10 @@ function appendTaskDom(task) {
       if (firstUrl) {
         imgfavicon.src = getFaviconAsUrl(firstUrl);
       }
+      if (Cookies.get(COOKIE_SETTING_BIG_FAVICON) == 'true') {
+        imgfavicon.width = 32;
+        imgfavicon.height = 32;
+      }
     }
 
     itemtext.id = 'itemtext' + task.getId();
@@ -790,6 +794,9 @@ function onSettingsChange_AutoLogin(input) {
 
 function onSettingsChange_Favicon(input) {
   Cookies.set(COOKIE_SETTING_DISPLAY_FAVICON, input.checked, getCookieExpire());
+}
+function onSettingsChange_BigFavicon(input) {
+  Cookies.set(COOKIE_SETTING_BIG_FAVICON, input.checked, getCookieExpire());
 }
 function onSettingsChange_ReverseUrlOpen(input) {
   Cookies.set(COOKIE_SETTING_REVERSE_URLOPEN, input.checked, getCookieExpire());
