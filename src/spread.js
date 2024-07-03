@@ -817,7 +817,10 @@ async function doAddNewTask(afterId) {
     showError('No spread id');
     return;
   }
-
+  if (!userData.taskSheetID) {
+    showError('No taskSheet id');
+    return;
+  }
   // First, determine new ID = (max value of IDs) + 1
   let tasks = await doGetTasks({}, true);
   let maxid = 0;
@@ -826,40 +829,87 @@ async function doAddNewTask(afterId) {
   }
   const newID = maxid + 1;
   const newTaskName = str_new_task;
-  // Appen new task with newID and default name
-  let values = [
-    [
-      newID,
-      newTaskName,
-      '', // Action
-      '', // State
-      '', // Memo
-      new Date().toDateString(), // created
-    ],
-    // Additional rows ...
-  ];
 
-  const body = {
-    values: values,
-  };
+  let newRow;
 
-  // TODO: if afteriD != null,
-  // 1, Find the index to insert
-  // 2, Use https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate?hl=ja to insert row
-  // 3, set new data there by 'update' or 'batchUpdate'
+  if (afterId) {
+    // Find the row to insert
+    let rowToInsert = -1;
+    for (const task of tasks) {
+      if (task.getId() == afterId) {
+        rowToInsert = task.getRow();
+      }
+    }
+    if (rowToInsert == -1) {
+      showError('Failed to find row index to insert');
+      return;
+    }
 
-  // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
-  let res = await gapi.client.sheets.spreadsheets.values.append({
-    spreadsheetId: userData.spreadID,
-    range: [`Tasks!A:B`],
-    valueInputOption: 'USER_ENTERED',
-    resource: body,
-  });
+    // 2, Use https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate?hl=ja to insert row
+    // 3, set new data there by 'update' or 'batchUpdate'
+    let postDataData = `${newID},"${newTaskName}", ,,,"${new Date().toDateString()}"`; // 'sample1, sample2, sample3'
+    ooo = {
+      requests: [
+        {
+          insertRange: {
+            range: {
+              sheetId: userData.taskSheetID,
+              startRowIndex: rowToInsert,
+              endRowIndex: rowToInsert + 1,
+            },
+            shiftDimension: 'ROWS',
+          },
+        },
+        {
+          pasteData: {
+            data: postDataData,
+            type: 'PASTE_NORMAL',
+            delimiter: ',',
+            coordinate: {
+              sheetId: userData.taskSheetID,
+              rowIndex: rowToInsert,
+            },
+          },
+        },
+      ],
+    };
+    res = await gapi.client.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: userData.spreadID,
+      resource: ooo,
+    });
+    // console.log(res);
+    newRow = rowToInsert + 1;
+  } else {
+    // Appen new task with newID and default name
+    let values = [
+      [
+        newID,
+        newTaskName,
+        '', // Action
+        '', // State
+        '', // Memo
+        new Date().toDateString(), // created
+      ],
+      // Additional rows ...
+    ];
 
-  const result = res.result;
-  console.log(`${result.updatedCells} cells updated.`);
-  const row = getRowFromRanges(result.updates.updatedRange);
-  return new Task(row, newID, newTaskName, null, null, null, null, true);
+    const body = {
+      values: values,
+    };
+
+    // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
+    res = await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: userData.spreadID,
+      range: [`Tasks!A:B`],
+      valueInputOption: 'USER_ENTERED',
+      resource: body,
+    });
+
+    const result = res.result;
+    console.log(`${result.updatedCells} cells updated.`);
+    newRow = getRowFromRanges(result.updates.updatedRange);
+  }
+  return new Task(newRow, newID, newTaskName, null, null, null, null, true);
 }
 
 async function doGetTaskHistory(task) {

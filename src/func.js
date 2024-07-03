@@ -222,10 +222,22 @@ async function onAddNewTask(afterId) {
   try {
     startWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
     const newTask = await doAddNewTask(afterId);
-    gTasks.push(newTask);
+    let insertIndex;
+    if (afterId) {
+      // Insert the newTask to the proper position
+      for (let i = 0; i < gTasks.length; ++i) {
+        if (gTasks[i].getId() == afterId) {
+          insertIndex = i + 1;
+          gTasks.splice(i + 1, 0, newTask);
+          break;
+        }
+      }
+    } else {
+      gTasks.push(newTask);
+    }
 
     // New task created with default name, open edit mode
-    appendTaskDom(newTask, afterId);
+    appendTaskDom(newTask, insertIndex);
 
     // edit it
     await onEditItem2(newTask.id);
@@ -234,9 +246,11 @@ async function onAddNewTask(afterId) {
     document.getElementById('itemeditinputname' + newTask.id).select();
 
     // scroll to editting element
-    scrollToElement(
-      document.getElementById('itemeditinputaction' + newTask.id)
-    );
+    if (!insertIndex) {
+      scrollToElement(
+        document.getElementById('itemeditinputaction' + newTask.id)
+      );
+    }
 
     updateTitle(gTasks);
   } catch (err) {
@@ -250,7 +264,7 @@ function clearTasksDom() {
   document.getElementById('itemcontainer').innerHTML = '';
 }
 
-function appendTaskDom(task) {
+function appendTaskDom(task, insertIndex) {
   if (task instanceof Task) {
     // Retrieving elements from a template
     const template = document.getElementById('taskTemplate');
@@ -349,7 +363,13 @@ function appendTaskDom(task) {
     deletecheckbutton.setAttribute('origText', deletecheckbutton.textContent);
 
     let node = itemwrapper.cloneNode(true);
-    document.getElementById('itemcontainer').appendChild(node);
+
+    let parentNode = document.getElementById('itemcontainer');
+    if (insertIndex) {
+      parentNode.insertBefore(node, parentNode.childNodes[insertIndex]);
+    } else {
+      document.getElementById('itemcontainer').appendChild(node);
+    }
 
     // I18N
     setI18NLanguage('str_show_item_history');
