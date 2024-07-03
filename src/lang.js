@@ -121,6 +121,9 @@ function getString(str) {
     case 'str_new_task':
       if (isJA) return '新しいタスク';
       else return 'New Task';
+    case 'str_add_task_afterthis':
+      if (isJA) return 'この下に新しいタスク追加';
+      else return 'Add a New Task after this item';
     case 'str_http_401':
       if (isJA)
         return '認証に失敗しました。ページをリロードしてログインし直してください';
@@ -283,6 +286,7 @@ const str_delete_last_check = getString('str_delete_last_check');
 const str_change = getString('str_change');
 const str_delete = getString('str_delete');
 const str_new_task = getString('str_new_task');
+const str_add_task_afterthis = getString('str_add_task_afterthis');
 const str_http_401 = getString('str_http_401');
 const str_networking = getString('str_networking');
 const str_unknown_error = getString('str_unknown_error');

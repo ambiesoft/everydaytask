@@ -812,7 +812,7 @@ function getRowFromRanges(str) {
   }
   return null;
 }
-async function doAddNewTask() {
+async function doAddNewTask(afterId) {
   if (!userData.spreadID) {
     showError('No spread id');
     return;
@@ -842,6 +842,11 @@ async function doAddNewTask() {
   const body = {
     values: values,
   };
+
+  // TODO: if afteriD != null,
+  // 1, Find the index to insert
+  // 2, Use https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate?hl=ja to insert row
+  // 3, set new data there by 'update' or 'batchUpdate'
 
   // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
   let res = await gapi.client.sheets.spreadsheets.values.append({

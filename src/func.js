@@ -209,7 +209,7 @@ function onShowSpread() {
   window.open(getTaskSheetUrl());
 }
 
-async function onAddNewTask() {
+async function onAddNewTask(afterId) {
   if (!userData.spreadID) {
     onGetSpread();
     return;
@@ -221,11 +221,11 @@ async function onAddNewTask() {
 
   try {
     startWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
-    const newTask = await doAddNewTask();
+    const newTask = await doAddNewTask(afterId);
     gTasks.push(newTask);
 
     // New task created with default name, open edit mode
-    appendTaskDom(newTask);
+    appendTaskDom(newTask, afterId);
 
     // edit it
     await onEditItem2(newTask.id);
@@ -264,6 +264,10 @@ function appendTaskDom(task) {
     const taskeditbutton = template.content.querySelector('.taskeditbutton');
     const editbutton = template.content.querySelector('.editbutton');
     const deletebutton = template.content.querySelector('.deletebutton');
+    const addafterthisbutton = template.content.querySelector(
+      '.addafterthisbutton'
+    );
+
     const showitemhistorybutton = template.content.querySelector(
       '.showitemhistorybutton'
     );
@@ -292,6 +296,8 @@ function appendTaskDom(task) {
     editbutton.id = 'editbutton' + task.getId();
     deletebutton.dataset.id = task.getId();
     deletebutton.id = 'deletebutton' + task.getId();
+    addafterthisbutton.dataset.id = task.getId();
+    addafterthisbutton.id = 'addafterthisbutton' + task.getId();
     showitemhistorybutton.dataset.id = task.getId();
     showitemhistorybutton.id = 'showitemhistorybutton' + task.getId();
     historydiv.dataset.id = task.getId();
@@ -351,6 +357,7 @@ function appendTaskDom(task) {
     setI18NLanguage('str_edit_pencil');
     setI18NLanguage('str_change');
     setI18NLanguage('str_delete');
+    setI18NLanguage('str_add_task_afterthis');
 
     if (!task.isEnabled()) {
       document.getElementById(task.getId()).className = 'taskbutton-disabled';
