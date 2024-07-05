@@ -220,7 +220,11 @@ async function onAddNewTask(afterId) {
   }
 
   try {
-    startWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
+    if (afterId) {
+      startWaitUI(document.getElementById('addafterthisbutton' + afterId));
+    } else {
+      startWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
+    }
     const newTask = await doAddNewTask(afterId);
     let insertIndex;
     if (afterId) {
@@ -257,7 +261,11 @@ async function onAddNewTask(afterId) {
   } catch (err) {
     showError(err);
   } finally {
-    finishWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
+    if (afterId) {
+      finishWaitUI(document.getElementById('addafterthisbutton' + afterId));
+    } else {
+      finishWaitUI(Array.from(document.querySelectorAll(`[btnType=addTask]`)));
+    }
   }
 }
 
