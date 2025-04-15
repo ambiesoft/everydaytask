@@ -243,15 +243,20 @@ async function onAddNewTask(afterId) {
     // New task created with default name, open edit mode
     appendTaskDom(newTask, insertIndex);
 
-    if (!insertIndex) {
-      // edit it
-      await onEditItem2(newTask.id);
 
-      // select all text of itemeditname element
-      document.getElementById('itemeditinputname' + newTask.id).select();
+    // Close source task edit
+    if(insertIndex) {
+      toggleEdit(afterId);
+    }
 
-      // scroll to editting element
+    // edit it
+    await onEditItem2(newTask.id);
 
+    // select all text of itemeditname element
+    document.getElementById('itemeditinputname' + newTask.id).select();
+
+    // scroll to editting element
+    if(!insertIndex) {
       scrollToElement(
         document.getElementById('itemeditinputaction' + newTask.id)
       );

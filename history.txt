@@ -1,0 +1,3 @@
+2025/04/15 v20240705
+Show the edit area of newly-added item and close the source edit area
+after adding a new Task by 'Add a New Task after this item'.
