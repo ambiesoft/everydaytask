@@ -255,6 +255,12 @@ function getString(str) {
       } else {
         return `This spreadsheet was created automatically by ${SITE_URL}. The app data is managed in this spreadsheet.`;
       }
+    case 'str_headers_list':
+      if (isJA) return '📑';
+      else return '📑';
+    case 'str_no_headers':
+      if (isJA) return 'ヘッダがありません';
+      else return 'No headers';
 
     default:
       console.error(`No language resource for "${str}"`);
@@ -293,6 +299,7 @@ const str_unknown_error = getString('str_unknown_error');
 const str_sheet_title = getString('str_sheet_title');
 const str_sheet_explanation = getString('str_sheet_explanation');
 const str_placeholder_action = getString('str_placeholder_action');
+const str_headers_list = getString('str_headers_list');
 
 // strings for runtime
 const str_confirm_delete_task = getString('str_confirm_delete_task');
@@ -319,6 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
   setI18NLanguage('str_privacy');
   setI18NLanguage('str_contact');
   setI18NLanguage('str_settings');
+  setI18NLanguage('str_headers_list');
 });
 
 function setI18NLanguage(str) {

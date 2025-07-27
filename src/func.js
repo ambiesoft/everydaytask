@@ -90,12 +90,61 @@ async function initializeGapiClient() {
   toggleLoginButton();
 }
 
+// Show headers menu
 document.addEventListener('DOMContentLoaded', function () {
   console.log('DOMContentLoaded');
   if (Cookies.get(COOKIE_SETTING_AUTO_LOGIN) == 'true') {
     document.getElementById('id_please_login').innerText =
       str_please_login_loggingin;
   }
+
+  const btn = document.getElementById('showHeaderMenuBtn');
+  const popup = document.getElementById('headerMenuPopup');
+  btn.addEventListener('click', function () {
+
+    if (popup.style.display === 'block') {
+      popup.style.display = 'none';
+      return;
+    }
+    // Create the menu content
+    popup.innerHTML = '';
+    if (headerList.length === 0) {
+      popup.innerHTML = '<div>' + getString('str_no_headers') + '</div>';
+    } else {
+      headerList.forEach((header) => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.textContent = header.text;
+        link.style.display = 'block';
+        link.style.padding = '4px 0';
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          popup.style.display = 'none';
+          const target = document.getElementById(header.id);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+        popup.appendChild(link);
+      });
+    }
+    // Show the menu
+    const rect = btn.getBoundingClientRect();
+    popup.style.left = rect.left + window.scrollX + 'px';
+    popup.style.top = rect.bottom + window.scrollY + 'px';
+    popup.style.minWidth = rect.width + 'px';
+    popup.style.display = 'block';
+  });
+
+  // Close the menu when clicking outside
+  document.addEventListener('click', function (e) {
+    if (
+      !btn.contains(e.target) &&
+      !popup.contains(e.target)
+    ) {
+      popup.style.display = 'none';
+    }
+  });
 });
 window.onload = () => {
   console.log('window.onload has been called');
@@ -181,6 +230,7 @@ async function onGetTasks() {
   try {
     startWaitUI(Array.from(document.querySelectorAll(`[btnType=getTask]`)));
     let tasks = await doGetTasks();
+    headerList = [];
     if (tasks) {
       clearTasksDom();
       for (let task of tasks) {
@@ -245,7 +295,7 @@ async function onAddNewTask(afterId) {
 
 
     // Close source task edit
-    if(insertIndex) {
+    if (insertIndex) {
       toggleEdit(afterId);
     }
 
@@ -256,7 +306,7 @@ async function onAddNewTask(afterId) {
     document.getElementById('itemeditinputname' + newTask.id).select();
 
     // scroll to editting element
-    if(!insertIndex) {
+    if (!insertIndex) {
       scrollToElement(
         document.getElementById('itemeditinputaction' + newTask.id)
       );
@@ -401,6 +451,14 @@ function appendTaskDom(task, insertIndex) {
     const itemseparator = template.content.querySelector('.itemseparator');
     const itemsep_h2 = template.content.querySelector('.itemsep_h2');
     itemsep_h2.innerText = task.getHeadText();
+
+    // Assign a unique ID
+    const headerId = 'header_' + Math.random().toString(36).substr(2, 9);
+    itemseparator.id = headerId;
+
+    // Add to header list
+    headerList.push({ id: headerId, text: task.getHeadText() });
+
     document
       .getElementById('itemcontainer')
       .appendChild(itemseparator.cloneNode(true));
@@ -849,3 +907,6 @@ function onScrollToTop() {
 function onScrollToBottom() {
   window.scroll({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
+
+// Store information of Separators (headers)
+let headerList = [];
