@@ -1,7 +1,7 @@
 info.txt
-src/consts.js
-src/lang.js
-src/style.css
-src/tests/tests.html
+docs/consts.js
+docs/lang.js
+docs/style.css
+docs/tests/tests.html
 
 *.ico
