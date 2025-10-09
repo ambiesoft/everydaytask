@@ -1,5 +1,5 @@
 const APP_NAME = 'EverydayTask';
-const SITE_URL = 'https://ambiesoft.com/everydaytask/';
+const SITE_URL = 'https://ambiesoft.github.io/everydaytask/';
 
 const CLIENT_ID =
   '335012850826-gvrev3vnd53u401ne1coqtrepudrmjje.apps.googleusercontent.com';
