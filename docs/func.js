@@ -385,15 +385,25 @@ function appendTaskDom(task, insertIndex) {
     itemedit.id = 'itemedit' + task.getId();
 
     imgfavicon.src = '';
+    imgfavicon.removeAttribute('width');
+    imgfavicon.removeAttribute('height');
     if (Cookies.get(COOKIE_SETTING_DISPLAY_FAVICON) == 'true') {
-      const firstUrl = task.getFirstUrlAction();
-      if (firstUrl) {
+      do {
+        const firstUrl = task.getFirstUrlAction();
+        if (!firstUrl)
+          break;
         imgfavicon.src = getFaviconAsUrl(firstUrl);
-      }
-      if (Cookies.get(COOKIE_SETTING_BIG_FAVICON) == 'true') {
-        imgfavicon.width = 32;
-        imgfavicon.height = 32;
-      }
+        if (!imgfavicon.src)
+          break;
+
+        if (Cookies.get(COOKIE_SETTING_BIG_FAVICON) == 'true') {
+          imgfavicon.width = 32;
+          imgfavicon.height = 32;
+        } else {
+          imgfavicon.removeAttribute('width');
+          imgfavicon.removeAttribute('height');
+        }
+      } while (false);
     }
 
     itemtext.id = 'itemtext' + task.getId();
