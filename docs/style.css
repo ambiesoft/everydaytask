@@ -79,11 +79,15 @@ h4 {
     /* width: 64px; */
     height: 42px;
 }
-.addafterthisdiv{
+
+.addafterthisdiv {
     display: flex;
-    justify-content: center;  /* 水平方向の中央揃え */
-    align-items: center;      /* 垂直方向の中央揃え */
+    justify-content: center;
+    /* 水平方向の中央揃え */
+    align-items: center;
+    /* 垂直方向の中央揃え */
 }
+
 .addafterthisbutton {
     padding: 10px 20px;
     background-color: #007bff;
@@ -232,7 +236,7 @@ input[type="date"] {
 }
 
 .itemtext {
-    width: 80%;
+    width: 100%;
 }
 
 .timetext {
@@ -328,4 +332,9 @@ input[type="date"] {
     margin: 0;
     padding: 0;
     border: 0;
+}
+
+.itembuttons {
+    display: flex;
+
 }
