@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('showHeaderMenuBtn');
   const popup = document.getElementById('headerMenuPopup');
   btn.addEventListener('click', function () {
-
     if (popup.style.display === 'block') {
       popup.style.display = 'none';
       return;
@@ -138,10 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Close the menu when clicking outside
   document.addEventListener('click', function (e) {
-    if (
-      !btn.contains(e.target) &&
-      !popup.contains(e.target)
-    ) {
+    if (!btn.contains(e.target) && !popup.contains(e.target)) {
       popup.style.display = 'none';
     }
   });
@@ -293,7 +289,6 @@ async function onAddNewTask(afterId) {
     // New task created with default name, open edit mode
     appendTaskDom(newTask, insertIndex);
 
-
     // Close source task edit
     if (insertIndex) {
       toggleEdit(afterId);
@@ -389,12 +384,10 @@ function appendTaskDom(task, insertIndex) {
     imgfavicon.removeAttribute('height');
     if (Cookies.get(COOKIE_SETTING_DISPLAY_FAVICON) == 'true') {
       do {
-        const firstUrl = task.getFirstUrlAction();
-        if (!firstUrl)
-          break;
+        const firstUrl = task.getUrlForFavicon();
+        if (!firstUrl) break;
         imgfavicon.src = getFaviconAsUrl(firstUrl);
-        if (!imgfavicon.src)
-          break;
+        if (!imgfavicon.src) break;
 
         if (Cookies.get(COOKIE_SETTING_BIG_FAVICON) == 'true') {
           imgfavicon.width = 32;

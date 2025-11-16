@@ -43,6 +43,13 @@ class Task extends Item {
     }
     return null;
   }
+  getUrlForFavicon() {
+    const url = this.getFirstUrlAction();
+    if (url) {
+      return url;
+    }
+    return window.location.href;
+  }
   getMemo() {
     return this.memo ?? '';
   }
