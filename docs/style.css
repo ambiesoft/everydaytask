@@ -134,8 +134,8 @@ h4 {
 .deletecheckbutton {
     float: right;
     padding: 10px 20px;
-    background-color: red;
-    color: #fff;
+    background-color: yellow;
+    color: #000;
     border: none;
     border-radius: 4px;
     font-size: 16px;

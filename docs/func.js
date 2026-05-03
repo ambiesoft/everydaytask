@@ -341,6 +341,7 @@ function appendTaskDom(task, insertIndex) {
       '.addafterthisbutton'
     );
 
+    const itemeditid = template.content.querySelector('.itemeditid');
     const showitemhistorybutton = template.content.querySelector(
       '.showitemhistorybutton'
     );
@@ -416,6 +417,7 @@ function appendTaskDom(task, insertIndex) {
 
     timetext.textContent = task.getTimeRangeAsString();
 
+    itemeditid.textContent = `ID: ${task.getId()}`;
     itemeditinputname.id = 'itemeditinputname' + task.getId();
     itemeditinputname.value = task.getName();
 
