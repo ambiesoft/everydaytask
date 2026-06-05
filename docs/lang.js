@@ -231,7 +231,9 @@ function getString(str) {
                   <li><input id="settings_bigfavicon" type="checkbox" onchange="onSettingsChange_BigFavicon(this)">大きいFavicon</li>
                   <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">アクションのURLを開く順番を逆にする</li>
                   <li><label id="settings_lang_label" for="settings_lang">言語：</label><select id="settings_lang" name="settings_lang"></select></li>
+                  <li><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
                 </ul>
+                
                 `;
       } else {
         return `<h2>Options</h2>
@@ -244,6 +246,7 @@ function getString(str) {
                     <li><input id="settings_bigfavicon" type="checkbox" onchange="onSettingsChange_BigFavicon(this)">Big favicon</li>
                     <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">Reverse the order of opening URLs in the action</li>
                     <li><label id="settings_lang_label" for="settings_lang">Language:</label><select id="settings_lang" name="settings_lang"></select></li>
+                    <li><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
                 </ul>
                 `;
       }

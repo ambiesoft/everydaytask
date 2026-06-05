@@ -1,3 +1,6 @@
+2026/06/05 v20260605
+Added 'Consent Login' used when normal login went wrong
+
 2026/05/03 v20260503
 Updated to display the ID in the item editing area
 

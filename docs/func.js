@@ -174,7 +174,9 @@ function handleCredentialResponse(response) {
 function onLogin() {
   onGetTasks();
 }
-
+function onConsentLogin() {
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
 function isLoggedIn() {
   let loggedin = gapi.client.getToken() != null;
   loggedin &= gisInited;
