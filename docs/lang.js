@@ -231,7 +231,7 @@ function getString(str) {
                   <li><input id="settings_bigfavicon" type="checkbox" onchange="onSettingsChange_BigFavicon(this)">大きいFavicon</li>
                   <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">アクションのURLを開く順番を逆にする</li>
                   <li><label id="settings_lang_label" for="settings_lang">言語：</label><select id="settings_lang" name="settings_lang"></select></li>
-                  <li><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
+                  <li>ログインに失敗する場合は、次のボタンからログインしてください。<br/><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
                 </ul>
                 
                 `;
@@ -246,7 +246,7 @@ function getString(str) {
                     <li><input id="settings_bigfavicon" type="checkbox" onchange="onSettingsChange_BigFavicon(this)">Big favicon</li>
                     <li><input id="settings_reverseUrlOpen" type="checkbox" onchange="onSettingsChange_ReverseUrlOpen(this)">Reverse the order of opening URLs in the action</li>
                     <li><label id="settings_lang_label" for="settings_lang">Language:</label><select id="settings_lang" name="settings_lang"></select></li>
-                    <li><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
+                    <li>If you are unable to log in, please try logging in using the button below.<br/><button id="btnConsentLogin" class="button" onclick="onConsentLogin()">Consent Login</button></li>
                 </ul>
                 `;
       }
@@ -278,7 +278,7 @@ const str_check_everyday_task = getString('str_check_everyday_task');
 const str_login_by_google = getString('str_login_by_google');
 const str_please_login = getString('str_please_login');
 const str_please_login_again_to_authorize = getString(
-  'str_please_login_again_to_authorize'
+  'str_please_login_again_to_authorize',
 );
 const str_please_login_loggingin = getString('str_please_login_loggingin');
 const str_logoff = getString('str_logoff');
@@ -308,7 +308,7 @@ const str_headers_list = getString('str_headers_list');
 const str_confirm_delete_task = getString('str_confirm_delete_task');
 const str_confirm_delete_lastcheck = getString('str_confirm_delete_lastcheck');
 const str_alert_future_date_is_invalid = getString(
-  'str_alert_future_date_is_invalid'
+  'str_alert_future_date_is_invalid',
 );
 
 document.addEventListener('DOMContentLoaded', function () {
